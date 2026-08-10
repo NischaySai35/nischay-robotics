@@ -1,7 +1,8 @@
 import { motion } from 'motion/react'
 import { Button, ArrowIcon } from '@/components/ui/primitives'
-import { company, hero, links } from '@/content/site'
+import { company, featuredVideo, hero, links } from '@/content/site'
 import { scrollToId } from '@/lib/scroll'
+import { useVideoPlayer } from '@/lib/videoContext'
 
 const EASE = [0.16, 1, 0.3, 1] as const
 
@@ -43,6 +44,8 @@ function GooCluster() {
 }
 
 export function Hero() {
+  const play = useVideoPlayer()
+
   return (
     <section
       id="top"
@@ -106,14 +109,16 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.62, ease: EASE }}
           className="mt-10 flex flex-wrap items-center gap-3"
         >
-          <Button onClick={() => scrollToId('tetrobot')}>
+          {featuredVideo.id && (
+            <Button onClick={() => play(featuredVideo.id!, featuredVideo.title)}>
+              <PlayGlyph /> Watch the demo
+            </Button>
+          )}
+          <Button variant="glass" onClick={() => scrollToId('tetrobot')}>
             Explore Tetrobot <ArrowIcon />
           </Button>
-          <Button variant="glass" href={links.github} external>
+          <Button variant="quiet" href={links.github} external>
             <GithubIcon /> GitHub
-          </Button>
-          <Button variant="quiet" onClick={() => scrollToId('prototypes')}>
-            Watch the prototypes <ArrowIcon />
           </Button>
         </motion.div>
 
@@ -156,6 +161,14 @@ export function Hero() {
         </div>
       </motion.div>
     </section>
+  )
+}
+
+function PlayGlyph() {
+  return (
+    <svg width="11" height="12" viewBox="0 0 20 22" fill="currentColor" aria-hidden="true">
+      <path d="M19 9.27a2 2 0 0 1 0 3.46L3 21.99a2 2 0 0 1-3-1.73V1.74A2 2 0 0 1 3 .01l16 9.26Z" />
+    </svg>
   )
 }
 

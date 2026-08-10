@@ -26,8 +26,7 @@ export const links = {
   githubTetrobot: 'https://github.com/NischaySai35/Tetrobot_robotic_arm',
   githubEarthVision: 'https://github.com/NischaySai35/EarthVision',
   linkedin: 'https://www.linkedin.com/in/nischaysai35',
-  // TODO: replace with your channel URL when you send it
-  youtube: 'https://www.youtube.com/@nischaysai',
+  youtube: 'https://www.youtube.com/@nischaysai35',
   // TODO: point at real docs once they exist. `null` renders the button as
   // "Docs — coming soon" and disables it, rather than shipping a dead link.
   docs: null as string | null,
@@ -134,6 +133,9 @@ export type Project = {
   status?: string
   body: string
   tags: readonly string[]
+  /** Opens in the lightbox player rather than navigating away. */
+  videoId?: string
+  videoLabel?: string
   href?: string
   hrefLabel?: string
   accent: 'gold' | 'aqua' | 'iris' | 'bloom' | 'zest'
@@ -148,8 +150,8 @@ export const projects: readonly Project[] = [
     status: 'Patent pending',
     body: 'A modular swarm system where small interconnected units transform collectively into different structures. Built around adaptive geometry, collective movement and reconfigurable connections between units.',
     tags: ['Swarm', 'Modular hardware', 'Patent pending'],
-    href: 'https://youtu.be/v6UweSmTuP4',
-    hrefLabel: 'Watch prototype',
+    videoId: '5Z3qYwFF2VI',
+    videoLabel: 'Watch the demo',
     accent: 'gold',
   },
   {
@@ -160,8 +162,10 @@ export const projects: readonly Project[] = [
     status: '1st runner-up · Techgium 9th Edition',
     body: 'A robotic arm assembled from repeating modules, with flexible extension, self-locking mechanisms and a reconfigurable hardware architecture. Wireless control interface built as a web app.',
     tags: ['Manipulator', 'Self-locking', 'Wireless control'],
+    videoId: '7i2y1PvKCtw',
+    videoLabel: 'Watch it run',
     href: 'https://github.com/NischaySai35/Tetrobot_robotic_arm',
-    hrefLabel: 'Source on GitHub',
+    hrefLabel: 'Source',
     accent: 'aqua',
   },
   {
@@ -194,23 +198,36 @@ export const projects: readonly Project[] = [
    Add more entries as you upload; the grid reflows on its own.             */
 
 export type Video = {
+  /** YouTube video ID — the part after `youtu.be/`. `null` renders a "coming soon" tile. */
   id: string | null
   title: string
   caption: string
+  /** Renders full-width at the top of the grid. Exactly one should be featured. */
+  featured?: boolean
 }
 
 export const videos: readonly Video[] = [
   {
-    id: 'v6UweSmTuP4',
-    title: 'Shape-Changing Robot | Tetrobot',
-    caption: 'Early shape-morphing bot prototype',
+    id: '5Z3qYwFF2VI',
+    title: 'Shape-changing modular robots',
+    caption: 'Transformable robotic units reconfiguring into new bodies — the main demo',
+    featured: true,
   },
-  // TODO: send me the remaining video IDs — the part after `youtu.be/` — and
-  // I'll drop them in. Until then these render as "coming soon" tiles.
-  { id: null, title: 'Modular arm — extension test', caption: 'Coming soon' },
-  { id: null, title: 'Latching mechanism', caption: 'Coming soon' },
-  { id: null, title: 'Latest prototype', caption: 'Coming soon' },
+  {
+    id: '7i2y1PvKCtw',
+    title: 'Solo-built modular robotic arm',
+    caption: '2nd place at L&T Techgium — designed, printed and wired alone',
+  },
+  {
+    id: 'v6UweSmTuP4',
+    title: 'Early shape-morphing prototype',
+    caption: 'Where the latching mechanism started',
+  },
+  // TODO: send more IDs as you upload and they slot straight into the grid.
 ] as const
+
+/** The one video to lead with — hero CTA, and the featured tile. */
+export const featuredVideo = videos.find((v) => v.featured) ?? videos[0]
 
 /* -- Recognition ----------------------------------------------------------- */
 
@@ -226,6 +243,7 @@ export const recognition = [
     org: 'L&T Technology Services · National level',
     note: 'Modular robotic arm',
     highlight: true,
+    videoId: '7i2y1PvKCtw',
   },
   { award: '1st Prize — VIGNYANOTSAV', org: 'Innovative physics ideas', note: '' },
   { award: '3rd Prize — Sci-Fi IdeaTank', org: 'Concept engineering', note: '' },

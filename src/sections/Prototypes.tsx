@@ -1,120 +1,80 @@
-import { useState } from 'react'
-import { Reveal, Section, SectionHeading, Button, ArrowIcon } from '@/components/ui/primitives'
+import { ArrowIcon, Button, Reveal, Section, SectionHeading } from '@/components/ui/primitives'
+import { PlayBadge } from '@/components/VideoPlayer'
+import { useVideoPlayer } from '@/lib/videoContext'
+import { YouTubeThumb } from '@/components/YouTubeThumb'
 import { links, videos } from '@/content/site'
 import type { Video } from '@/content/site'
 
-/** Best-to-worst. `hqdefault` exists for every video, so it anchors the chain.
- *  All are cropped by `object-cover`, which removes the 4:3 letterbox bars on
- *  the lower sizes and leaves a clean 16:9 frame. */
-const THUMB_SIZES = ['maxresdefault', 'sddefault', 'hqdefault'] as const
-
-const thumbUrl = (id: string, step: number) =>
-  `https://i.ytimg.com/vi/${id}/${THUMB_SIZES[step]}.jpg`
-
-/**
- * Advance to the next thumbnail size.
- *
- * YouTube only generates `maxresdefault` for high-resolution uploads. For
- * everything else it does NOT 404 — it answers HTTP 200 with a 120x90 grey
- * "no preview" placeholder, so `onError` never fires and the tile silently
- * renders a blurry grey rectangle. The only reliable tell is the decoded
- * size, so this is driven from `onLoad` as well as `onError`.
- */
-function nextThumb(img: HTMLImageElement, id: string) {
-  const step = Number(img.dataset.step ?? '0') + 1
-  if (step >= THUMB_SIZES.length) return
-  img.dataset.step = String(step)
-  img.src = thumbUrl(id, step)
-}
-
-/** YouTube's placeholder is exactly 120x90; every real still is wider. */
-const isPlaceholder = (img: HTMLImageElement) => img.naturalWidth <= 120
-
-function checkThumb(img: HTMLImageElement, id: string) {
-  if (isPlaceholder(img)) nextThumb(img, id)
-}
-
-/**
- * Click-to-load video tiles.
- *
- * Nothing from YouTube runs until someone asks to watch: the tile shows a
- * still from YouTube's thumbnail CDN, and only on click does the iframe mount.
- * That keeps YouTube's player JS (and its cookies) off the page for everyone
- * who just scrolls past.
- */
-function VideoTile({ video }: { video: Video }) {
-  const [playing, setPlaying] = useState(false)
-
-  if (!video.id) {
-    return (
-      <div className="glass-soft relative flex aspect-video items-center justify-center overflow-hidden">
-        <div className="relative z-10 px-6 text-center">
-          <div className="border-chalk/15 mx-auto flex h-11 w-11 items-center justify-center rounded-full border">
-            <span className="text-chalk/30 text-lg leading-none">+</span>
-          </div>
-          <p className="text-chalk/45 mt-3 text-sm font-medium">{video.title}</p>
-          <p className="text-chalk/25 mt-1 text-[11px] tracking-wide uppercase">{video.caption}</p>
+/** An empty slot, for videos not yet uploaded. */
+function ComingSoon({ video }: { video: Video }) {
+  return (
+    <div className="glass-soft relative flex aspect-video items-center justify-center overflow-hidden">
+      <div className="relative z-10 px-6 text-center">
+        <div className="border-chalk/15 mx-auto flex h-11 w-11 items-center justify-center rounded-full border">
+          <span className="text-chalk/30 text-lg leading-none">+</span>
         </div>
+        <p className="text-chalk/45 mt-3 text-sm font-medium">{video.title}</p>
+        <p className="text-chalk/25 mt-1 text-[11px] tracking-wide uppercase">{video.caption}</p>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
-  if (playing) {
-    return (
-      <div className="glass relative aspect-video overflow-hidden">
-        <iframe
-          className="absolute inset-0 h-full w-full"
-          src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0`}
-          title={video.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-    )
-  }
+/**
+ * A video tile. No YouTube JavaScript or cookies load until someone actually
+ * clicks — the tile is just a still and a button, and playback happens in the
+ * shared lightbox.
+ */
+function VideoTile({ video, featured = false }: { video: Video; featured?: boolean }) {
+  const play = useVideoPlayer()
+
+  if (!video.id) return <ComingSoon video={video} />
 
   return (
     <button
       type="button"
-      onClick={() => setPlaying(true)}
+      onClick={() => play(video.id!, video.title)}
       aria-label={`Play: ${video.title}`}
       className="glass group relative block aspect-video w-full overflow-hidden text-left"
     >
-      <img
-        // A cached image can finish loading before React attaches onLoad, so
-        // the ref re-checks anything that is already complete on mount.
-        // Without it the placeholder sticks on every repeat visit.
-        ref={(img) => {
-          if (img?.complete) checkThumb(img, video.id!)
-        }}
-        src={thumbUrl(video.id, 0)}
-        alt=""
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover opacity-75 transition-all duration-700 group-hover:scale-[1.04] group-hover:opacity-95"
-        onLoad={(e) => checkThumb(e.currentTarget, video.id!)}
-        onError={(e) => nextThumb(e.currentTarget, video.id!)}
+      <YouTubeThumb
+        id={video.id}
+        eager={featured}
+        // Slight base scale: YouTube pads stills from non-16:9 source footage
+        // with black bars baked into the JPEG, and object-cover alone can't
+        // crop them. 6% trims the bars without meaningfully cropping stills
+        // that don't have any.
+        className="absolute inset-0 h-full w-full scale-[1.06] object-cover opacity-75 transition-all duration-700 group-hover:scale-[1.12] group-hover:opacity-95"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-      {/* Play button */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <span className="from-sun to-ember flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br shadow-[0_12px_40px_-8px_rgba(255,201,60,0.8)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110">
-          <svg width="20" height="22" viewBox="0 0 20 22" fill="#06050A" aria-hidden="true">
-            <path d="M19 9.27a2 2 0 0 1 0 3.46L3 21.99a2 2 0 0 1-3-1.73V1.74A2 2 0 0 1 3 .01l16 9.26Z" />
-          </svg>
+      {featured && (
+        <span className="bg-gold text-void absolute top-5 left-5 z-10 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.16em] uppercase">
+          Main demo
         </span>
+      )}
+
+      <div className="absolute inset-0 z-10 flex items-center justify-center">
+        <PlayBadge size={featured ? 84 : 60} />
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 z-10 p-5">
-        <p className="text-chalk text-sm font-semibold">{video.title}</p>
-        <p className="text-chalk/50 mt-0.5 text-xs">{video.caption}</p>
+      <div className="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-6">
+        <p
+          className={`text-chalk font-semibold ${featured ? 'text-lg sm:text-2xl' : 'text-sm'}`}
+        >
+          {video.title}
+        </p>
+        <p className={`text-chalk/55 mt-1 ${featured ? 'text-sm' : 'text-xs'}`}>{video.caption}</p>
       </div>
     </button>
   )
 }
 
 export function Prototypes() {
+  const featured = videos.find((v) => v.featured)
+  const rest = videos.filter((v) => !v.featured)
+
   return (
     <Section id="prototypes">
       <div className="flex flex-wrap items-end justify-between gap-6">
@@ -134,8 +94,14 @@ export function Prototypes() {
         </Reveal>
       </div>
 
-      <div className="mt-14 grid gap-5 sm:grid-cols-2">
-        {videos.map((v, i) => (
+      {featured && (
+        <Reveal className="mt-14">
+          <VideoTile video={featured} featured />
+        </Reveal>
+      )}
+
+      <div className={`grid gap-5 sm:grid-cols-2 ${featured ? 'mt-5' : 'mt-14'}`}>
+        {rest.map((v, i) => (
           <Reveal key={v.id ?? `slot-${i}`} delay={(i % 2) * 0.08}>
             <VideoTile video={v} />
           </Reveal>

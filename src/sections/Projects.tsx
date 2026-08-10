@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
 import { ArrowIcon, Reveal, Section, SectionHeading, Tag } from '@/components/ui/primitives'
+import { useVideoPlayer } from '@/lib/videoContext'
 import { projects } from '@/content/site'
 import type { Project } from '@/content/site'
 
@@ -20,6 +21,7 @@ const ACCENT: Record<Project['accent'], string> = {
  */
 function TiltCard({ project }: { project: Project }) {
   const ref = useRef<HTMLElement>(null)
+  const play = useVideoPlayer()
 
   const px = useMotionValue(0.5)
   const py = useMotionValue(0.5)
@@ -96,15 +98,34 @@ function TiltCard({ project }: { project: Project }) {
           ))}
         </div>
 
-        {project.href && (
-          <a
-            href={project.href}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="text-chalk/70 hover:text-gold mt-6 inline-flex w-fit items-center gap-2 text-sm font-semibold transition-colors"
-          >
-            {project.hrefLabel ?? 'Open'} <ArrowIcon />
-          </a>
+        {(project.videoId || project.href) && (
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+            {project.videoId && (
+              <button
+                type="button"
+                onClick={() => play(project.videoId!, project.name)}
+                className="text-gold hover:text-sun inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+              >
+                <span className="bg-gold/15 flex h-6 w-6 items-center justify-center rounded-full">
+                  <svg width="8" height="9" viewBox="0 0 20 22" fill="currentColor" aria-hidden="true">
+                    <path d="M19 9.27a2 2 0 0 1 0 3.46L3 21.99a2 2 0 0 1-3-1.73V1.74A2 2 0 0 1 3 .01l16 9.26Z" />
+                  </svg>
+                </span>
+                {project.videoLabel ?? 'Watch'}
+              </button>
+            )}
+
+            {project.href && (
+              <a
+                href={project.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="text-chalk/70 hover:text-gold inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+              >
+                {project.hrefLabel ?? 'Open'} <ArrowIcon />
+              </a>
+            )}
+          </div>
         )}
       </div>
     </motion.article>

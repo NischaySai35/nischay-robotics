@@ -23,6 +23,23 @@ export function scrollToId(id: string) {
   }
 }
 
+/**
+ * Freeze scrolling while a modal is open.
+ *
+ * `overflow: hidden` on its own isn't enough here — Lenis drives scroll with
+ * its own rAF loop and happily keeps going behind the overlay. Both have to be
+ * stopped, and both restarted together.
+ */
+export function pauseScroll() {
+  lenis?.stop()
+  document.body.style.overflow = 'hidden'
+}
+
+export function resumeScroll() {
+  lenis?.start()
+  document.body.style.overflow = ''
+}
+
 export function scrollToTop() {
   if (lenis) lenis.scrollTo(0, { duration: 1.15 })
   else window.scrollTo({ top: 0, behavior: 'smooth' })

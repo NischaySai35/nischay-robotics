@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Aurora } from '@/components/background/Aurora'
 import { Filters } from '@/components/svg/Filters'
+import { VideoProvider } from '@/components/VideoPlayer'
 import { useRenderTier } from '@/hooks/useEnvironment'
 import { useSmoothScroll } from '@/lib/scroll'
 import { Nav } from '@/sections/Nav'
@@ -36,20 +37,22 @@ export default function App() {
         </Suspense>
       )}
 
-      <Nav />
+      <VideoProvider>
+        <Nav />
 
-      <main className="grain relative">
-        <Hero />
-        <Pillars />
-        <Tetrobot />
-        <Projects />
-        <Prototypes />
-        <Recognition />
-        <Founder />
-        <Collaborate />
-      </main>
+        <main className="grain relative">
+          <Hero />
+          <Pillars />
+          <Tetrobot />
+          <Projects />
+          <Prototypes />
+          <Recognition />
+          <Founder />
+          <Collaborate />
+        </main>
 
-      <Footer />
+        <Footer />
+      </VideoProvider>
     </>
   )
 }

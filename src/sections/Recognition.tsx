@@ -1,4 +1,5 @@
 import { Reveal, Section, SectionHeading } from '@/components/ui/primitives'
+import { useVideoPlayer } from '@/lib/videoContext'
 import { recognition } from '@/content/site'
 
 function TrophyIcon({ dim = false }: { dim?: boolean }) {
@@ -29,6 +30,8 @@ function TrophyIcon({ dim = false }: { dim?: boolean }) {
 }
 
 export function Recognition() {
+  const play = useVideoPlayer()
+
   return (
     <Section id="recognition">
       <SectionHeading
@@ -74,6 +77,21 @@ export function Recognition() {
                     <p className="text-gold/70 mt-3 text-[11px] font-medium tracking-wide uppercase">
                       {r.note}
                     </p>
+                  )}
+
+                  {'videoId' in r && r.videoId && (
+                    <button
+                      type="button"
+                      onClick={() => play(r.videoId, r.award)}
+                      className="text-gold hover:text-sun mt-4 inline-flex items-center gap-2 text-[13px] font-semibold transition-colors"
+                    >
+                      <span className="bg-gold/15 flex h-5 w-5 items-center justify-center rounded-full">
+                        <svg width="7" height="8" viewBox="0 0 20 22" fill="currentColor" aria-hidden="true">
+                          <path d="M19 9.27a2 2 0 0 1 0 3.46L3 21.99a2 2 0 0 1-3-1.73V1.74A2 2 0 0 1 3 .01l16 9.26Z" />
+                        </svg>
+                      </span>
+                      Watch the entry
+                    </button>
                   )}
                 </div>
               </li>
