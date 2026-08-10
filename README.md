@@ -29,13 +29,30 @@ are the placeholders waiting on you:
 
 | What | Where | Notes |
 |---|---|---|
-| **Logo** | `src/components/ui/Logo.tsx` | Placeholder mark: four modules in a T-tetromino, one detached and mid-move. Replace the SVG in that one file and it updates everywhere. Also update `public/favicon.svg` (same shape, inlined). |
+| ~~Logo~~ | — | ✅ Done — the gold faceted star. See "Icons & social card" below if you ever change it. |
 | **Video IDs** | `videos` in `site.ts` | Send me the part after `youtu.be/`. Three slots are currently "coming soon" tiles. |
 | **YouTube channel URL** | `links.youtube` | Currently a guess — replace with your real channel URL. |
 | **Tetrobot docs** | `links.docs` | `null` renders a disabled "Docs — coming soon" button instead of a dead link. Set a URL and the button activates itself. |
-| **Social preview image** | `public/og-image.png` | Drop in a 1200×630 PNG and WhatsApp/LinkedIn/X will show a real preview card. The meta tags are already wired. |
+| ~~Social preview image~~ | — | ✅ Done — `public/og-image.jpg`, generated from the logo. |
 | **Domain** | `index.html` + `seo.url` | Currently `nischayrobotics.com`. Update the canonical, `og:url` and JSON-LD if it differs. |
 | **Company email** | `contact.email` | Personal address for now; swap if you register a company one. |
+
+---
+
+## Icons & social card
+
+`public/icon.png` (888×888, transparent) and `public/icon.ico` (7 sizes) are the
+source art. **Neither is referenced by the site** — both are ~355KB, far too
+heavy to ship as a favicon. They stay in the repo as the masters.
+
+What actually ships is generated from them: `icon-{32,48,96,192,256,512}.png`,
+cropped to the star's bounding box and downscaled, plus `og-image.jpg`
+(1200×630, 73KB) for social previews.
+
+**If you replace the logo**, drop the new art in as `public/icon.png` and
+regenerate the set — any image editor or online resizer will do, as long as you
+produce the same filenames. Then check `src/components/ui/Logo.tsx`, which
+points at `icon-96.png` with `srcSet` for denser displays.
 
 ---
 

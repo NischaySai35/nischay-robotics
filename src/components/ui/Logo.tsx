@@ -1,64 +1,37 @@
 /**
- * Placeholder identity mark — swap this one file when your real logo arrives.
+ * Identity mark — the faceted gold star.
  *
- * The idea: four modules in a T-tetromino, joined by visible latch points, with
- * the fourth module detached and mid-move. Modular units, a reconfigurable
- * body, one piece currently changing place. Reads at 20px, so it works as a
- * favicon too (see public/favicon.svg, which is this shape inlined).
+ * Source art is `public/icon.png` (888x888, transparent background). The
+ * smaller sizes served here are cropped to the star's bounding box and
+ * downscaled from that original, so there's no wasted padding and no blur at
+ * small sizes. To change the logo, replace `icon.png` and regenerate the
+ * `icon-*.png` set (see README).
  */
 export function LogoMark({ className = '', size = 36 }: { className?: string; size?: number }) {
   return (
-    <svg
+    <img
+      // 96px covers up to a 3x display at the sizes used here; the 192px
+      // variant takes over on denser screens and larger placements.
+      src="/icon-96.png"
+      srcSet="/icon-96.png 1x, /icon-192.png 2x, /icon-256.png 3x"
       width={size}
       height={size}
-      viewBox="0 0 48 48"
-      fill="none"
-      className={className}
-      role="img"
-      aria-label="Nischay Robotics"
-    >
-      <defs>
-        <linearGradient id="nr-logo-a" x1="0" y1="0" x2="48" y2="48">
-          <stop offset="0%" stopColor="#FFE58A" />
-          <stop offset="55%" stopColor="#FFC93C" />
-          <stop offset="100%" stopColor="#FF9A1F" />
-        </linearGradient>
-        <linearGradient id="nr-logo-b" x1="0" y1="48" x2="48" y2="0">
-          <stop offset="0%" stopColor="#A97BFF" />
-          <stop offset="100%" stopColor="#45E3FF" />
-        </linearGradient>
-      </defs>
-
-      {/* latch links, drawn under the modules */}
-      <g stroke="url(#nr-logo-a)" strokeWidth="1.6" strokeLinecap="round" opacity="0.85">
-        <path d="M15 16.5h3" />
-        <path d="M30 16.5h3" />
-        <path d="M23.5 23v3" />
-      </g>
-
-      {/* three anchored modules */}
-      <rect x="2" y="10" width="13" height="13" rx="3.6" fill="url(#nr-logo-a)" />
-      <rect x="17" y="10" width="13" height="13" rx="3.6" fill="url(#nr-logo-a)" />
-      <rect x="32" y="10" width="13" height="13" rx="3.6" fill="url(#nr-logo-a)" opacity="0.62" />
-
-      {/* the module that's reconfiguring */}
-      <rect
-        x="17"
-        y="26"
-        width="13"
-        height="13"
-        rx="3.6"
-        fill="url(#nr-logo-b)"
-        transform="rotate(-12 23.5 32.5)"
-      />
-    </svg>
+      alt="Nischay Robotics"
+      className={`shrink-0 select-none ${className}`}
+      style={{
+        // Sits the mark in the same light as the rest of the page rather than
+        // letting it read as a pasted-on asset.
+        filter: 'drop-shadow(0 2px 10px rgba(255,201,60,0.45))',
+      }}
+      draggable={false}
+    />
   )
 }
 
 export function Wordmark({ className = '' }: { className?: string }) {
   return (
     <span className={`flex items-center gap-2.5 ${className}`}>
-      <LogoMark size={30} />
+      <LogoMark size={34} />
       <span className="font-display text-[15px] leading-none font-bold tracking-tight">
         <span className="text-chalk">Nischay</span>{' '}
         <span className="text-gold-grad">Robotics</span>

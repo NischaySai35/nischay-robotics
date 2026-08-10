@@ -3,7 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Cropped and downscaled from public/icon.png. The 888px original and
+         the 7-size icon.ico are kept in the repo as source art, but neither is
+         referenced here — both are ~355KB, far too heavy to ship as a favicon. -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#06050A" />
 
     <title>Nischay Robotics — Robots that change their own shape</title>
@@ -14,9 +21,7 @@
     <meta name="author" content="Nischay Sai D R" />
     <link rel="canonical" href="https://nischayrobotics.com/" />
 
-    <!-- Open Graph / social cards.
-         TODO: drop a 1200x630 og-image.png into /public and this starts
-         rendering a real preview card on WhatsApp, LinkedIn and X. -->
+    <!-- Open Graph / social cards -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Nischay Robotics" />
     <meta property="og:title" content="Nischay Robotics — Robots that change their own shape" />
@@ -25,7 +30,10 @@
       content="Modular, self-reconfiguring robots and Tetrobot, a graph-native runtime for machines whose body changes at runtime."
     />
     <meta property="og:url" content="https://nischayrobotics.com/" />
-    <meta property="og:image" content="https://nischayrobotics.com/og-image.png" />
+    <meta property="og:image" content="https://nischayrobotics.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Nischay Robotics — robots that change their own shape" />
     <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Structured data so search engines understand what this is -->
