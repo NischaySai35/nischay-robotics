@@ -1,0 +1,344 @@
+@import 'tailwindcss';
+
+/* ============================================================================
+   NISCHAY ROBOTICS — DESIGN SYSTEM
+   Yellow-led iridescent glass. Deep near-black base so gold reads as light,
+   not as paint. Every accent is a *light source*, never a fill.
+   ========================================================================= */
+
+@theme {
+  /* -- Typography ------------------------------------------------------- */
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* -- Base surfaces ---------------------------------------------------- */
+  --color-void: #06050a;
+  --color-ink: #0b0910;
+  --color-haze: #16121f;
+  --color-chalk: #f6f2e9;
+
+  /* -- Primary: gold ---------------------------------------------------- */
+  --color-gold: #ffc93c;
+  --color-sun: #ffe58a;
+  --color-ember: #ff9a1f;
+
+  /* -- Iridescent accents ----------------------------------------------- */
+  --color-aqua: #45e3ff;
+  --color-iris: #a97bff;
+  --color-bloom: #ff5fa6;
+  --color-zest: #c9ff57;
+
+  /* -- Radii: squircle-leaning, "droplet" scale -------------------------- */
+  --radius-droplet: 1.75rem;
+  --radius-blob: 2.75rem;
+
+  /* -- Motion ------------------------------------------------------------ */
+  --ease-fluid: cubic-bezier(0.3, 0.9, 0.25, 1);
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================================
+   BASE
+   ========================================================================= */
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    /* Lenis drives scrolling; native smooth-scroll would fight it. */
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-gold) 80%, transparent);
+    color: var(--color-void);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Scrollbar — thin, gold, unobtrusive */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-void);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--color-gold) 35%, transparent);
+    border-radius: 999px;
+    border: 3px solid var(--color-void);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--color-gold) 60%, transparent);
+  }
+}
+
+/* ============================================================================
+   GLASS — "watermorphism"
+   Three tiers of the same material. Each is: a translucent body, a backdrop
+   blur, an inner light (top-left specular), and a 1px gradient rim drawn with
+   the mask-composite trick so the border itself can be a gradient.
+   ========================================================================= */
+
+.glass,
+.glass-strong,
+.glass-soft {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-droplet);
+}
+
+/* Each tier layers a light gradient over a dark substrate. The substrate is
+   what guarantees contrast: droplets drift behind these panels, and without
+   its own tint the "glass" would just be the background — body copy would go
+   unreadable every time a bright droplet passed under it. Real frosted glass
+   is tinted too, so this costs nothing visually. */
+.glass {
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in oklab, white 9%, transparent),
+      color-mix(in oklab, white 3%, transparent) 45%,
+      color-mix(in oklab, var(--color-gold) 4%, transparent)
+    ),
+    color-mix(in oklab, var(--color-ink) 62%, transparent);
+  backdrop-filter: blur(20px) saturate(180%) brightness(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, white 22%, transparent),
+    inset 0 -1px 0 0 color-mix(in oklab, var(--color-gold) 10%, transparent),
+    0 24px 60px -20px rgb(0 0 0 / 0.75);
+}
+
+.glass-strong {
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in oklab, white 14%, transparent),
+      color-mix(in oklab, white 5%, transparent) 40%,
+      color-mix(in oklab, var(--color-gold) 8%, transparent)
+    ),
+    color-mix(in oklab, var(--color-ink) 70%, transparent);
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.12);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.12);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, white 32%, transparent),
+    inset 0 -1px 0 0 color-mix(in oklab, var(--color-gold) 16%, transparent),
+    0 30px 80px -24px rgb(0 0 0 / 0.85);
+}
+
+.glass-soft {
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in oklab, white 7%, transparent),
+      color-mix(in oklab, white 2%, transparent)
+    ),
+    color-mix(in oklab, var(--color-ink) 40%, transparent);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  box-shadow: inset 0 1px 0 0 color-mix(in oklab, white 14%, transparent);
+}
+
+/* The gradient rim. Drawn as a pseudo-element ring via mask-composite so it
+   reads as a light catching an edge rather than a flat 1px border. */
+.glass::after,
+.glass-strong::after,
+.glass-soft::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    color-mix(in oklab, white 60%, transparent) 0%,
+    color-mix(in oklab, var(--color-sun) 35%, transparent) 18%,
+    transparent 42%,
+    transparent 62%,
+    color-mix(in oklab, var(--color-iris) 28%, transparent) 82%,
+    color-mix(in oklab, var(--color-gold) 45%, transparent) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* -- Real refraction, progressive enhancement ------------------------------
+   SVG filters as backdrop-filter input are Chromium-only today (Safari and
+   Firefox restrict backdrop-filter to built-in CSS filter functions). Where
+   supported, the turbulence displacement makes the backdrop *bend* like water
+   through a droplet. Where not, the blur above already carries the look.
+   Ref: https://kube.io/blog/liquid-glass-css-svg/                           */
+@supports (backdrop-filter: url('#nr-refract')) {
+  .refract {
+    backdrop-filter: blur(14px) saturate(190%) brightness(1.08) url('#nr-refract');
+    -webkit-backdrop-filter: blur(14px) saturate(190%) brightness(1.08) url('#nr-refract');
+  }
+  .refract-soft {
+    backdrop-filter: blur(18px) saturate(170%) url('#nr-refract-soft');
+    -webkit-backdrop-filter: blur(18px) saturate(170%) url('#nr-refract-soft');
+  }
+}
+
+/* Gooey merge — for droplet clusters that should coalesce into one body.
+   feGaussianBlur smears alpha, feColorMatrix snaps it back to a hard edge. */
+.goo {
+  filter: url('#nr-goo');
+}
+
+/* ============================================================================
+   LIGHT & TEXT
+   ========================================================================= */
+
+.text-iridescent {
+  /* Gold bookends the ramp and reappears mid-way, so the animated window
+     always contains yellow — the accents visit, they don't take over. */
+  background: linear-gradient(
+    100deg,
+    var(--color-sun) 0%,
+    var(--color-gold) 16%,
+    var(--color-bloom) 34%,
+    var(--color-iris) 44%,
+    var(--color-aqua) 54%,
+    var(--color-gold) 72%,
+    var(--color-sun) 86%,
+    var(--color-gold) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: iridesce 14s linear infinite;
+}
+
+.text-gold-grad {
+  background: linear-gradient(160deg, var(--color-sun), var(--color-gold) 45%, var(--color-ember));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glow-gold {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-gold) 40%, transparent),
+    0 8px 30px -6px color-mix(in oklab, var(--color-gold) 45%, transparent),
+    0 0 60px -10px color-mix(in oklab, var(--color-ember) 35%, transparent);
+}
+
+.grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================================
+   ANIMATION
+   ========================================================================= */
+
+@keyframes iridesce {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(4%, -6%, 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(-5%, 4%, 0) scale(0.94);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.85);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.animate-drift {
+  animation: drift 26s var(--ease-fluid) infinite;
+}
+.animate-bob {
+  animation: bob 6s ease-in-out infinite;
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   Everything decorative stops. The site stays fully readable and usable.
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
