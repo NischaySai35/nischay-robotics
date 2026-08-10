@@ -229,6 +229,85 @@ export const videos: readonly Video[] = [
 /** The one video to lead with — hero CTA, and the featured tile. */
 export const featuredVideo = videos.find((v) => v.featured) ?? videos[0]
 
+/* -- Configurations --------------------------------------------------------
+   Every photo below is the SAME two module chains, rebuilt into a different
+   body. Nothing was added between shots — that's the entire point, and it is
+   the strongest evidence on the site. Images live in public/visuals/, resized
+   from the 4000x3000 originals (see README).                                */
+
+export type Family = 'loop' | 'walker' | 'reach' | 'arch' | 'serpentine' | 'tower'
+
+export const families: Record<Family, { label: string; blurb: string }> = {
+  loop: {
+    label: 'Closed loops',
+    blurb: 'Head latched to tail. A kinematic tree cannot represent these at all.',
+  },
+  walker: { label: 'Walkers', blurb: 'Multiple ground contacts from a single pair of chains.' },
+  reach: { label: 'Reach', blurb: 'One chain anchored, the other working above it.' },
+  arch: { label: 'Arches', blurb: 'Both ends anchored, load path closing through the floor.' },
+  serpentine: { label: 'Serpentine', blurb: 'Low, continuous curves for crawling and squeezing.' },
+  tower: { label: 'Towers', blurb: 'Stacked vertically, standing on the smallest possible base.' },
+}
+
+export type Configuration = {
+  slug: string
+  family: Family
+  title: string
+  note: string
+  /** Portrait source; the grid reserves a taller cell for these. */
+  portrait?: boolean
+  /** Called out elsewhere on the page as hardware proof of the graph model. */
+  keystone?: boolean
+}
+
+export const configurations: readonly Configuration[] = [
+  { slug: 'cfg-01', family: 'reach', title: 'Manipulator over a chassis', note: 'One chain anchored flat as a base, the other working above it.' },
+  { slug: 'cfg-02', family: 'reach', title: 'Overhead reach', note: 'Vertical extension from a low, stable anchor.' },
+  { slug: 'cfg-03', family: 'arch', title: 'Braced arch', note: 'Raised span with the body flat behind it for counterweight.' },
+  { slug: 'cfg-04', family: 'reach', title: 'High vertical reach', note: 'Near-full extension straight up from the base chain.' },
+  { slug: 'cfg-05', family: 'reach', title: 'Crane stance', note: 'Base chain wide, working chain lifted and cantilevered.' },
+  { slug: 'cfg-06', family: 'serpentine', title: 'Low crawler', note: 'Flat profile — the shape for getting underneath things.' },
+  { slug: 'cfg-07', family: 'loop', title: 'Rectangular frame', note: 'Two chains latched at both ends. A closed loop, not a tree.' },
+  { slug: 'cfg-08', family: 'loop', title: 'Chassis frame, head-on', note: 'The same closed frame seen down its axis.' },
+  { slug: 'cfg-09', family: 'walker', title: 'Quadruped stance', note: 'Four ground contacts built from two chains.' },
+  { slug: 'cfg-10', family: 'walker', title: 'Wide quadruped', note: 'Stance widened for stability over speed.' },
+  { slug: 'cfg-11', family: 'walker', title: 'Arched walker', note: 'Body lifted clear of the ground between contact points.' },
+  { slug: 'cfg-12', family: 'tower', title: 'Standing column', note: 'Balanced vertically on a base the width of one module.', portrait: true },
+  { slug: 'cfg-13', family: 'arch', title: 'Raised head, braced body', note: 'Sensor-forward posture with the mass kept low and back.' },
+  { slug: 'cfg-14', family: 'tower', title: 'Full-height tower', note: 'Every module stacked — the tallest the pair will stand.', portrait: true },
+  { slug: 'cfg-15', family: 'reach', title: 'Maximum extension', note: 'Every joint straight. The longest span these modules allow.' },
+  { slug: 'cfg-16', family: 'reach', title: 'Extended diagonal', note: 'Full length, angled across the floor.' },
+  { slug: 'cfg-17', family: 'serpentine', title: 'S-curve', note: 'Opposing bends — the basis of serpentine locomotion.' },
+  {
+    slug: 'cfg-18',
+    family: 'loop',
+    title: 'Closed ring',
+    note: 'Head latched to tail. This is the cycle a kinematic tree cannot express — and the reason Tetrobot models a graph instead.',
+    keystone: true,
+  },
+  { slug: 'cfg-19', family: 'arch', title: 'Bridge span', note: 'Both ends anchored, spanning a gap under load.' },
+  { slug: 'cfg-20', family: 'serpentine', title: 'Coil', note: 'Wound in on itself into the smallest footprint.' },
+  { slug: 'cfg-21', family: 'serpentine', title: 'Serpentine crawl', note: 'Travelling wave posture, mid-stride.' },
+] as const
+
+export const keystoneConfig = configurations.find((c) => c.keystone) ?? configurations[0]
+
+export const shapeShiftClip = {
+  webm: '/visuals/shape-shift.webm',
+  poster: '/visuals/shape-shift-poster.jpg',
+  title: 'Rolling: four wheels, three, two',
+  caption:
+    'The same two chains reconfiguring on the floor into a four-wheeled vehicle, then three, then two — without a human touching them between shapes.',
+  duration: '0:29',
+}
+
+export const configSection = {
+  kicker: 'Evidence',
+  headline: 'Two modules. Every one of these.',
+  lead: 'Nothing was added between these photographs. The same two chains were rebuilt, by hand and by command, into every body below — walkers, arches, towers, closed rings, a rolling vehicle. This is the whole hardware set, and it is already out of shapes before I am out of ideas.',
+  ask: 'If two modules do this, the interesting question is what twenty do. That is the part I cannot fund alone.',
+}
+
 /* -- Recognition ----------------------------------------------------------- */
 
 export const recognition = [
@@ -304,7 +383,7 @@ export const founder = {
 export const collaborate = {
   kicker: 'The ask',
   headline: "I've taken this as far as a desk allows.",
-  body: "Everything here was designed, printed, wired and written by one student, self-funded, at home. The ideas have outgrown the workshop. I'm looking for people and institutions who can help turn working prototypes into real machines.",
+  body: "Everything here was designed, printed, wired and written by one student, self-funded, at home — and every shape on this page came out of exactly two modules, because two is what I could afford to build. The bottleneck has never been the idea. I'm looking for people and institutions who can help turn working prototypes into real machines.",
   seeking: [
     {
       title: 'Incubation',
@@ -337,6 +416,7 @@ export const collaborate = {
 
 export const navItems = [
   { id: 'work', label: 'Work' },
+  { id: 'configurations', label: 'Shapes' },
   { id: 'tetrobot', label: 'Tetrobot' },
   { id: 'projects', label: 'Projects' },
   { id: 'prototypes', label: 'Prototypes' },

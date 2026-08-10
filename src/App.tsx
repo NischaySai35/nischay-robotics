@@ -7,6 +7,7 @@ import { useSmoothScroll } from '@/lib/scroll'
 import { Nav } from '@/sections/Nav'
 import { Hero } from '@/sections/Hero'
 import { Pillars } from '@/sections/Pillars'
+import { Configurations } from '@/sections/Configurations'
 import { Tetrobot } from '@/sections/Tetrobot'
 import { Projects } from '@/sections/Projects'
 import { Prototypes } from '@/sections/Prototypes'
@@ -43,6 +44,7 @@ export default function App() {
         <main className="grain relative">
           <Hero />
           <Pillars />
+          <Configurations />
           <Tetrobot />
           <Projects />
           <Prototypes />

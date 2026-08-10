@@ -106,13 +106,19 @@
    the mask-composite trick so the border itself can be a gradient.
    ========================================================================= */
 
-.glass,
-.glass-strong,
-.glass-soft {
-  position: relative;
-  isolation: isolate;
-  border-radius: var(--radius-droplet);
-}
+/* These live in the `components` layer on purpose. Unlayered rules outrank
+   every @layer, so an unlayered `.glass-soft { position: relative }` would beat
+   Tailwind's `absolute` utility — badges and arrow controls silently fall back
+   into normal flow. In `components`, the utilities layer wins, which is what
+   you want every time you write `glass-soft absolute`. */
+@layer components {
+  .glass,
+  .glass-strong,
+  .glass-soft {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--radius-droplet);
+  }
 
 /* Each tier layers a light gradient over a dark substrate. The substrate is
    what guarantees contrast: droplets drift behind these panels, and without
@@ -216,8 +222,9 @@
 
 /* Gooey merge — for droplet clusters that should coalesce into one body.
    feGaussianBlur smears alpha, feColorMatrix snaps it back to a hard edge. */
-.goo {
-  filter: url('#nr-goo');
+  .goo {
+    filter: url('#nr-goo');
+  }
 }
 
 /* ============================================================================

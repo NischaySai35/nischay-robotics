@@ -1,6 +1,7 @@
 import { GraphVsTree } from '@/components/GraphVsTree'
 import { ArrowIcon, Button, Reveal, Section } from '@/components/ui/primitives'
-import { links, tetrobot } from '@/content/site'
+import { configurations, keystoneConfig, links, tetrobot } from '@/content/site'
+import { scrollToId } from '@/lib/scroll'
 
 function CrossIcon() {
   return (
@@ -53,6 +54,45 @@ export function Tetrobot() {
       {/* The diagram */}
       <Reveal delay={0.1} className="mt-14">
         <GraphVsTree />
+      </Reveal>
+
+      {/* Hardware proof. The Ring morphology above isn't a thought experiment —
+          it is a photograph of the modules with head latched to tail. */}
+      <Reveal delay={0.08} className="mt-5">
+        <div className="glass grid gap-0 overflow-hidden md:grid-cols-[0.9fr_1.1fr]">
+          <div className="relative min-h-56 overflow-hidden">
+            <img
+              src={`/visuals/${keystoneConfig.slug}.jpg`}
+              alt={keystoneConfig.title}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/40 md:to-black/60" />
+          </div>
+
+          <div className="relative z-10 p-7 sm:p-9">
+            <p className="text-gold text-[11px] font-semibold tracking-[0.24em] uppercase">
+              Not a thought experiment
+            </p>
+            {/* Worded to stay true whichever morphology the diagram above
+                happens to be cycling through. */}
+            <h3 className="mt-4 text-xl leading-tight sm:text-2xl">
+              That ring is a shape the tree model has to reject.
+            </h3>
+            <p className="text-chalk/60 mt-4 text-sm leading-relaxed">
+              Head latched to tail, closing the loop. It exists, it holds, it drives — and no
+              URDF will describe it without being lied to first. Every closed configuration in
+              the hardware is a case the graph handles natively and the tree cannot.
+            </p>
+            <button
+              type="button"
+              onClick={() => scrollToId('configurations')}
+              className="text-chalk/70 hover:text-gold mt-6 inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+            >
+              See all {configurations.length} configurations <ArrowIcon />
+            </button>
+          </div>
+        </div>
       </Reveal>
 
       {/* Assumption vs reality */}

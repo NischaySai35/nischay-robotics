@@ -39,6 +39,41 @@ are the placeholders waiting on you:
 
 ---
 
+## ⚠️ Back up `visuals/`
+
+The `visuals/` folder holds your **original camera masters** — 21 photos at
+4000×3000 and the 24MB phone capture of the rolling demo. It is **gitignored on
+purpose**: 81MB of masters would live in the git history forever and get
+re-downloaded on every clone, and free hosts would deploy them.
+
+**That means they exist only on this machine.** Keep your own backup
+(Drive, an external disk — anywhere but here).
+
+What the site actually ships is the optimised set in `public/visuals/`, which
+*is* committed:
+
+| Asset | From | To |
+|---|---|---|
+| `cfg-01…21.jpg` | 4000×3000, ~2.6MB each | 1600px, ~210KB each |
+| `cfg-01…21-thumb.jpg` | — | 700px, ~50KB each |
+| `shape-shift.webm` | 24.3MB H.264 mp4 | 7.7MB VP9, same 1280×720 |
+| `shape-shift-poster.jpg` | frame at 2s | 99KB |
+
+57MB of photos became 5.5MB. The video is only fetched when someone presses
+play (`preload="none"`), so the poster is all most visitors ever load.
+
+**To add more photos:** drop them in `visuals/`, resize to ~1600px with any
+image editor, save into `public/visuals/` as the next `cfg-NN.jpg` (plus a
+700px `-thumb`), then add an entry to `configurations` in
+`src/content/site.ts` — slug, family, title, note. The gallery, the filters and
+all the counts update themselves.
+
+**Browser note on the clip:** it ships as VP9 WebM only. That covers Chrome,
+Edge, Firefox, Safari 14.1+ on macOS and iOS 17.4+. Anything older shows the
+poster frame instead of playing — no broken UI, just a still.
+
+---
+
 ## Icons & social card
 
 `public/icon.png` (888×888, transparent) and `public/icon.ico` (7 sizes) are the
@@ -64,10 +99,12 @@ src/
 ├─ index.css                ← design tokens + the glass material
 ├─ App.tsx                  ← page composition
 ├─ sections/                ← one file per band of the page
-│  ├─ Nav · Hero · Pillars · Tetrobot · Projects
+│  ├─ Nav · Hero · Pillars · Configurations · Tetrobot · Projects
 │  └─ Prototypes · Recognition · Founder · Collaborate · Footer
 ├─ components/
 │  ├─ GraphVsTree.tsx       ← the interactive graph-vs-tree diagram
+│  ├─ ConfigGallery.tsx     ← auto-cycling shape gallery + lightbox
+│  ├─ VideoPlayer.tsx       ← the shared lightbox player (useVideoPlayer)
 │  ├─ background/           ← WebGL droplet field (shader + R3F canvas)
 │  ├─ svg/Filters.tsx       ← refraction + gooey SVG filters
 │  └─ ui/                   ← Logo, buttons, glass cards, scroll reveal
