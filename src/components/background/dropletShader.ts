@@ -56,6 +56,10 @@ uniform float uTime;
 uniform float uAspect;
 uniform float uScroll;
 uniform float uIntensity;
+/* 1.0 in the light theme, 0.0 in dark. Switches the whole shading model:
+   light composites with multiply (subtract colour from white), dark with
+   screen (add light to black). Adding light to a white page does nothing. */
+uniform float uLight;
 uniform vec2  uTrail[TRAIL];
 
 /* -- SDF primitives ------------------------------------------------------ */
@@ -211,37 +215,65 @@ void main() {
     float tintPhase = vnoise(p * 0.5 + 12.3) * 1.6 + uTime * 0.018;
     vec3 tint = iridescence(tintPhase);
 
-    // Body: refraction, dimmed. It grounds the droplet in the scene's light
-    // without dictating its colour.
-    col = env(refr) * vec3(1.00, 0.86, 0.56) * 0.45;
-
-    // Surface: what bounces off it. Almost entirely rim-weighted, which is
-    // what makes the droplets read as thin shells rather than solid marbles.
-    col += env(refl) * (0.05 + 1.15 * fres);
-
-    // Inner light — the droplet glows with its own hue. Without this it has
-    // nothing but a rim, which over a near-black page reads as a hole punched
-    // in the layout rather than a bead of liquid.
-    col += tint * core * core * 1.15;
+    vec3 L = normalize(vec3(-0.5, 0.8, 0.6));
+    float spec = pow(max(dot(refl, L), 0.0), 64.0);
 
     // Iridescent film over the rim, modulated by 3D noise so it isn't a clean
     // band. This is the thin-film shimmer at grazing angles.
     float film = fres * 1.3 + uTime * 0.025 + vnoise(p * 2.4 + uTime * 0.12) * 0.30;
-    col += iridescence(film) * fres * 1.6;
 
-    // Specular pop — tight, so it reads as a single catchlight.
-    vec3 L = normalize(vec3(-0.5, 0.8, 0.6));
-    col += vec3(1.0, 0.96, 0.88) * pow(max(dot(refl, L), 0.0), 64.0) * 1.5;
+    if (uLight > 0.5) {
+      // LIGHT THEME — the canvas composites with multiply, where white
+      // leaves the page untouched and saturated colour tints it. So the
+      // droplet is expressed as *how much to tint*, which is the inverse of
+      // the additive dark-mode build below: adding light to a white page does
+      // nothing at all.
+      // Deep enough that each droplet's hue is actually legible — at a lighter
+      // mix they all wash out to the same pale grey-pink and the polychrome
+      // field is lost.
+      float depth = 0.26 + 0.58 * fres;
+      vec3 c = mix(vec3(1.0), tint, depth);
 
-    // Gold bias — this is a yellow-led system, not a neutral one.
-    col = mix(col, col * vec3(1.24, 1.02, 0.58), 0.34);
+      // A touch of the rim film, kept pale so it tints rather than muddies.
+      c = mix(c, mix(vec3(1.0), iridescence(film), 0.75), fres * 0.5);
 
-    // Crush the midtones so highlights read as glass rather than plastic.
-    col = pow(max(col, 0.0), vec3(1.12));
+      // Specular pulls back to white, so a highlight reads as a highlight
+      // instead of a bright patch that multiply would ignore anyway.
+      c = mix(c, vec3(1.0), clamp(spec * 1.6, 0.0, 1.0));
 
-    // Centre stays partly transparent on purpose: droplets drift behind body
-    // copy, and an opaque interior would make text unreadable as they pass.
-    alpha = clamp(0.24 + fres * 0.56, 0.0, 0.80);
+      col = clamp(c, 0.0, 1.0);
+      alpha = clamp(0.34 + fres * 0.5, 0.0, 0.88);
+    } else {
+      // DARK THEME — additive glass over near-black.
+
+      // Body: refraction, dimmed. It grounds the droplet in the scene's light
+      // without dictating its colour.
+      col = env(refr) * vec3(1.00, 0.86, 0.56) * 0.45;
+
+      // Surface: what bounces off it. Almost entirely rim-weighted, which is
+      // what makes the droplets read as thin shells rather than solid marbles.
+      col += env(refl) * (0.05 + 1.15 * fres);
+
+      // Inner light — the droplet glows with its own hue. Without this it has
+      // nothing but a rim, which over a near-black page reads as a hole
+      // punched in the layout rather than a bead of liquid.
+      col += tint * core * core * 1.15;
+
+      col += iridescence(film) * fres * 1.6;
+
+      // Specular pop — tight, so it reads as a single catchlight.
+      col += vec3(1.0, 0.96, 0.88) * spec * 1.5;
+
+      // Gold bias — this is a yellow-led system, not a neutral one.
+      col = mix(col, col * vec3(1.24, 1.02, 0.58), 0.34);
+
+      // Crush the midtones so highlights read as glass rather than plastic.
+      col = pow(max(col, 0.0), vec3(1.12));
+
+      // Centre stays partly transparent on purpose: droplets drift behind body
+      // copy, and an opaque interior would make text unreadable as they pass.
+      alpha = clamp(0.24 + fres * 0.56, 0.0, 0.80);
+    }
   } else {
     // Halo: rays that *nearly* grazed a droplet still glow, so each one sits
     // in its own light instead of being cut out of the page.
@@ -250,9 +282,17 @@ void main() {
     // surface threshold, so applying it there floods the whole silhouette with
     // opaque orange and kills the transparency the droplet depends on.
     float glow = exp(-minD * 10.0);
-    col += vec3(1.00, 0.72, 0.22) * glow * 0.22;
-    col += vec3(0.35, 0.55, 1.00) * glow * glow * 0.07;
-    alpha = glow * 0.24;
+
+    if (uLight > 0.5) {
+      // A warm tint just outside the silhouette, again as "how much to
+      // darken" rather than "how much light to add".
+      col = mix(vec3(1.0), vec3(1.00, 0.84, 0.52), glow * 0.55);
+      alpha = glow * 0.30;
+    } else {
+      col += vec3(1.00, 0.72, 0.22) * glow * 0.22;
+      col += vec3(0.35, 0.55, 1.00) * glow * glow * 0.07;
+      alpha = glow * 0.24;
+    }
   }
 
   // WebGL drawing buffers are premultiplied by default, so the browser expects

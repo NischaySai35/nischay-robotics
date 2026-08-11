@@ -50,7 +50,7 @@ function VideoTile({ video, featured = false }: { video: Video; featured?: boole
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
       {featured && (
-        <span className="bg-gold text-void absolute top-5 left-5 z-10 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.16em] uppercase">
+        <span className="bg-gold text-onbrand absolute top-5 left-5 z-10 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.16em] uppercase">
           Main demo
         </span>
       )}
@@ -59,13 +59,13 @@ function VideoTile({ video, featured = false }: { video: Video; featured?: boole
         <PlayBadge size={featured ? 84 : 60} />
       </div>
 
+      {/* Always white — this sits on the thumbnail's dark scrim, which has no
+          theme of its own. */}
       <div className="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-6">
-        <p
-          className={`text-chalk font-semibold ${featured ? 'text-lg sm:text-2xl' : 'text-sm'}`}
-        >
+        <p className={`font-semibold text-white ${featured ? 'text-lg sm:text-2xl' : 'text-sm'}`}>
           {video.title}
         </p>
-        <p className={`text-chalk/55 mt-1 ${featured ? 'text-sm' : 'text-xs'}`}>{video.caption}</p>
+        <p className={`mt-1 text-white/60 ${featured ? 'text-sm' : 'text-xs'}`}>{video.caption}</p>
       </div>
     </button>
   )

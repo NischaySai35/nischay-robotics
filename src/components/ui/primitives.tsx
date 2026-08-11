@@ -80,7 +80,7 @@ export function SectionHeading({
     <div className={centered ? 'mx-auto max-w-2xl text-center' : 'max-w-3xl'}>
       {kicker && (
         <Reveal>
-          <p className="mb-4 flex items-center gap-2.5 text-[11px] font-semibold tracking-[0.28em] text-gold uppercase">
+          <p className="mb-4 flex items-center gap-2.5 text-[11px] font-semibold tracking-[0.28em] text-accent uppercase">
             {!centered && <span className="bg-gold/60 h-px w-8" />}
             {kicker}
           </p>
@@ -154,10 +154,10 @@ export function Button({
 
   const variants = {
     primary:
-      'bg-gradient-to-br from-sun via-gold to-ember text-void shadow-[0_10px_36px_-10px_rgba(255,201,60,0.75)] hover:shadow-[0_16px_50px_-10px_rgba(255,201,60,0.95)] hover:-translate-y-0.5',
+      'bg-gradient-to-br from-sun via-gold to-ember text-onbrand shadow-[0_10px_36px_-10px_rgba(255,201,60,0.75)] hover:shadow-[0_16px_50px_-10px_rgba(255,201,60,0.95)] hover:-translate-y-0.5',
     glass:
-      'glass-soft text-chalk hover:bg-white/[0.09] hover:-translate-y-0.5 !rounded-full',
-    quiet: 'text-chalk/70 hover:text-gold',
+      'glass-soft text-chalk hover:bg-chalk/[0.06] hover:-translate-y-0.5 !rounded-full',
+    quiet: 'text-chalk/70 hover:text-accent',
   }
 
   const disabledCls = 'cursor-not-allowed opacity-45 saturate-50 hover:translate-y-0 hover:shadow-none'

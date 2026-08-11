@@ -11,7 +11,22 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#06050A" />
+    <meta name="theme-color" content="#FAF9F6" />
+
+    <!-- Applies the saved theme before first paint. Without this the page
+         renders light, then flips to dark once React mounts — a visible flash
+         on every load for anyone who chose dark. Light is the default, so no
+         attribute is set unless dark was explicitly picked. -->
+    <script>
+      try {
+        if (localStorage.getItem('nr-theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark')
+          document.querySelector('meta[name="theme-color"]').content = '#06050A'
+        }
+      } catch (e) {
+        /* storage blocked — light theme it is */
+      }
+    </script>
 
     <title>Nischay Robotics — Robots that change their own shape</title>
     <meta

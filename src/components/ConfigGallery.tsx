@@ -70,10 +70,12 @@ function Lightbox({
       />
 
       <div className="relative z-10 flex w-full max-w-6xl flex-col">
+        {/* This header sits directly on the dark backdrop, not inside a glass
+            panel, so it stays white in both themes. */}
         <div className="mb-3 flex items-start justify-between gap-4">
           <div>
-            <p className="text-chalk text-sm font-semibold sm:text-base">{item.title}</p>
-            <p className="text-chalk/50 mt-1 text-xs">
+            <p className="text-sm font-semibold text-white sm:text-base">{item.title}</p>
+            <p className="mt-1 text-xs text-white/55">
               {families[item.family].label} · {index + 1} of {items.length}
             </p>
           </div>
@@ -82,7 +84,7 @@ function Lightbox({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="glass-soft text-chalk/70 hover:text-gold flex h-9 w-9 shrink-0 items-center justify-center !rounded-full transition-colors"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/12 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -105,7 +107,7 @@ function Lightbox({
               type="button"
               onClick={() => onStep(dir === 'next' ? 1 : -1)}
               aria-label={dir === 'next' ? 'Next configuration' : 'Previous configuration'}
-              className={`glass-soft text-chalk absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center !rounded-full transition-transform hover:scale-110 ${
+              className={`absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-md transition-transform hover:scale-110 ${
                 dir === 'next' ? 'right-4' : 'left-4'
               }`}
             >
@@ -122,7 +124,7 @@ function Lightbox({
           ))}
         </div>
 
-        <p className="text-chalk/60 mt-3 max-w-3xl text-sm leading-relaxed">{item.note}</p>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/70">{item.note}</p>
       </div>
     </motion.div>
   )
@@ -188,7 +190,7 @@ export function ConfigGallery() {
               type="button"
               onClick={() => setFamily(f.key)}
               className={`relative rounded-full px-4 py-2 text-[13px] font-semibold transition-colors duration-300 ${
-                active ? 'text-void' : 'glass-soft text-chalk/65 hover:text-chalk'
+                active ? 'text-onbrand' : 'glass-soft text-chalk/65 hover:text-chalk'
               }`}
             >
               {active && (
@@ -199,7 +201,7 @@ export function ConfigGallery() {
                 />
               )}
               {f.label}
-              <span className={active ? 'text-void/55 ml-1.5' : 'text-chalk/35 ml-1.5'}>
+              <span className={active ? 'text-onbrand/55 ml-1.5' : 'text-chalk/35 ml-1.5'}>
                 {count}
               </span>
             </button>
@@ -238,23 +240,25 @@ export function ConfigGallery() {
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/25" />
 
-          {/* Family badge */}
-          <span className="glass-soft text-chalk/80 absolute top-4 left-4 !rounded-full px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] uppercase">
+          {/* Family badge. Fixed dark-on-light rather than themed glass: this
+              sits on a photograph, which has no theme. */}
+          <span className="absolute top-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] text-white/90 uppercase backdrop-blur-md">
             {families[current.family].label}
           </span>
 
           {current.keystone && (
-            <span className="bg-gold text-void absolute top-4 right-4 rounded-full px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] uppercase">
+            <span className="bg-gold text-onbrand absolute top-4 right-4 rounded-full px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] uppercase">
               The cycle
             </span>
           )}
 
-          {/* Caption */}
+          {/* Caption. Always white — it sits over the photo's dark scrim in
+              both themes, so it must not follow the text colour. */}
           <div className="absolute inset-x-0 bottom-0 p-5 text-left sm:p-7">
-            <p className="font-display text-xl leading-tight font-bold sm:text-3xl">
+            <p className="font-display text-xl leading-tight font-bold text-white sm:text-3xl">
               {current.title}
             </p>
-            <p className="text-chalk/65 mt-2 max-w-2xl text-xs leading-relaxed sm:text-sm">
+            <p className="mt-2 max-w-2xl text-xs leading-relaxed text-white/70 sm:text-sm">
               {current.note}
             </p>
           </div>
@@ -279,7 +283,7 @@ export function ConfigGallery() {
             type="button"
             onClick={() => step(dir === 'next' ? 1 : -1)}
             aria-label={dir === 'next' ? 'Next configuration' : 'Previous configuration'}
-            className={`glass-soft text-chalk absolute top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center !rounded-full transition-transform hover:scale-110 ${
+            className={`absolute top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-md transition-transform hover:scale-110 ${
               dir === 'next' ? 'right-3' : 'left-3'
             }`}
           >

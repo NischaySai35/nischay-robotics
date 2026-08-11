@@ -131,7 +131,9 @@ export function Hero() {
         >
           {hero.stats.map((s) => (
             <div key={s.label} className="glass px-4 py-4 sm:px-5 sm:py-5">
-              <dt className="text-gold-grad font-display relative z-10 text-2xl font-bold sm:text-3xl">
+              {/* Sized down hard on mobile: one of these values is a price now,
+                  and "₹29,999" overflows a third of a 390px screen at text-2xl. */}
+              <dt className="text-gold-grad font-display relative z-10 text-[1.15rem] font-bold sm:text-3xl">
                 {s.value}
               </dt>
               <dd className="text-chalk/55 relative z-10 mt-1.5 text-[11px] leading-snug sm:text-xs">

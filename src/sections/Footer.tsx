@@ -39,7 +39,7 @@ export function Footer() {
                       <button
                         type="button"
                         onClick={() => go(n.id)}
-                        className="text-chalk/60 hover:text-gold text-sm transition-colors"
+                        className="text-chalk/60 hover:text-accent text-sm transition-colors"
                       >
                         {n.label}
                       </button>
@@ -49,7 +49,7 @@ export function Footer() {
                     <button
                       type="button"
                       onClick={() => join()}
-                      className="text-chalk/60 hover:text-gold text-sm transition-colors"
+                      className="text-chalk/60 hover:text-accent text-sm transition-colors"
                     >
                       Join the waitlist
                     </button>
@@ -73,7 +73,7 @@ export function Footer() {
                         href={l.href}
                         target={l.href.startsWith('mailto:') ? undefined : '_blank'}
                         rel="noreferrer noopener"
-                        className="text-chalk/60 hover:text-gold text-sm transition-colors"
+                        className="text-chalk/60 hover:text-accent text-sm transition-colors"
                       >
                         {l.label} ↗
                       </a>
@@ -84,7 +84,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="mt-10 flex flex-col gap-3 border-t border-white/8 pt-6 text-[12px] sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-10 flex flex-col gap-3 border-t border-chalk/10 pt-6 text-[12px] sm:flex-row sm:items-center sm:justify-between">
             <p className="text-chalk/30">
               © {new Date().getFullYear()} {company.name}. Built at home in Bengaluru.
             </p>

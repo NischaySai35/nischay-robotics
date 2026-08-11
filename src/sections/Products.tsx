@@ -35,7 +35,7 @@ function PriceCard({ product }: { product: Product }) {
 
       <div className="relative z-10 flex h-full flex-col">
         {featured && (
-          <span className="bg-gold text-void mb-5 w-fit rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.16em] uppercase">
+          <span className="bg-gold text-onbrand mb-5 w-fit rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.16em] uppercase">
             Most capable
           </span>
         )}
@@ -62,7 +62,7 @@ function PriceCard({ product }: { product: Product }) {
               {product.compareInr && (
                 <p className="text-chalk/40 mt-2 text-xs">
                   <span className="line-through">₹{inr(product.compareInr)}</span>{' '}
-                  <span className="text-gold/80">
+                  <span className="text-accent/80">
                     save ₹{inr(product.compareInr - product.inr)} vs four singles
                   </span>
                 </p>
@@ -74,7 +74,7 @@ function PriceCard({ product }: { product: Product }) {
         <span
           className={`mt-5 inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] uppercase ${
             product.status === 'waitlist'
-              ? 'bg-gold/12 text-gold'
+              ? 'bg-gold/12 text-accent'
               : 'glass-soft text-chalk/50'
           }`}
         >
@@ -92,7 +92,7 @@ function PriceCard({ product }: { product: Product }) {
           <ul className="mt-3 space-y-2.5">
             {product.includes.map((i) => (
               <li key={i} className="text-chalk/65 flex gap-2.5 text-[13px] leading-relaxed">
-                <span className="text-gold">
+                <span className="text-accent">
                   <CheckIcon />
                 </span>
                 <span>{i}</span>
@@ -123,8 +123,8 @@ function PriceCard({ product }: { product: Product }) {
           onClick={() => join(product.slug)}
           className={`mt-8 w-full rounded-full py-3.5 text-sm font-bold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             featured
-              ? 'from-sun via-gold to-ember text-void bg-gradient-to-br shadow-[0_10px_36px_-10px_rgba(255,201,60,0.75)] hover:-translate-y-0.5 hover:shadow-[0_16px_50px_-10px_rgba(255,201,60,0.95)]'
-              : 'glass-soft text-chalk hover:bg-white/[0.09] hover:-translate-y-0.5'
+              ? 'from-sun via-gold to-ember text-onbrand bg-gradient-to-br shadow-[0_10px_36px_-10px_rgba(255,201,60,0.75)] hover:-translate-y-0.5 hover:shadow-[0_16px_50px_-10px_rgba(255,201,60,0.95)]'
+              : 'glass-soft text-chalk hover:bg-chalk/[0.06] hover:-translate-y-0.5'
           }`}
         >
           Join the waitlist

@@ -102,15 +102,16 @@ function ShapeShiftClip() {
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/35" />
 
-        <span className="glass-soft text-chalk/80 absolute top-5 left-5 !rounded-full px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] uppercase">
+        {/* Fixed white on the video's own scrim — video frames have no theme. */}
+        <span className="absolute top-5 left-5 rounded-full bg-black/55 px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] text-white/90 uppercase backdrop-blur-md">
           Locomotion · {shapeShiftClip.duration}
         </span>
 
         <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
-          <p className="font-display text-xl leading-tight font-bold sm:text-3xl">
+          <p className="font-display text-xl leading-tight font-bold text-white sm:text-3xl">
             {shapeShiftClip.title}
           </p>
-          <p className="text-chalk/65 mt-2 max-w-2xl text-xs leading-relaxed sm:text-sm">
+          <p className="mt-2 max-w-2xl text-xs leading-relaxed text-white/70 sm:text-sm">
             {shapeShiftClip.caption}
           </p>
         </div>
@@ -134,7 +135,7 @@ function ShapeShiftClip() {
           type="button"
           onClick={toggle}
           aria-label="Pause"
-          className="glass-soft text-chalk absolute right-4 bottom-4 z-10 flex h-10 w-10 items-center justify-center !rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100 focus-visible:opacity-100"
+          className="absolute right-4 bottom-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white opacity-0 backdrop-blur-md transition-opacity duration-300 group-hover:opacity-100 focus-visible:opacity-100"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
             <rect x="1.5" y="1" width="3" height="10" rx="1" />

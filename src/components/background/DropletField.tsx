@@ -6,9 +6,9 @@ import { QUALITY, buildFragmentShader, vertexShader } from './dropletShader'
 import { usePointerNDC } from '@/hooks/useEnvironment'
 import type { Tier } from '@/hooks/useEnvironment'
 
-type SceneProps = { tier: Exclude<Tier, 'none'> }
+type SceneProps = { tier: Exclude<Tier, 'none'>; isDark: boolean }
 
-function Scene({ tier }: SceneProps) {
+function Scene({ tier, isDark }: SceneProps) {
   const quality = QUALITY[tier]
   const materialRef = useRef<ShaderMaterial>(null)
   const pointer = usePointerNDC()
@@ -27,6 +27,7 @@ function Scene({ tier }: SceneProps) {
       uAspect: { value: 1 },
       uScroll: { value: 0 },
       uIntensity: { value: 0 },
+      uLight: { value: 0 },
       uTrail: {
         value: Array.from({ length: quality.trail }, () => new Vector2(0, 0)),
       },
@@ -53,6 +54,7 @@ function Scene({ tier }: SceneProps) {
 
     u.uTime.value += delta
     u.uAspect.value = size.width / Math.max(size.height, 1)
+    u.uLight.value = isDark ? 0 : 1
 
     // Ease the scroll offset so the parallax lags the page slightly.
     u.uScroll.value += (scrollRef.current * 0.35 - u.uScroll.value) * Math.min(delta * 4, 1)
@@ -102,7 +104,7 @@ function Scene({ tier }: SceneProps) {
  *
  * Rendering stops entirely when the tab is hidden.
  */
-export function DropletField({ tier }: SceneProps) {
+export function DropletField({ tier, isDark }: SceneProps) {
   const [visible, setVisible] = useState(true)
 
   useEffect(() => {
@@ -115,7 +117,10 @@ export function DropletField({ tier }: SceneProps) {
     <div
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0"
-      style={{ mixBlendMode: 'screen' }}
+      // `screen` can only lighten and `multiply` can only darken, so each
+      // theme needs the one that can actually affect its page colour. On white,
+      // screen is a no-op and the droplets vanish completely.
+      style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
     >
       <Canvas
         flat
@@ -130,7 +135,7 @@ export function DropletField({ tier }: SceneProps) {
           powerPreference: 'high-performance',
         }}
       >
-        <Scene tier={tier} />
+        <Scene tier={tier} isDark={isDark} />
       </Canvas>
     </div>
   )

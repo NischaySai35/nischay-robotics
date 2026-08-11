@@ -4,6 +4,46 @@ import { Button } from '@/components/ui/primitives'
 import { navItems } from '@/content/site'
 import { scrollToId, scrollToTop } from '@/lib/scroll'
 import { useWaitlist } from '@/lib/waitlistContext'
+import { useTheme } from '@/lib/theme'
+
+/** Sun/moon toggle. Shows the theme you'd switch TO, which is the convention
+ *  people expect from these controls. */
+function ThemeToggle() {
+  const { isDark, toggle } = useTheme()
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      title={isDark ? 'Light theme' : 'Dark theme'}
+      className="glass-soft text-chalk/70 hover:text-accent relative flex h-9 w-9 items-center justify-center !rounded-full transition-colors"
+    >
+      <span className="relative z-10 block">
+        {isDark ? (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" />
+            <path
+              d="M12 2.6v2.1M12 19.3v2.1M21.4 12h-2.1M4.7 12H2.6M18.6 5.4l-1.5 1.5M6.9 17.1l-1.5 1.5M18.6 18.6l-1.5-1.5M6.9 6.9L5.4 5.4"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+          </svg>
+        ) : (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </span>
+    </button>
+  )
+}
 
 /**
  * Floating glass nav.
@@ -78,7 +118,7 @@ export function Nav() {
                 type="button"
                 onClick={() => go(item.id)}
                 className={`relative rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors duration-300 ${
-                  active === item.id ? 'text-void' : 'text-chalk/65 hover:text-chalk'
+                  active === item.id ? 'text-onbrand' : 'text-chalk/65 hover:text-chalk'
                 }`}
               >
                 {active === item.id && (
@@ -91,12 +131,17 @@ export function Nav() {
         </ul>
 
         <div className="relative z-10 flex items-center gap-2">
+          <ThemeToggle />
+
           <Button
             onClick={() => join()}
             variant="primary"
-            className="!px-4 !py-2 !text-[13px]"
+            className="!px-4 !py-2 !text-[13px] whitespace-nowrap"
           >
-            Join waitlist
+            {/* The full label wraps to two lines once the theme toggle and
+                hamburger are also in the bar on a 390px screen. */}
+            <span className="sm:hidden">Waitlist</span>
+            <span className="hidden sm:inline">Join waitlist</span>
           </Button>
 
           {/* Mobile menu toggle */}
@@ -128,7 +173,7 @@ export function Nav() {
                 <button
                   type="button"
                   onClick={() => go(item.id)}
-                  className="text-chalk/80 hover:text-gold w-full rounded-2xl px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-white/5"
+                  className="text-chalk/80 hover:text-accent w-full rounded-2xl px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-white/5"
                 >
                   {item.label}
                 </button>

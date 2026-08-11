@@ -24,7 +24,6 @@ export const company = {
 export const links = {
   github: 'https://github.com/NischaySai35',
   githubTetrobot: 'https://github.com/NischaySai35/Tetrobot_robotic_arm',
-  githubEarthVision: 'https://github.com/NischaySai35/EarthVision',
   linkedin: 'https://www.linkedin.com/in/nischaysai35',
   youtube: 'https://www.youtube.com/@nischaysai35',
   // TODO: point at real docs once they exist. `null` renders the button as
@@ -122,74 +121,6 @@ export const tetrobot = {
   status:
     'Early and in active development. Earlier working versions — including the wireless control interface for the modular arm — are already public on GitHub.',
 } as const
-
-/* -- Projects -------------------------------------------------------------- */
-
-export type Project = {
-  id: string
-  name: string
-  subtitle: string
-  year: string
-  status?: string
-  body: string
-  tags: readonly string[]
-  /** Opens in the lightbox player rather than navigating away. */
-  videoId?: string
-  videoLabel?: string
-  href?: string
-  hrefLabel?: string
-  accent: 'gold' | 'aqua' | 'iris' | 'bloom' | 'zest'
-}
-
-export const projects: readonly Project[] = [
-  {
-    id: 'microbots',
-    name: 'MICROBOTS',
-    subtitle: 'Shape-changing swarm robotics',
-    year: '2025 →',
-    status: 'Patent pending',
-    body: 'A modular swarm system where small interconnected units transform collectively into different structures. Built around adaptive geometry, collective movement and reconfigurable connections between units.',
-    tags: ['Swarm', 'Modular hardware', 'Patent pending'],
-    videoId: '5Z3qYwFF2VI',
-    videoLabel: 'Watch the demo',
-    accent: 'gold',
-  },
-  {
-    id: 'tetrobot-arm',
-    name: 'TETROBOT',
-    subtitle: 'Modular flexible robotic arm',
-    year: '2025 →',
-    status: '1st runner-up · Techgium 9th Edition',
-    body: 'A robotic arm assembled from repeating modules, with flexible extension, self-locking mechanisms and a reconfigurable hardware architecture. Wireless control interface built as a web app.',
-    tags: ['Manipulator', 'Self-locking', 'Wireless control'],
-    videoId: '7i2y1PvKCtw',
-    videoLabel: 'Watch it run',
-    href: 'https://github.com/NischaySai35/Tetrobot_robotic_arm',
-    hrefLabel: 'Source',
-    accent: 'aqua',
-  },
-  {
-    id: 'gravity-light',
-    name: 'Gravity Light',
-    subtitle: 'Gravity-powered lighting prototype',
-    year: '2024',
-    status: 'Best Project · Physics Open House',
-    body: 'A lighting prototype driven by a descending mass instead of a battery — potential energy converted to usable light through a geared generator stage. A study in doing more with less power.',
-    tags: ['Energy', 'Mechanical design', 'Prototype'],
-    accent: 'zest',
-  },
-  {
-    id: 'earthvision',
-    name: 'EarthVision',
-    subtitle: 'NASA Space Apps Challenge',
-    year: '2024',
-    body: "An Earth-observation viewer built on NASA's GIBS satellite imagery service — tiled layers, a time slider across dates, opacity control and split-view comparison for reading change over time.",
-    tags: ['NASA GIBS', 'Geospatial', 'Web'],
-    href: 'https://github.com/NischaySai35/EarthVision',
-    hrefLabel: 'Source on GitHub',
-    accent: 'iris',
-  },
-] as const
 
 /* -- Prototype videos ------------------------------------------------------
    `id` is the YouTube video ID. Thumbnails are pulled from YouTube's CDN, and
@@ -308,50 +239,14 @@ export const configSection = {
   ask: 'If two modules do this, the interesting question is what twenty do. That is the part I cannot fund alone.',
 }
 
-/* -- Recognition ----------------------------------------------------------- */
-
-export const recognition = [
-  {
-    award: 'Winner — Maverick',
-    org: "RNSIT's Real SharkTank",
-    note: 'Patent pending outcome',
-    highlight: true,
-  },
-  {
-    award: '1st Runner-up — Techgium 9th Edition',
-    org: 'L&T Technology Services · National level',
-    note: 'Modular robotic arm',
-    highlight: true,
-    videoId: '7i2y1PvKCtw',
-  },
-  { award: '1st Prize — VIGNYANOTSAV', org: 'Innovative physics ideas', note: '' },
-  { award: '3rd Prize — Sci-Fi IdeaTank', org: 'Concept engineering', note: '' },
-  {
-    award: 'Best Project — Physics Open House',
-    org: 'RNS Institute of Technology',
-    note: 'Gravity Light prototype',
-  },
-  {
-    award: '3rd Prize — National AI Hackathon',
-    org: 'PESITM',
-    note: '',
-  },
-] as const
-
 /* -- Founder --------------------------------------------------------------- */
 
 export const founder = {
   name: 'Nischay Sai D R',
   role: 'Founder · Nischay Robotics',
-  dayJob: {
-    title: 'Robotics Intern',
-    org: 'NTT DATA',
-    period: 'July 2026 — present',
-    points: [
-      'Integrating Vision-Language Models with a Fanuc industrial arm for natural-language-driven perception and task understanding.',
-      'Built a ROS 2 Humble + Isaac ROS simulation pipeline on Ubuntu, bridging Isaac Sim to real Fanuc control workflows.',
-      'Working across the Isaac Sim (x86_64 + RTX) / Isaac ROS (edge) split to prototype sim-to-real behaviour pipelines.',
-    ],
+  current: {
+    title: 'Robotics Engineer',
+    period: 'Present',
   },
   education: {
     degree: 'B.E. Information Science & Engineering',

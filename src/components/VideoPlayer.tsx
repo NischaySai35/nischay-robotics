@@ -88,13 +88,15 @@ export function VideoProvider({ children }: { children: ReactNode }) {
               exit={{ scale: 0.96, y: 10 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
+              {/* On the dark backdrop rather than inside a panel, so white in
+                  both themes. */}
               <div className="mb-3 flex items-center justify-between gap-4">
-                <p className="text-chalk text-sm font-semibold sm:text-base">{playing.title}</p>
+                <p className="text-sm font-semibold text-white sm:text-base">{playing.title}</p>
                 <button
                   ref={closeRef}
                   type="button"
                   onClick={close}
-                  className="glass-soft text-chalk/70 hover:text-gold flex h-9 w-9 shrink-0 items-center justify-center !rounded-full transition-colors"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/12 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
                   aria-label="Close video"
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">

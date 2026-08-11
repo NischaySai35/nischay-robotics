@@ -28,7 +28,7 @@ export function Tetrobot() {
       <div className="mx-auto max-w-4xl">
         <Reveal>
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[11px] font-semibold tracking-[0.28em] text-gold uppercase">
+            <span className="text-[11px] font-semibold tracking-[0.28em] text-accent uppercase">
               {tetrobot.kicker}
             </span>
             <span className="glass-soft text-chalk/45 !rounded-full px-3 py-1 text-[10px] tracking-wide">
@@ -71,7 +71,7 @@ export function Tetrobot() {
           </div>
 
           <div className="relative z-10 p-7 sm:p-9">
-            <p className="text-gold text-[11px] font-semibold tracking-[0.24em] uppercase">
+            <p className="text-accent text-[11px] font-semibold tracking-[0.24em] uppercase">
               Not a thought experiment
             </p>
             {/* Worded to stay true whichever morphology the diagram above
@@ -87,7 +87,7 @@ export function Tetrobot() {
             <button
               type="button"
               onClick={() => scrollToId('configurations')}
-              className="text-chalk/70 hover:text-gold mt-6 inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+              className="text-chalk/70 hover:text-accent mt-6 inline-flex items-center gap-2 text-sm font-semibold transition-colors"
             >
               See all {configurations.length} configurations <ArrowIcon />
             </button>
@@ -136,7 +136,7 @@ export function Tetrobot() {
           <Reveal key={c.title} delay={i * 0.07}>
             <div className="glass group h-full p-6 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5">
               <div className="relative z-10">
-                <div className="bg-gold/12 text-gold flex h-9 w-9 items-center justify-center rounded-xl text-[13px] font-bold">
+                <div className="bg-gold/12 text-accent flex h-9 w-9 items-center justify-center rounded-xl text-[13px] font-bold">
                   {String(i + 1).padStart(2, '0')}
                 </div>
                 <h3 className="mt-5 text-base leading-snug font-semibold">{c.title}</h3>
@@ -154,7 +154,7 @@ export function Tetrobot() {
             <div className="max-w-xl">
               <div className="mb-3 flex items-center gap-2">
                 <span className="bg-gold h-1.5 w-1.5 animate-pulse rounded-full" />
-                <span className="text-gold text-[11px] font-semibold tracking-[0.2em] uppercase">
+                <span className="text-accent text-[11px] font-semibold tracking-[0.2em] uppercase">
                   Status
                 </span>
               </div>

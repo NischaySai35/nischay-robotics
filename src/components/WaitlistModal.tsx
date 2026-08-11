@@ -11,8 +11,8 @@ import type { OpenWaitlist } from '@/lib/waitlistContext'
 
 type Phase = 'form' | 'sending' | 'done' | 'fallback'
 
-const field =
-  'block w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-chalk outline-none transition-colors placeholder:text-chalk/30 focus:border-gold/60'
+// Colours come from the `.field` component class so they follow the theme.
+const field = 'field block w-full rounded-2xl px-4 py-3 text-sm outline-none transition-colors'
 
 function Label({ children, hint }: { children: ReactNode; hint?: string }) {
   return (
@@ -123,7 +123,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                 type="button"
                 onClick={close}
                 aria-label="Close"
-                className="glass-soft text-chalk/70 hover:text-gold absolute top-5 right-5 z-10 flex h-8 w-8 items-center justify-center !rounded-full transition-colors"
+                className="glass-soft text-chalk/70 hover:text-accent absolute top-5 right-5 z-10 flex h-8 w-8 items-center justify-center !rounded-full transition-colors"
               >
                 <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -133,7 +133,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
               <div className="relative z-10">
                 {phase === 'done' ? (
                   <div className="py-6 text-center">
-                    <div className="bg-gold/15 text-gold mx-auto flex h-14 w-14 items-center justify-center rounded-full">
+                    <div className="bg-gold/15 text-accent mx-auto flex h-14 w-14 items-center justify-center rounded-full">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -145,7 +145,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                     <button
                       type="button"
                       onClick={close}
-                      className="from-sun via-gold to-ember text-void mt-7 rounded-full bg-gradient-to-br px-6 py-3 text-sm font-semibold"
+                      className="from-sun via-gold to-ember text-onbrand mt-7 rounded-full bg-gradient-to-br px-6 py-3 text-sm font-semibold"
                     >
                       Close
                     </button>
@@ -161,7 +161,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                     <a
                       href={mailto}
                       onClick={() => setPhase('done')}
-                      className="from-sun via-gold to-ember text-void mt-6 inline-block rounded-full bg-gradient-to-br px-6 py-3 text-sm font-semibold"
+                      className="from-sun via-gold to-ember text-onbrand mt-6 inline-block rounded-full bg-gradient-to-br px-6 py-3 text-sm font-semibold"
                     >
                       Open the email
                     </a>
@@ -228,7 +228,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                     <button
                       type="submit"
                       disabled={phase === 'sending'}
-                      className="from-sun via-gold to-ember text-void mt-7 w-full rounded-full bg-gradient-to-br py-3.5 text-sm font-bold shadow-[0_10px_36px_-10px_rgba(255,201,60,0.75)] transition-all disabled:opacity-60"
+                      className="from-sun via-gold to-ember text-onbrand mt-7 w-full rounded-full bg-gradient-to-br py-3.5 text-sm font-bold shadow-[0_10px_36px_-10px_rgba(255,201,60,0.75)] transition-all disabled:opacity-60"
                     >
                       {phase === 'sending' ? 'Adding you…' : 'Join the waitlist'}
                     </button>

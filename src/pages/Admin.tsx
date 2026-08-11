@@ -238,8 +238,8 @@ export default function Admin() {
   // No width here on purpose: `w-full` baked into a shared class fights any
   // `w-auto` added at the call site, and which one wins depends on Tailwind's
   // internal ordering rather than the order you wrote them.
-  const inputCls =
-    'rounded-full border border-white/10 bg-black/35 px-4 py-2.5 text-[13px] text-chalk outline-none transition-colors placeholder:text-chalk/30 focus:border-gold/60'
+  // Colours come from the `.field` component class so they follow the theme.
+  const inputCls = 'field rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors'
 
   /* -- Render -------------------------------------------------------------- */
 
@@ -256,7 +256,7 @@ export default function Admin() {
               <button
                 type="button"
                 onClick={signOutNow}
-                className="glass-soft text-chalk/70 hover:text-gold !rounded-full px-4 py-2 text-[13px] font-semibold transition-colors"
+                className="glass-soft text-chalk/70 hover:text-accent !rounded-full px-4 py-2 text-[13px] font-semibold transition-colors"
               >
                 Sign out
               </button>
@@ -280,7 +280,7 @@ export default function Admin() {
               <p className="text-chalk/60 mt-3 max-w-lg text-sm leading-relaxed">
                 Until it is, waitlist signups arrive as email instead — the form falls back
                 automatically, so nothing is being lost. See{' '}
-                <span className="text-gold">README → Waitlist backend</span> for the five-minute
+                <span className="text-accent">README → Waitlist backend</span> for the five-minute
                 setup.
               </p>
             </Panel>
@@ -297,7 +297,7 @@ export default function Admin() {
               <button
                 type="button"
                 onClick={signIn}
-                className="from-sun via-gold to-ember text-void mt-6 rounded-full bg-gradient-to-br px-6 py-3 text-sm font-bold"
+                className="from-sun via-gold to-ember text-onbrand mt-6 rounded-full bg-gradient-to-br px-6 py-3 text-sm font-bold"
               >
                 Sign in with Google
               </button>
@@ -354,7 +354,7 @@ export default function Admin() {
                 <button
                   type="button"
                   onClick={markSeen}
-                  className="glass-soft text-chalk hover:text-gold !rounded-full px-5 py-2.5 text-[13px] font-semibold transition-colors"
+                  className="glass-soft text-chalk hover:text-accent !rounded-full px-5 py-2.5 text-[13px] font-semibold transition-colors"
                 >
                   Mark {unseen} as seen
                 </button>
@@ -363,7 +363,7 @@ export default function Admin() {
                 <button
                   type="button"
                   onClick={download}
-                  className="from-sun via-gold to-ember text-void rounded-full bg-gradient-to-br px-5 py-2.5 text-[13px] font-bold"
+                  className="from-sun via-gold to-ember text-onbrand rounded-full bg-gradient-to-br px-5 py-2.5 text-[13px] font-bold"
                 >
                   Download CSV
                 </button>
@@ -389,7 +389,7 @@ export default function Admin() {
                 <div className="glass mt-5 hidden overflow-x-auto lg:block">
                   <table className="relative z-10 w-full text-left text-[13px]">
                     <thead>
-                      <tr className="text-chalk/35 border-b border-white/8 text-[10px] tracking-[0.16em] uppercase">
+                      <tr className="text-chalk/35 border-b border-chalk/10 text-[10px] tracking-[0.16em] uppercase">
                         {['When', 'Name', 'Email', 'Product', 'Qty', 'Org / Country', 'Note'].map((h) => (
                           <th key={h} className="px-4 py-3 font-semibold">
                             {h}
@@ -403,7 +403,7 @@ export default function Admin() {
                         return (
                           <tr
                             key={e.id}
-                            className={`border-b border-white/5 last:border-0 ${isNew ? 'bg-gold/[0.06]' : ''}`}
+                            className={`border-b border-chalk/[0.07] last:border-0 ${isNew ? 'bg-gold/[0.06]' : ''}`}
                           >
                             <td className="text-chalk/40 px-4 py-3 whitespace-nowrap">
                               {isNew && <span className="bg-gold mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />}
@@ -411,7 +411,7 @@ export default function Admin() {
                             </td>
                             <td className="text-chalk px-4 py-3 font-medium">{e.name || '—'}</td>
                             <td className="px-4 py-3">
-                              <a href={`mailto:${e.email}`} className="text-gold hover:text-sun">
+                              <a href={`mailto:${e.email}`} className="text-accent hover:text-sun">
                                 {e.email}
                               </a>
                             </td>
@@ -442,7 +442,7 @@ export default function Admin() {
                                 {isNew && <span className="bg-gold mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />}
                                 {e.name || '—'}
                               </p>
-                              <a href={`mailto:${e.email}`} className="text-gold text-[13px] hover:text-sun">
+                              <a href={`mailto:${e.email}`} className="text-accent text-[13px] hover:text-sun">
                                 {e.email}
                               </a>
                             </div>
@@ -459,7 +459,7 @@ export default function Admin() {
                             </p>
                           )}
                           {e.message && (
-                            <p className="text-chalk/55 mt-3 border-t border-white/8 pt-3 text-[13px] leading-relaxed">
+                            <p className="text-chalk/55 mt-3 border-t border-chalk/10 pt-3 text-[13px] leading-relaxed">
                               {e.message}
                             </p>
                           )}

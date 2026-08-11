@@ -130,7 +130,10 @@ function Panel({
   // A tree can't move its root, so it stays pinned to module 0 no matter what
   // shape the hardware is actually in.
   const rootNode = isTree ? 0 : morph.root
-  const stroke = isTree ? '#8A8496' : '#FFC93C'
+  // Reads from the theme tokens so the diagram survives the light/dark switch:
+  // #FFC93C on white is invisible, and the muted grey needs to darken too.
+  const stroke = isTree ? 'var(--color-chalk)' : 'var(--color-accent)'
+  const strokeOpacity = isTree ? 0.42 : 1
 
   return (
     <svg viewBox="0 0 300 224" className="w-full" role="img" aria-label={`${variant} view`}>
@@ -138,13 +141,13 @@ function Panel({
         <linearGradient id={`nr-node-${variant}`} x1="0" y1="0" x2="0" y2="1">
           {isTree ? (
             <>
-              <stop offset="0%" stopColor="#4A4553" />
-              <stop offset="100%" stopColor="#2A2732" />
+              <stop offset="0%" stopColor="var(--node-tree-1)" />
+              <stop offset="100%" stopColor="var(--node-tree-2)" />
             </>
           ) : (
             <>
-              <stop offset="0%" stopColor="#FFE58A" />
-              <stop offset="100%" stopColor="#FF9A1F" />
+              <stop offset="0%" stopColor="var(--node-graph-1)" />
+              <stop offset="100%" stopColor="var(--node-graph-2)" />
             </>
           )}
         </linearGradient>
@@ -176,7 +179,8 @@ function Panel({
               opacity: isActive ? (isRejected ? 0.85 : 1) : 0,
             }}
             transition={SPRING}
-            stroke={isRejected ? '#FF5F6D' : stroke}
+            stroke={isRejected ? '#E0294A' : stroke}
+            strokeOpacity={isRejected ? 1 : strokeOpacity}
             strokeWidth={isRejected ? 1.6 : 2.2}
             strokeLinecap="round"
             strokeDasharray={isRejected ? '4 4' : undefined}
@@ -198,7 +202,8 @@ function Panel({
               <circle
                 r="19"
                 fill="none"
-                stroke={isTree ? '#8A8496' : '#45E3FF'}
+                stroke={isTree ? 'var(--color-chalk)' : 'var(--color-aqua)'}
+                strokeOpacity={isTree ? 0.45 : 1}
                 strokeWidth="1.4"
                 strokeDasharray="3 3"
               />
@@ -208,7 +213,8 @@ function Panel({
                 fontSize="8"
                 fontWeight="700"
                 letterSpacing="1"
-                fill={isTree ? '#8A8496' : '#45E3FF'}
+                fill={isTree ? 'var(--color-chalk)' : 'var(--color-aqua)'}
+                fillOpacity={isTree ? 0.5 : 1}
               >
                 ROOT
               </text>
@@ -249,7 +255,7 @@ export function GraphVsTree() {
                   setAutoplay(false)
                 }}
                 className={`relative rounded-full px-4 py-1.5 text-xs font-semibold transition-colors duration-300 ${
-                  i === index ? 'text-void' : 'text-chalk/60 hover:text-chalk'
+                  i === index ? 'text-onbrand' : 'text-chalk/60 hover:text-chalk'
                 }`}
               >
                 {i === index && (
@@ -272,7 +278,7 @@ export function GraphVsTree() {
         {/* The two panels */}
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {/* Tree */}
-          <div className="rounded-[1.4rem] border border-white/8 bg-black/25 p-4">
+          <div className="rounded-[1.4rem] border border-chalk/10 bg-chalk/[0.04] p-4">
             <header className="mb-2 flex items-baseline justify-between gap-2">
               <h4 className="text-chalk/80 text-sm font-semibold">Kinematic tree</h4>
               <span className="text-chalk/35 text-[10px] tracking-[0.18em] uppercase">
@@ -295,12 +301,12 @@ export function GraphVsTree() {
           </div>
 
           {/* Graph */}
-          <div className="border-gold/18 rounded-[1.4rem] border bg-black/25 p-4">
+          <div className="border-gold/18 rounded-[1.4rem] border bg-chalk/[0.04] p-4">
             <header className="mb-2 flex items-baseline justify-between gap-2">
               <h4 className="text-chalk/90 text-sm font-semibold">
                 Morphology graph
               </h4>
-              <span className="text-gold/60 text-[10px] tracking-[0.18em] uppercase">
+              <span className="text-accent/60 text-[10px] tracking-[0.18em] uppercase">
                 Tetrobot
               </span>
             </header>
@@ -315,7 +321,7 @@ export function GraphVsTree() {
         </div>
 
         <p className="text-chalk/50 mt-5 text-sm leading-relaxed">
-          <span className="text-gold font-semibold">{morph.label}.</span> {morph.caption}
+          <span className="text-accent font-semibold">{morph.label}.</span> {morph.caption}
         </p>
       </div>
     </div>

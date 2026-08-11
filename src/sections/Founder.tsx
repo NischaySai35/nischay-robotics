@@ -26,7 +26,7 @@ function Partnerships() {
         className="relative z-10 flex w-full items-center justify-between gap-4 p-6 text-left sm:p-7"
       >
         <span>
-          <span className="text-gold text-[11px] font-semibold tracking-[0.24em] uppercase">
+          <span className="text-accent text-[11px] font-semibold tracking-[0.24em] uppercase">
             {collaborate.kicker}
           </span>
           <span className="mt-2 block text-lg font-semibold">{collaborate.headline}</span>
@@ -54,7 +54,7 @@ function Partnerships() {
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-10 overflow-hidden"
           >
-            <div className="border-t border-white/8 p-6 sm:p-7">
+            <div className="border-t border-chalk/10 p-6 sm:p-7">
               <p className="text-chalk/60 max-w-2xl text-sm leading-relaxed">
                 {collaborate.body}
               </p>
@@ -107,7 +107,7 @@ export function Founder() {
             <div className="relative z-10">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                 <h3 className="text-2xl sm:text-3xl">{founder.name}</h3>
-                <span className="text-gold text-xs font-semibold tracking-[0.18em] uppercase">
+                <span className="text-accent text-xs font-semibold tracking-[0.18em] uppercase">
                   {founder.role}
                 </span>
               </div>
@@ -131,7 +131,7 @@ export function Founder() {
                   href={links.linkedin}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="text-chalk/70 hover:text-gold font-medium transition-colors"
+                  className="text-chalk/70 hover:text-accent font-medium transition-colors"
                 >
                   LinkedIn ↗
                 </a>
@@ -139,7 +139,7 @@ export function Founder() {
                   href={links.github}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="text-chalk/70 hover:text-gold font-medium transition-colors"
+                  className="text-chalk/70 hover:text-accent font-medium transition-colors"
                 >
                   GitHub ↗
                 </a>
@@ -152,25 +152,16 @@ export function Founder() {
         <div className="flex flex-col gap-5">
           <Reveal delay={0.08}>
             <div className="glass p-7">
-              <div className="relative z-10">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h4 className="text-base font-semibold">{founder.dayJob.title}</h4>
-                    <p className="text-gold mt-1 text-sm font-medium">{founder.dayJob.org}</p>
-                  </div>
-                  <span className="text-chalk/30 shrink-0 font-mono text-[10px] tracking-wide">
-                    {founder.dayJob.period}
-                  </span>
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-chalk/35 text-[10px] font-semibold tracking-[0.2em] uppercase">
+                    Currently
+                  </p>
+                  <h4 className="mt-2 text-base font-semibold">{founder.current.title}</h4>
                 </div>
-
-                <ul className="mt-5 space-y-3">
-                  {founder.dayJob.points.map((p) => (
-                    <li key={p.slice(0, 20)} className="text-chalk/55 flex gap-3 text-[13px] leading-relaxed">
-                      <span className="bg-gold/50 mt-1.5 h-1 w-1 shrink-0 rounded-full" />
-                      <span>{p}</span>
-                    </li>
-                  ))}
-                </ul>
+                <span className="text-chalk/30 shrink-0 font-mono text-[10px] tracking-wide">
+                  {founder.current.period}
+                </span>
               </div>
             </div>
           </Reveal>

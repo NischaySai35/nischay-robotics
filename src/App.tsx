@@ -5,15 +5,14 @@ import { VideoProvider } from '@/components/VideoPlayer'
 import { WaitlistProvider } from '@/components/WaitlistModal'
 import { useRenderTier } from '@/hooks/useEnvironment'
 import { useSmoothScroll } from '@/lib/scroll'
+import { useTheme } from '@/lib/theme'
 import { Nav } from '@/sections/Nav'
 import { Hero } from '@/sections/Hero'
 import { Pillars } from '@/sections/Pillars'
 import { Configurations } from '@/sections/Configurations'
 import { Products } from '@/sections/Products'
 import { Tetrobot } from '@/sections/Tetrobot'
-import { Projects } from '@/sections/Projects'
 import { Prototypes } from '@/sections/Prototypes'
-import { Recognition } from '@/sections/Recognition'
 import { Founder } from '@/sections/Founder'
 import { Footer } from '@/sections/Footer'
 
@@ -51,6 +50,7 @@ function useHashRoute(): string {
 export default function App() {
   const tier = useRenderTier()
   const route = useHashRoute()
+  const { isDark } = useTheme()
   useSmoothScroll()
 
   const isAdmin = route.startsWith('#/admin')
@@ -62,7 +62,7 @@ export default function App() {
 
       {tier !== 'none' && !isAdmin && (
         <Suspense fallback={null}>
-          <DropletField tier={tier} />
+          <DropletField tier={tier} isDark={isDark} />
         </Suspense>
       )}
 
@@ -81,9 +81,7 @@ export default function App() {
               <Configurations />
               <Products />
               <Tetrobot />
-              <Projects />
               <Prototypes />
-              <Recognition />
               <Founder />
             </main>
 

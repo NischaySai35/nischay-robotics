@@ -2,8 +2,23 @@
 
 /* ============================================================================
    NISCHAY ROBOTICS — DESIGN SYSTEM
-   Yellow-led iridescent glass. Deep near-black base so gold reads as light,
-   not as paint. Every accent is a *light source*, never a fill.
+
+   Two themes from one set of tokens. LIGHT IS THE DEFAULT: the values in
+   @theme below are the light theme, and `:root[data-theme='dark']` overrides
+   them. That way a page with no attribute at all renders light, which is what
+   a first-time visitor gets before any JavaScript runs.
+
+   The colour names are ROLES, not literal descriptions:
+
+     void   — the page base            (light: warm white   / dark: near black)
+     ink    — panel substrate          (light: pure white   / dark: near black)
+     chalk  — primary text             (light: near black   / dark: warm white)
+     accent — brand colour, text-safe  (light: deep amber   / dark: gold)
+     gold   — brand yellow for FILLS   (identical in both themes)
+
+   `accent` and `gold` are separate on purpose. #FFC93C on white is about
+   1.6:1 — invisible as text — but it must stay exactly that yellow when used
+   as a button fill or a logo. So text uses `accent`, fills use `gold`.
    ========================================================================= */
 
 @theme {
@@ -11,22 +26,30 @@
   --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
-  /* -- Base surfaces ---------------------------------------------------- */
-  --color-void: #06050a;
-  --color-ink: #0b0910;
-  --color-haze: #16121f;
-  --color-chalk: #f6f2e9;
+  /* -- LIGHT (default) --------------------------------------------------- */
+  --color-void: #faf9f6;
+  --color-ink: #ffffff;
+  --color-haze: #f0eee8;
+  --color-chalk: #17151f;
 
-  /* -- Primary: gold ---------------------------------------------------- */
+  /* Brand yellow — identical in both themes, for fills only. */
   --color-gold: #ffc93c;
   --color-sun: #ffe58a;
   --color-ember: #ff9a1f;
 
-  /* -- Iridescent accents ----------------------------------------------- */
-  --color-aqua: #45e3ff;
-  --color-iris: #a97bff;
-  --color-bloom: #ff5fa6;
-  --color-zest: #c9ff57;
+  /* Text-safe brand colour. */
+  --color-accent: #8f5e00;
+
+  /* Text that sits ON the brand yellow (buttons, badges). Gold is the same in
+     both themes, so this is too — using `void` here would turn button labels
+     near-white on yellow in light mode. */
+  --color-onbrand: #17151f;
+
+  /* Iridescent accents, darkened so they read on white. */
+  --color-aqua: #0b7f97;
+  --color-iris: #6a3fd0;
+  --color-bloom: #c2185b;
+  --color-zest: #5f8a00;
 
   /* -- Radii: squircle-leaning, "droplet" scale -------------------------- */
   --radius-droplet: 1.75rem;
@@ -35,6 +58,122 @@
   /* -- Motion ------------------------------------------------------------ */
   --ease-fluid: cubic-bezier(0.3, 0.9, 0.25, 1);
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ----------------------------------------------------------------------------
+   Theme-dependent values that aren't Tailwind colour tokens: the glass
+   material, the background field, and the scrollbar. Declared here for light,
+   overridden wholesale for dark below.
+   ------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Glass material */
+  --glass-base: rgb(255 255 255 / 0.66);
+  --glass-base-strong: rgb(255 255 255 / 0.82);
+  --glass-base-soft: rgb(255 255 255 / 0.5);
+  --glass-tint-a: rgb(255 255 255 / 0.9);
+  --glass-tint-b: rgb(255 255 255 / 0.45);
+  --glass-tint-c: rgb(255 201 60 / 0.1);
+  --glass-inner-top: rgb(255 255 255 / 1);
+  --glass-inner-bottom: rgb(255 201 60 / 0.28);
+  --glass-shadow:
+    0 20px 44px -22px rgb(30 22 50 / 0.22), 0 2px 10px -4px rgb(30 22 50 / 0.1);
+  --glass-shadow-strong:
+    0 28px 60px -26px rgb(30 22 50 / 0.3), 0 3px 12px -4px rgb(30 22 50 / 0.12);
+  --glass-rim-1: rgb(255 255 255 / 0.95);
+  --glass-rim-2: rgb(143 94 0 / 0.22);
+  --glass-rim-3: rgb(106 63 208 / 0.16);
+  --glass-rim-4: rgb(255 154 31 / 0.3);
+  --glass-hover: rgb(23 21 31 / 0.05);
+
+  /* Background field */
+  --aurora-1: rgb(255 201 60 / 0.34);
+  --aurora-2: rgb(169 123 255 / 0.2);
+  --aurora-3: rgb(69 227 255 / 0.18);
+  --aurora-4: rgb(255 95 166 / 0.14);
+  --aurora-wash-1: rgb(255 201 60 / 0.16);
+  --aurora-wash-2: rgb(169 123 255 / 0.1);
+  --aurora-wash-3: rgb(69 227 255 / 0.09);
+  --grid-line: rgb(23 21 31 / 0.9);
+  --grid-opacity: 0.05;
+  --vignette: rgb(250 249 246 / 0.9);
+  --grain-opacity: 0.028;
+  --grain-blend: multiply;
+
+  /* Form controls */
+  --field-bg: rgb(255 255 255 / 0.9);
+  --field-border: rgb(23 21 31 / 0.14);
+
+  /* Graph-vs-tree diagram nodes. The gold pair has to darken on white or the
+     "valid" panel disappears into the page. */
+  --node-graph-1: #ffbe1f;
+  --node-graph-2: #b06a00;
+  --node-tree-1: #6b6577;
+  --node-tree-2: #4a4553;
+
+  /* Scrollbar */
+  --scroll-track: var(--color-void);
+  --scroll-thumb: rgb(143 94 0 / 0.35);
+  --scroll-thumb-hover: rgb(143 94 0 / 0.6);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-void: #06050a;
+  --color-ink: #0b0910;
+  --color-haze: #16121f;
+  --color-chalk: #f6f2e9;
+
+  /* Gold is readable on near-black, so accent and gold converge. */
+  --color-accent: #ffc93c;
+
+  --color-aqua: #45e3ff;
+  --color-iris: #a97bff;
+  --color-bloom: #ff5fa6;
+  --color-zest: #c9ff57;
+
+  --glass-base: rgb(11 9 16 / 0.62);
+  --glass-base-strong: rgb(11 9 16 / 0.7);
+  --glass-base-soft: rgb(11 9 16 / 0.4);
+  --glass-tint-a: rgb(255 255 255 / 0.09);
+  --glass-tint-b: rgb(255 255 255 / 0.03);
+  --glass-tint-c: rgb(255 201 60 / 0.04);
+  --glass-inner-top: rgb(255 255 255 / 0.22);
+  --glass-inner-bottom: rgb(255 201 60 / 0.1);
+  --glass-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.75);
+  --glass-shadow-strong: 0 30px 80px -24px rgb(0 0 0 / 0.85);
+  --glass-rim-1: rgb(255 255 255 / 0.6);
+  --glass-rim-2: rgb(255 229 138 / 0.35);
+  --glass-rim-3: rgb(169 123 255 / 0.28);
+  --glass-rim-4: rgb(255 201 60 / 0.45);
+  --glass-hover: rgb(255 255 255 / 0.09);
+
+  --aurora-1: rgb(255 201 60 / 0.38);
+  --aurora-2: rgb(169 123 255 / 0.3);
+  --aurora-3: rgb(69 227 255 / 0.26);
+  --aurora-4: rgb(255 95 166 / 0.2);
+  --aurora-wash-1: rgb(255 201 60 / 0.16);
+  --aurora-wash-2: rgb(169 123 255 / 0.13);
+  --aurora-wash-3: rgb(69 227 255 / 0.1);
+  --grid-line: rgb(255 255 255 / 0.9);
+  --grid-opacity: 0.055;
+  --vignette: rgb(6 5 10 / 0.85);
+  --grain-opacity: 0.035;
+  --grain-blend: overlay;
+
+  --field-bg: rgb(0 0 0 / 0.35);
+  --field-border: rgb(255 255 255 / 0.1);
+
+  --node-graph-1: #ffe58a;
+  --node-graph-2: #ff9a1f;
+  --node-tree-1: #4a4553;
+  --node-tree-2: #2a2732;
+
+  --scroll-thumb: rgb(255 201 60 / 0.35);
+  --scroll-thumb-hover: rgb(255 201 60 / 0.6);
 }
 
 /* ============================================================================
@@ -59,6 +198,9 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    transition:
+      background-color 0.4s var(--ease-out-soft),
+      color 0.4s var(--ease-out-soft);
   }
 
   h1,
@@ -73,44 +215,41 @@
 
   ::selection {
     background: color-mix(in oklab, var(--color-gold) 80%, transparent);
-    color: var(--color-void);
+    color: #17151f;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gold);
+    outline: 2px solid var(--color-accent);
     outline-offset: 3px;
     border-radius: 4px;
   }
 
-  /* Scrollbar — thin, gold, unobtrusive */
   ::-webkit-scrollbar {
     width: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--color-void);
+    background: var(--scroll-track);
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--color-gold) 35%, transparent);
+    background: var(--scroll-thumb);
     border-radius: 999px;
-    border: 3px solid var(--color-void);
+    border: 3px solid var(--scroll-track);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in oklab, var(--color-gold) 60%, transparent);
+    background: var(--scroll-thumb-hover);
   }
 }
 
 /* ============================================================================
    GLASS — "watermorphism"
-   Three tiers of the same material. Each is: a translucent body, a backdrop
-   blur, an inner light (top-left specular), and a 1px gradient rim drawn with
-   the mask-composite trick so the border itself can be a gradient.
-   ========================================================================= */
 
-/* These live in the `components` layer on purpose. Unlayered rules outrank
+   These live in the `components` layer on purpose. Unlayered rules outrank
    every @layer, so an unlayered `.glass-soft { position: relative }` would beat
    Tailwind's `absolute` utility — badges and arrow controls silently fall back
    into normal flow. In `components`, the utilities layer wins, which is what
-   you want every time you write `glass-soft absolute`. */
+   you want every time you write `glass-soft absolute`.
+   ========================================================================= */
+
 @layer components {
   .glass,
   .glass-strong,
@@ -118,112 +257,112 @@
     position: relative;
     isolation: isolate;
     border-radius: var(--radius-droplet);
+    transition:
+      background 0.4s var(--ease-out-soft),
+      box-shadow 0.4s var(--ease-out-soft);
   }
 
-/* Each tier layers a light gradient over a dark substrate. The substrate is
-   what guarantees contrast: droplets drift behind these panels, and without
-   its own tint the "glass" would just be the background — body copy would go
-   unreadable every time a bright droplet passed under it. Real frosted glass
-   is tinted too, so this costs nothing visually. */
-.glass {
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(in oklab, white 9%, transparent),
-      color-mix(in oklab, white 3%, transparent) 45%,
-      color-mix(in oklab, var(--color-gold) 4%, transparent)
-    ),
-    color-mix(in oklab, var(--color-ink) 62%, transparent);
-  backdrop-filter: blur(20px) saturate(180%) brightness(1.08);
-  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.08);
-  box-shadow:
-    inset 0 1px 0 0 color-mix(in oklab, white 22%, transparent),
-    inset 0 -1px 0 0 color-mix(in oklab, var(--color-gold) 10%, transparent),
-    0 24px 60px -20px rgb(0 0 0 / 0.75);
-}
-
-.glass-strong {
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(in oklab, white 14%, transparent),
-      color-mix(in oklab, white 5%, transparent) 40%,
-      color-mix(in oklab, var(--color-gold) 8%, transparent)
-    ),
-    color-mix(in oklab, var(--color-ink) 70%, transparent);
-  backdrop-filter: blur(28px) saturate(200%) brightness(1.12);
-  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.12);
-  box-shadow:
-    inset 0 1px 0 0 color-mix(in oklab, white 32%, transparent),
-    inset 0 -1px 0 0 color-mix(in oklab, var(--color-gold) 16%, transparent),
-    0 30px 80px -24px rgb(0 0 0 / 0.85);
-}
-
-.glass-soft {
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(in oklab, white 7%, transparent),
-      color-mix(in oklab, white 2%, transparent)
-    ),
-    color-mix(in oklab, var(--color-ink) 40%, transparent);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  box-shadow: inset 0 1px 0 0 color-mix(in oklab, white 14%, transparent);
-}
-
-/* The gradient rim. Drawn as a pseudo-element ring via mask-composite so it
-   reads as a light catching an edge rather than a flat 1px border. */
-.glass::after,
-.glass-strong::after,
-.glass-soft::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    140deg,
-    color-mix(in oklab, white 60%, transparent) 0%,
-    color-mix(in oklab, var(--color-sun) 35%, transparent) 18%,
-    transparent 42%,
-    transparent 62%,
-    color-mix(in oklab, var(--color-iris) 28%, transparent) 82%,
-    color-mix(in oklab, var(--color-gold) 45%, transparent) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* -- Real refraction, progressive enhancement ------------------------------
-   SVG filters as backdrop-filter input are Chromium-only today (Safari and
-   Firefox restrict backdrop-filter to built-in CSS filter functions). Where
-   supported, the turbulence displacement makes the backdrop *bend* like water
-   through a droplet. Where not, the blur above already carries the look.
-   Ref: https://kube.io/blog/liquid-glass-css-svg/                           */
-@supports (backdrop-filter: url('#nr-refract')) {
-  .refract {
-    backdrop-filter: blur(14px) saturate(190%) brightness(1.08) url('#nr-refract');
-    -webkit-backdrop-filter: blur(14px) saturate(190%) brightness(1.08) url('#nr-refract');
+  /* Each tier layers a light gradient over a substrate. The substrate is what
+     guarantees contrast: droplets drift behind these panels, and without a
+     tint of its own the "glass" would just be the background — body copy would
+     go unreadable every time a bright droplet passed under it. Real frosted
+     glass is tinted too, so this costs nothing visually. */
+  .glass {
+    background:
+      linear-gradient(145deg, var(--glass-tint-a), var(--glass-tint-b) 45%, var(--glass-tint-c)),
+      var(--glass-base);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-inner-top),
+      inset 0 -1px 0 0 var(--glass-inner-bottom),
+      var(--glass-shadow);
   }
-  .refract-soft {
-    backdrop-filter: blur(18px) saturate(170%) url('#nr-refract-soft');
-    -webkit-backdrop-filter: blur(18px) saturate(170%) url('#nr-refract-soft');
-  }
-}
 
-/* Gooey merge — for droplet clusters that should coalesce into one body.
-   feGaussianBlur smears alpha, feColorMatrix snaps it back to a hard edge. */
+  .glass-strong {
+    background:
+      linear-gradient(145deg, var(--glass-tint-a), var(--glass-tint-b) 40%, var(--glass-tint-c)),
+      var(--glass-base-strong);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-inner-top),
+      inset 0 -1px 0 0 var(--glass-inner-bottom),
+      var(--glass-shadow-strong);
+  }
+
+  .glass-soft {
+    background: linear-gradient(145deg, var(--glass-tint-a), var(--glass-tint-b)), var(--glass-base-soft);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    box-shadow: inset 0 1px 0 0 var(--glass-inner-top);
+  }
+
+  /* The gradient rim. Drawn as a pseudo-element ring via mask-composite so it
+     reads as a light catching an edge rather than a flat 1px border. */
+  .glass::after,
+  .glass-strong::after,
+  .glass-soft::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      140deg,
+      var(--glass-rim-1) 0%,
+      var(--glass-rim-2) 18%,
+      transparent 42%,
+      transparent 62%,
+      var(--glass-rim-3) 82%,
+      var(--glass-rim-4) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* -- Real refraction, progressive enhancement ----------------------------
+     SVG filters as backdrop-filter input are Chromium-only today (Safari and
+     Firefox restrict backdrop-filter to built-in CSS filter functions). Where
+     supported, the turbulence displacement makes the backdrop *bend* like
+     water through a droplet. Where not, the blur above already carries it.
+     Ref: https://kube.io/blog/liquid-glass-css-svg/                         */
+  @supports (backdrop-filter: url('#nr-refract')) {
+    .refract {
+      backdrop-filter: blur(14px) saturate(190%) url('#nr-refract');
+      -webkit-backdrop-filter: blur(14px) saturate(190%) url('#nr-refract');
+    }
+    .refract-soft {
+      backdrop-filter: blur(18px) saturate(170%) url('#nr-refract-soft');
+      -webkit-backdrop-filter: blur(18px) saturate(170%) url('#nr-refract-soft');
+    }
+  }
+
+  /* Gooey merge — for droplet clusters that should coalesce into one body.
+     feGaussianBlur smears alpha, feColorMatrix snaps it back to a hard edge. */
   .goo {
     filter: url('#nr-goo');
+  }
+
+  /* Form fields */
+  .field {
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    color: var(--color-chalk);
+  }
+  .field::placeholder {
+    color: color-mix(in oklab, var(--color-chalk) 38%, transparent);
+  }
+  .field:focus {
+    border-color: color-mix(in oklab, var(--color-accent) 60%, transparent);
   }
 }
 
@@ -234,6 +373,25 @@
 .text-iridescent {
   /* Gold bookends the ramp and reappears mid-way, so the animated window
      always contains yellow — the accents visit, they don't take over. */
+  background: linear-gradient(
+    100deg,
+    var(--color-ember) 0%,
+    var(--color-accent) 16%,
+    var(--color-bloom) 34%,
+    var(--color-iris) 44%,
+    var(--color-aqua) 54%,
+    var(--color-accent) 72%,
+    var(--color-ember) 86%,
+    var(--color-accent) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: iridesce 14s linear infinite;
+}
+
+:root[data-theme='dark'] .text-iridescent {
   background: linear-gradient(
     100deg,
     var(--color-sun) 0%,
@@ -249,10 +407,16 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: iridesce 14s linear infinite;
 }
 
 .text-gold-grad {
+  background: linear-gradient(160deg, #b87a06, var(--color-accent) 45%, #7a4f00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:root[data-theme='dark'] .text-gold-grad {
   background: linear-gradient(160deg, var(--color-sun), var(--color-gold) 45%, var(--color-ember));
   -webkit-background-clip: text;
   background-clip: text;
@@ -271,8 +435,8 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -318,12 +482,6 @@
   100% {
     opacity: 0;
     transform: scale(1.8);
-  }
-}
-
-@keyframes dash-flow {
-  to {
-    stroke-dashoffset: -1000;
   }
 }
 

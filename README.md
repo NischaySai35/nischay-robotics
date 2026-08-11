@@ -207,12 +207,12 @@ points at `icon-96.png` with `srcSet` for denser displays.
 
 ```
 src/
-├─ content/site.ts          ← ALL copy, links, projects, videos. Start here.
+├─ content/site.ts          ← ALL copy, links, products, videos. Start here.
 ├─ index.css                ← design tokens + the glass material
 ├─ App.tsx                  ← page composition
 ├─ sections/                ← one file per band of the page
-│  ├─ Nav · Hero · Pillars · Configurations · Tetrobot · Projects
-│  └─ Prototypes · Recognition · Founder · Collaborate · Footer
+│  ├─ Nav · Hero · Pillars · Configurations · Products
+│  └─ Tetrobot · Prototypes · Founder · Footer
 ├─ components/
 │  ├─ GraphVsTree.tsx       ← the interactive graph-vs-tree diagram
 │  ├─ ConfigGallery.tsx     ← auto-cycling shape gallery + lightbox

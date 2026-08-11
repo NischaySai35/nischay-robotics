@@ -2,7 +2,7 @@ import { Reveal, Section, SectionHeading } from '@/components/ui/primitives'
 import { pillars } from '@/content/site'
 
 const ACCENT: Record<string, { glow: string; text: string }> = {
-  gold: { glow: 'rgba(255,201,60,0.55)', text: 'text-gold' },
+  gold: { glow: 'rgba(255,201,60,0.55)', text: 'text-accent' },
   aqua: { glow: 'rgba(69,227,255,0.5)', text: 'text-aqua' },
   iris: { glow: 'rgba(169,123,255,0.5)', text: 'text-iris' },
 }
