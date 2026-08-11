@@ -109,14 +109,14 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.62, ease: EASE }}
           className="mt-10 flex flex-wrap items-center gap-3"
         >
+          <Button onClick={() => scrollToId('products')}>
+            See the modules <ArrowIcon />
+          </Button>
           {featuredVideo.id && (
-            <Button onClick={() => play(featuredVideo.id!, featuredVideo.title)}>
+            <Button variant="glass" onClick={() => play(featuredVideo.id!, featuredVideo.title)}>
               <PlayGlyph /> Watch the demo
             </Button>
           )}
-          <Button variant="glass" onClick={() => scrollToId('tetrobot')}>
-            Explore Tetrobot <ArrowIcon />
-          </Button>
           <Button variant="quiet" href={links.github} external>
             <GithubIcon /> GitHub
           </Button>

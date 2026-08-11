@@ -39,6 +39,108 @@ are the placeholders waiting on you:
 
 ---
 
+## Waitlist backend
+
+**It already works with zero setup.** Until Firebase is connected, the form
+collects everything and opens a prefilled email to `nischaysai35@gmail.com`.
+Nothing is lost — you can ship today and wire the database up later.
+
+With Firebase connected, signups are written to Firestore instead, and you read
+them at **`/#/admin`** rather than in a notebook.
+
+### Setting up Firebase (about five minutes)
+
+1. Create a project at [console.firebase.google.com](https://console.firebase.google.com).
+2. **Build → Firestore Database → Create database**. Start in *production* mode
+   (the rules in this repo replace the defaults).
+3. **Build → Authentication → Sign-in method → Google → Enable.** This is only
+   so *you* can read the list; buyers never sign in.
+4. **Project settings → Your apps → Web app** (`</>`). Copy the config values.
+5. `cp .env.example .env` and paste them in.
+6. Push the security rules:
+   ```bash
+   npm install -g firebase-tools
+   firebase login
+   firebase use --add          # pick the project you just made
+   firebase deploy --only firestore:rules
+   ```
+7. `npm run build && npm run preview`, submit a test signup, then open
+   `/#/admin` and sign in with `nischaysai35@gmail.com`.
+
+**Step 6 is not optional.** Without it Firestore keeps its default rules, which
+either block every write or (in test mode) let anyone on the internet read every
+customer's email address.
+
+### How it's secured
+
+The Firebase config in `.env` is **public** — Vite compiles it into the
+JavaScript and anyone can read it. That is normal and expected; those values are
+identifiers, not secrets. The actual protection is `firestore.rules`:
+
+- **Anyone can create** a waitlist document, but only in an exact validated
+  shape — every field type- and length-checked, no extra fields, timestamp
+  forced to the server clock.
+- **Only `nischaysai35@gmail.com` can read.** Without this, one signup could
+  list every other customer's email.
+- **Nothing can be updated or deleted** from a browser, not even by you.
+  Corrections happen in the Firebase console, deliberately.
+
+To change the admin address, edit it in **both** `firestore.rules` and
+`src/lib/firebase.config.ts`, then redeploy the rules. The rules file is the one
+that actually enforces it.
+
+### Getting an email on every signup
+
+Firestore stores signups but does not email you. Two options:
+
+- **Firebase "Trigger Email from Firestore" extension** — watches the
+  collection and sends mail via your SMTP (a Gmail app password works). Requires
+  the **Blaze** plan, which needs a card on file; the free allowance covers a
+  waitlist many times over. Install from **Extensions** in the console.
+- **Do nothing.** Check `/#/admin` and export CSV. Free, and honestly fine until
+  signups are frequent enough to be annoying.
+
+### Where the pieces live
+
+| File | Role |
+|---|---|
+| `src/lib/firebase.config.ts` | env values + `isFirebaseConfigured`. **No SDK code** — importing it costs nothing. |
+| `src/lib/firebase.ts` | SDK init. **Dynamic-import only** — a static import anywhere puts ~200KB of Firebase in the initial bundle. |
+| `src/lib/waitlist.ts` | Submit, with the email fallback. |
+| `src/components/WaitlistModal.tsx` | The form. |
+| `src/pages/Admin.tsx` | `/#/admin` — sign in, read, export CSV. |
+| `firestore.rules` | The only thing actually protecting the data. |
+
+---
+
+## Hosting: Firebase or Netlify?
+
+**Recommendation — Firebase Hosting**, since you're already using Firebase for
+data:
+
+```bash
+npm run build
+firebase deploy
+```
+
+One project, one CLI, one dashboard. Your site's domain is automatically an
+authorised domain for Google sign-in, so `/#/admin` just works. `firebase.json`
+in this repo is already configured — `dist/` as the web root, SPA rewrites, and
+cache headers (immutable for fingerprinted assets, revalidate for `index.html`).
+
+**Netlify works too** — build `npm run build`, publish `dist`. Two things to
+remember if you go that way:
+
+1. Add your Netlify domain under **Firebase → Authentication → Settings →
+   Authorized domains**, or Google sign-in on `/#/admin` fails.
+2. Set the `VITE_FIREBASE_*` values in Netlify's environment variables — they're
+   compiled at build time, so a missing one silently falls back to email mode.
+
+Either way the Firestore database and rules live in Firebase. Hosting is the
+only thing you're choosing between.
+
+---
+
 ## ⚠️ Back up `visuals/`
 
 The `visuals/` folder holds your **original camera masters** — 21 photos at

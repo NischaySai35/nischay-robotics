@@ -17,7 +17,7 @@ export const company = {
   short: 'NR',
   founded: 2026,
   location: 'Bengaluru, Karnataka, India',
-  descriptor: 'Independent robotics lab',
+  descriptor: 'Modular shape-changing robotics',
   tagline: 'Robots that change their own shape.',
 } as const
 
@@ -40,13 +40,13 @@ export const contact = {
 /* -- Hero ------------------------------------------------------------------ */
 
 export const hero = {
-  eyebrow: 'Independent robotics lab · Bengaluru',
+  eyebrow: 'Modular shape-changing robotics · Bengaluru',
   titleLines: ['Robots that', 'change their', 'own shape.'],
-  body: 'Nischay Robotics builds modular, self-reconfiguring machines — and Tetrobot, the graph-native runtime that lets them think in topologies instead of trees.',
+  body: 'We build modular robots that rebuild themselves — a walker becomes an arm becomes a rolling vehicle, from the same parts. Modules and developer kits are releasing soon, running on Tetrobot, our graph-native runtime.',
   stats: [
-    { value: 'Patent', label: 'pending — MICROBOTS' },
-    { value: '1st', label: 'runner-up, Techgium 9th Ed.' },
-    { value: '9.2', label: 'CGPA, ISE @ RNSIT' },
+    { value: '₹29,999', label: 'per module · kits from ₹1,10,000' },
+    { value: '21', label: 'configurations from one hardware set' },
+    { value: 'Patent', label: 'pending — shape-changing system' },
   ],
 } as const
 
@@ -380,10 +380,15 @@ export const founder = {
 
 /* -- Collaborate ----------------------------------------------------------- */
 
+/* -- Partnerships ----------------------------------------------------------
+   Deliberately NOT a headline band any more. Nischay Robotics reads as a
+   company with a product; the incubation ask lives inside the company section,
+   behind a disclosure, for the people who go looking for it.               */
+
 export const collaborate = {
-  kicker: 'The ask',
-  headline: "I've taken this as far as a desk allows.",
-  body: "Everything here was designed, printed, wired and written by one student, self-funded, at home — and every shape on this page came out of exactly two modules, because two is what I could afford to build. The bottleneck has never been the idea. I'm looking for people and institutions who can help turn working prototypes into real machines.",
+  kicker: 'Partnerships',
+  headline: 'Working with us',
+  body: "Nischay Robotics is early and independent. Everything on this page was designed, printed, wired and written in-house, self-funded — and every shape came out of exactly two modules, because two is what the budget allowed. The engineering is not the bottleneck. If you can help it scale, these are the ways in.",
   seeking: [
     {
       title: 'Incubation',
@@ -412,15 +417,135 @@ export const collaborate = {
   ],
 } as const
 
+/* -- Products --------------------------------------------------------------
+   Real prices. Deliberately no invented hardware specs — torque figures,
+   battery life and materials are NOT listed because they are not finalised,
+   and publishing numbers that later change is how a hardware company loses
+   its first customers. Capability claims below are limited to behaviour that
+   is demonstrated in the photographs and videos on this same page.
+
+   USD figures are indicative, converted at ~₹95.2/$ (Aug 2026). INR is the
+   price of record — update `usd` here if the rate moves materially.        */
+
+export const currency = {
+  inrPerUsd: 95.24,
+  note: 'Indicative USD conversion. INR is the price of record.',
+}
+
+export type Product = {
+  slug: string
+  name: string
+  tagline: string
+  inr: number | null
+  usd: number | null
+  /** Shown struck through, for the kit's per-module saving. */
+  compareInr?: number
+  status: 'waitlist' | 'development'
+  statusLabel: string
+  summary: string
+  includes: readonly string[]
+  bestFor: readonly string[]
+  accent: 'gold' | 'aqua' | 'iris'
+  featured?: boolean
+}
+
+export const products: readonly Product[] = [
+  {
+    slug: 'module',
+    name: 'Tetrobot Module',
+    tagline: 'One unit. The smallest thing that changes shape.',
+    inr: 29999,
+    usd: 315,
+    status: 'waitlist',
+    statusLabel: 'Releasing soon',
+    summary:
+      'A single self-contained module: powered joints, a latching face on each end, and wireless control. On its own it bends, drives and latches. Chained with others it becomes whatever the task needs.',
+    includes: [
+      'One assembled module, tested and calibrated',
+      'Latching interface on both ends',
+      'Wireless control, driven from the Tetrobot runtime',
+      'Getting-started guide and example configurations',
+    ],
+    bestFor: [
+      'Adding reach or a degree of freedom to an existing chain',
+      'Bench experiments with latching and reconfiguration',
+      'Replacing or extending a kit you already own',
+    ],
+    accent: 'aqua',
+  },
+  {
+    slug: 'kit',
+    name: 'Developer Kit',
+    tagline: 'Four modules — the point where it stops being a demo.',
+    inr: 110000,
+    usd: 1155,
+    compareInr: 29999 * 4,
+    status: 'waitlist',
+    statusLabel: 'Releasing soon',
+    summary:
+      'Four modules and everything needed to run them together. Two modules already produce walkers, arches, towers, closed rings and a rolling vehicle — every shape documented on this page. Four is where the interesting morphologies begin.',
+    includes: [
+      'Four assembled modules, tested and calibrated',
+      'Controller and power setup for running them as one body',
+      'Tetrobot runtime with the documented configuration library',
+      'Assembly, latching and reconfiguration documentation',
+      'Direct support from the person who built them',
+    ],
+    bestFor: [
+      'University and lab research into modular robotics',
+      'Teaching reconfigurable systems with hardware, not slides',
+      'Serious prototyping of task-specific morphologies',
+    ],
+    accent: 'gold',
+    featured: true,
+  },
+  {
+    slug: 'tool-tips',
+    name: 'Tool Tips',
+    tagline: 'End effectors for the chain: grip, sense, carry.',
+    inr: null,
+    usd: null,
+    status: 'development',
+    statusLabel: 'In development',
+    summary:
+      'Interchangeable tips that latch onto the end of a chain and give it a job — gripping, sensing, carrying. Still being designed. Join the list and you will hear first, and you will help decide which tip gets built first.',
+    includes: [
+      'Same latching interface as the modules',
+      'Designed alongside the people who tell us what they need',
+    ],
+    bestFor: [
+      'Anyone whose application needs the arm to actually hold something',
+      'Telling us which tool matters most to you',
+    ],
+    accent: 'iris',
+  },
+] as const
+
+export const productSection = {
+  kicker: 'Modules',
+  headline: 'Buy the parts. Build any body.',
+  lead: 'Every configuration on this page came from the same modules — latched, released and relatched. They are being readied for release now. Join the list and you will be told the moment they ship, before anyone else.',
+  shippingNote:
+    'Built and shipped from Bengaluru, India. International shipping at launch — tell us your country when you join and it helps us plan.',
+}
+
+export const waitlist = {
+  title: 'Join the waitlist',
+  blurb:
+    'No spam, no newsletter. One email when the modules are ready, and nothing else. Your details go to Nischay directly.',
+  success: "You're on the list.",
+  successBlurb:
+    "You'll hear from me directly when the modules are ready to ship. If you added a note, I'll answer that too.",
+}
+
 /* -- Navigation ------------------------------------------------------------ */
 
 export const navItems = [
-  { id: 'work', label: 'Work' },
+  { id: 'products', label: 'Modules' },
   { id: 'configurations', label: 'Shapes' },
   { id: 'tetrobot', label: 'Tetrobot' },
-  { id: 'projects', label: 'Projects' },
   { id: 'prototypes', label: 'Prototypes' },
-  { id: 'founder', label: 'Founder' },
+  { id: 'founder', label: 'Company' },
 ] as const
 
 export const seo = {

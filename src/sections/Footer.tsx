@@ -1,9 +1,11 @@
 import { LogoMark } from '@/components/ui/Logo'
 import { company, contact, links, navItems } from '@/content/site'
 import { scrollToId } from '@/lib/scroll'
+import { useWaitlist } from '@/lib/waitlistContext'
 
 export function Footer() {
   const go = (id: string) => scrollToId(id)
+  const join = useWaitlist()
 
   return (
     <footer className="relative z-10 px-5 pb-10 sm:px-8">
@@ -46,10 +48,10 @@ export function Footer() {
                   <li>
                     <button
                       type="button"
-                      onClick={() => go('collaborate')}
+                      onClick={() => join()}
                       className="text-chalk/60 hover:text-gold text-sm transition-colors"
                     >
-                      Collaborate
+                      Join the waitlist
                     </button>
                   </li>
                 </ul>
@@ -87,7 +89,7 @@ export function Footer() {
               © {new Date().getFullYear()} {company.name}. Built at home in Bengaluru.
             </p>
             <p className="text-chalk/25">
-              Seeking incubation, collaborators and a bigger workshop.
+              Modules and developer kits releasing soon.
             </p>
           </div>
         </div>

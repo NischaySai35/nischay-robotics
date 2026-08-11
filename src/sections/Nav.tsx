@@ -3,6 +3,7 @@ import { Wordmark } from '@/components/ui/Logo'
 import { Button } from '@/components/ui/primitives'
 import { navItems } from '@/content/site'
 import { scrollToId, scrollToTop } from '@/lib/scroll'
+import { useWaitlist } from '@/lib/waitlistContext'
 
 /**
  * Floating glass nav.
@@ -18,6 +19,7 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [active, setActive] = useState<string>('')
   const [menuOpen, setMenuOpen] = useState(false)
+  const join = useWaitlist()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -90,11 +92,11 @@ export function Nav() {
 
         <div className="relative z-10 flex items-center gap-2">
           <Button
-            onClick={() => go('collaborate')}
+            onClick={() => join()}
             variant="primary"
             className="!px-4 !py-2 !text-[13px]"
           >
-            Collaborate
+            Join waitlist
           </Button>
 
           {/* Mobile menu toggle */}

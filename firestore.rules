@@ -1,0 +1,65 @@
+rules_version = '2';
+
+// Firestore security rules for Nischay Robotics.
+//
+// These are the ONLY thing protecting the waitlist. The Firebase config in the
+// bundle is public by design — anyone can read it out of the JavaScript — so
+// security must live here, on the server, never in the client.
+//
+// Deploy with:  firebase deploy --only firestore:rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // The one account allowed to read signups. Keep in sync with
+    // ADMIN_EMAIL in src/lib/firebase.config.ts.
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email == 'nischaysai35@gmail.com'
+          && request.auth.token.email_verified == true;
+    }
+
+    function isValidSignup(d) {
+      return d.keys().hasAll(['name', 'email', 'product', 'createdAt'])
+          // Cap every field so a bad actor can't use the collection as free
+          // storage, and cap the document itself.
+          && d.name is string       && d.name.size()  > 0 && d.name.size()  <= 120
+          && d.email is string      && d.email.size() > 3 && d.email.size() <= 200
+          && d.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+          && d.product is string    && d.product.size() <= 60
+          && d.productName is string && d.productName.size() <= 120
+          && d.country is string    && d.country.size() <= 80
+          && d.organisation is string && d.organisation.size() <= 160
+          && d.quantity is string   && d.quantity.size() <= 20
+          && d.message is string    && d.message.size() <= 2000
+          && d.source is string     && d.source.size() <= 120
+          && d.userAgent is string  && d.userAgent.size() <= 200
+          // Timestamp must come from the server, not from the client's clock.
+          && d.createdAt == request.time
+          // No extra fields beyond the ones we expect.
+          && d.keys().hasOnly([
+               'name', 'email', 'product', 'productName', 'country',
+               'organisation', 'quantity', 'message', 'source',
+               'userAgent', 'createdAt'
+             ]);
+    }
+
+    match /waitlist/{id} {
+      // Anyone may sign up, but only in the exact shape above.
+      allow create: if isValidSignup(request.resource.data);
+
+      // Signups are write-only from the public side. Without this, one signup
+      // could list every other customer's email address.
+      allow read: if isAdmin();
+
+      // Nothing is editable or deletable from a browser — not even by the
+      // admin. Corrections happen in the Firebase console, deliberately.
+      allow update, delete: if false;
+    }
+
+    // Anything not matched above is denied.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
