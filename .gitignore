@@ -23,6 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
-# Original camera/video masters — optimised copies live in public/visuals/.
-# Keep your own backup of this folder; it is deliberately not committed.
-visuals/
+# Original camera and video masters, ~81MB. The optimised copies that the site
+# actually ships live in public/visuals/ and ARE committed.
+#
+# The leading slash matters. A bare "visuals/" matches a directory of that name
+# at ANY depth, so it also swallows public/visuals/ â€” which silently deploys a
+# site with no images at all.
+/visuals/
