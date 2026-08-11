@@ -1,67 +1,145 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useInView } from 'motion/react'
 import { ConfigGallery } from '@/components/ConfigGallery'
 import { PlayBadge } from '@/components/VideoPlayer'
 import { Reveal, Section, SectionHeading } from '@/components/ui/primitives'
 import { configSection, configurations, shapeShiftClip } from '@/content/site'
+import { isMeteredConnection, useReducedMotion } from '@/hooks/useEnvironment'
 
 /**
  * Locally hosted clip of the modules rolling as a four-, three- and two-wheeled
- * vehicle.
+ * vehicle. VP9 WebM, re-encoded down from a 24MB phone capture.
  *
- * `preload="none"` with a poster means the 7.7MB file costs nothing until
- * someone deliberately presses play — the poster alone is 99KB. Shipped as VP9
- * WebM, re-encoded down from a 24MB phone capture.
+ * It autoplays, muted and looping, once scrolled into view — but the file is
+ * 7.7MB, so nothing is fetched until that moment: no `src` is attached at all
+ * while the section is off screen, and the 99KB poster stands in. Playback
+ * pauses again when it scrolls away, so a backgrounded clip isn't burning
+ * battery decoding frames nobody is watching.
+ *
+ * Autoplay is skipped entirely for reduced-motion and metered connections;
+ * those visitors get the poster and a play button, which is the same clip on
+ * their terms.
  */
 function ShapeShiftClip() {
+  const wrapRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [started, setStarted] = useState(false)
+  const inView = useInView(wrapRef, { margin: '-8% 0px -8% 0px' })
+  const reduced = useReducedMotion()
 
-  const start = () => {
-    setStarted(true)
-    // The element only gains a source on play, so this has to wait a tick.
-    requestAnimationFrame(() => void videoRef.current?.play())
+  const [metered] = useState(isMeteredConnection)
+  const autoAllowed = !reduced && !metered
+
+  // Once armed, the <video> gains a src and starts downloading. One-way: we
+  // don't tear the source down on scroll-away, only pause.
+  const [armed, setArmed] = useState(false)
+  const [playing, setPlaying] = useState(false)
+
+  useEffect(() => {
+    if (inView && autoAllowed) setArmed(true)
+  }, [inView, autoAllowed])
+
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v || !armed) return
+
+    if (inView && autoAllowed) {
+      // Autoplay can still be refused (battery saver, browser policy). If it
+      // is, fall back to showing the play button rather than a frozen frame.
+      v.play().then(
+        () => setPlaying(true),
+        () => setPlaying(false),
+      )
+    } else {
+      v.pause()
+      setPlaying(false)
+    }
+  }, [armed, inView, autoAllowed])
+
+  const manualPlay = () => {
+    setArmed(true)
+    requestAnimationFrame(() => {
+      videoRef.current?.play().then(
+        () => setPlaying(true),
+        () => setPlaying(false),
+      )
+    })
+  }
+
+  const toggle = () => {
+    const v = videoRef.current
+    if (!v) return
+    if (v.paused) {
+      v.play().then(() => setPlaying(true), () => setPlaying(false))
+    } else {
+      v.pause()
+      setPlaying(false)
+    }
   }
 
   return (
-    <div className="glass-strong group relative aspect-video max-h-[62vh] overflow-hidden">
+    <div
+      ref={wrapRef}
+      className="glass-strong group relative aspect-video max-h-[62vh] overflow-hidden"
+    >
       <video
         ref={videoRef}
+        // No src until armed — this is what keeps 7.7MB off the wire for
+        // anyone who never reaches this section.
+        src={armed ? shapeShiftClip.webm : undefined}
         poster={shapeShiftClip.poster}
         preload="none"
-        controls={started}
         playsInline
         loop
         muted
         className="absolute inset-0 h-full w-full object-cover"
-      >
-        {started && <source src={shapeShiftClip.webm} type="video/webm" />}
-      </video>
+      />
 
-      {!started && (
+      {/* Caption. Fades back while playing so it doesn't sit on the action. */}
+      <div
+        className={`pointer-events-none absolute inset-0 transition-opacity duration-700 ${
+          playing ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
+        }`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/35" />
+
+        <span className="glass-soft text-chalk/80 absolute top-5 left-5 !rounded-full px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] uppercase">
+          Locomotion · {shapeShiftClip.duration}
+        </span>
+
+        <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+          <p className="font-display text-xl leading-tight font-bold sm:text-3xl">
+            {shapeShiftClip.title}
+          </p>
+          <p className="text-chalk/65 mt-2 max-w-2xl text-xs leading-relaxed sm:text-sm">
+            {shapeShiftClip.caption}
+          </p>
+        </div>
+      </div>
+
+      {/* Big play button, only while nothing is playing. */}
+      {!playing && (
         <button
           type="button"
-          onClick={start}
+          onClick={manualPlay}
           aria-label={`Play: ${shapeShiftClip.title}`}
-          className="absolute inset-0 z-10 block w-full text-left"
+          className="absolute inset-0 z-10 flex items-center justify-center"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/35" />
+          <PlayBadge size={78} />
+        </button>
+      )}
 
-          <span className="glass-soft text-chalk/80 absolute top-5 left-5 !rounded-full px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] uppercase">
-            Locomotion · {shapeShiftClip.duration}
-          </span>
-
-          <div className="absolute inset-0 flex items-center justify-center">
-            <PlayBadge size={78} />
-          </div>
-
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
-            <p className="font-display text-xl leading-tight font-bold sm:text-3xl">
-              {shapeShiftClip.title}
-            </p>
-            <p className="text-chalk/65 mt-2 max-w-2xl text-xs leading-relaxed sm:text-sm">
-              {shapeShiftClip.caption}
-            </p>
-          </div>
+      {/* Small pause control once it's running. */}
+      {playing && (
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label="Pause"
+          className="glass-soft text-chalk absolute right-4 bottom-4 z-10 flex h-10 w-10 items-center justify-center !rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100 focus-visible:opacity-100"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+            <rect x="1.5" y="1" width="3" height="10" rx="1" />
+            <rect x="7.5" y="1" width="3" height="10" rx="1" />
+          </svg>
         </button>
       )}
     </div>

@@ -8,6 +8,10 @@ import { pauseScroll, resumeScroll } from '@/lib/scroll'
 const full = (slug: string) => `/visuals/${slug}.jpg`
 const thumb = (slug: string) => `/visuals/${slug}-thumb.jpg`
 
+/** How long each configuration holds before the stage advances. Fast enough to
+ *  read as a machine changing shape, slow enough to take the caption in. */
+const ADVANCE_MS = 1400
+
 const FILTERS: Array<{ key: Family | 'all'; label: string }> = [
   { key: 'all', label: 'All' },
   ...(Object.keys(families) as Family[]).map((k) => ({ key: k, label: families[k].label })),
@@ -159,7 +163,7 @@ export function ConfigGallery() {
    */
   useEffect(() => {
     if (reduced || !inView || hovering || lightbox || items.length < 2) return
-    const id = window.setInterval(() => step(1), 2000)
+    const id = window.setInterval(() => step(1), ADVANCE_MS)
     return () => window.clearInterval(id)
   }, [reduced, inView, hovering, lightbox, items.length, step])
 
@@ -225,7 +229,9 @@ export function ConfigGallery() {
               initial={{ opacity: 0, scale: 1.03 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              // Kept well under ADVANCE_MS so each shape gets a settled beat
+              // rather than the stage being in permanent crossfade.
+              transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-0 h-full w-full object-cover"
             />
           </AnimatePresence>

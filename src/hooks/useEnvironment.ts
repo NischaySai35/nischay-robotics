@@ -63,6 +63,26 @@ export function useRenderTier(): Tier {
 }
 
 /**
+ * True when we should not pull megabytes down unasked: the visitor has Data
+ * Saver on, or is on a genuinely slow connection.
+ *
+ * `navigator.connection` is Chromium-only, so this is a best-effort hint —
+ * when it's absent we assume the connection is fine, which is the right
+ * default on desktop Safari and Firefox.
+ */
+export function isMeteredConnection(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const conn = (
+    navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string }
+    }
+  ).connection
+  if (!conn) return false
+  if (conn.saveData) return true
+  return /(^|-)2g$/.test(conn.effectiveType ?? '')
+}
+
+/**
  * Pointer position in normalised device coordinates (-1..1, y up), smoothed by
  * the consumer. Falls back to a slow autonomous drift when the pointer hasn't
  * moved — so the background is never inert on a touch device.
