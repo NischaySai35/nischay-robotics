@@ -89,16 +89,26 @@ To change the admin address, edit it in **both** `firestore.rules` and
 `src/lib/firebase.config.ts`, then redeploy the rules. The rules file is the one
 that actually enforces it.
 
-### Getting an email on every signup
+### How you find out about a signup
 
-Firestore stores signups but does not email you. Two options:
+There is **no signup email** — that was a deliberate choice, so nothing depends
+on the Blaze plan or an SMTP account. `/#/admin` is the notification channel,
+and it is built to actually work as one:
 
-- **Firebase "Trigger Email from Firestore" extension** — watches the
-  collection and sends mail via your SMTP (a Gmail app password works). Requires
-  the **Blaze** plan, which needs a card on file; the free allowance covers a
-  waitlist many times over. Install from **Extensions** in the console.
-- **Do nothing.** Check `/#/admin` and export CSV. Free, and honestly fine until
-  signups are frequent enough to be annoying.
+- **Live.** It subscribes with `onSnapshot`, so a signup appears while you're
+  looking at it. No refresh.
+- **Unread count in the tab title** — `(3) Waitlist — Nischay Robotics`. Pin the
+  tab and the tab itself is the notification.
+- **"New since you last looked"**, tracked in local storage per browser, with new
+  rows highlighted until you press *Mark as seen*.
+- Stats, search across every field, filter by product, CSV export.
+- Table on desktop, cards on a phone — because that's where you'll actually
+  check it.
+
+If signups ever get frequent enough that you want mail too, the Firebase
+**"Trigger Email from Firestore"** extension watches the collection and sends
+via your SMTP (a Gmail app password works). It needs the **Blaze** plan — a card
+on file, though the free allowance covers a waitlist many times over.
 
 ### Where the pieces live
 

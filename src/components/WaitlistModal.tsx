@@ -12,7 +12,7 @@ import type { OpenWaitlist } from '@/lib/waitlistContext'
 type Phase = 'form' | 'sending' | 'done' | 'fallback'
 
 const field =
-  'w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-chalk outline-none transition-colors placeholder:text-chalk/30 focus:border-gold/60'
+  'block w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-chalk outline-none transition-colors placeholder:text-chalk/30 focus:border-gold/60'
 
 function Label({ children, hint }: { children: ReactNode; hint?: string }) {
   return (
