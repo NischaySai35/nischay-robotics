@@ -96,6 +96,16 @@
   --aurora-wash-1: rgb(255 201 60 / 0.16);
   --aurora-wash-2: rgb(169 123 255 / 0.1);
   --aurora-wash-3: rgb(69 227 255 / 0.09);
+  /* Photo mosaic. Multiply on white so the photographs read as a faint grey
+     texture rather than washed-out colour; desaturated and softened so no
+     individual frame is legible. */
+  /* The photos are mostly a bright tiled floor, so multiply on white barely
+     bites — contrast pushes the dark servos down far enough to register as
+     texture without any frame becoming legible. */
+  --mosaic-opacity: 0.13;
+  --mosaic-blend: multiply;
+  --mosaic-filter: saturate(0.35) contrast(1.2) blur(0.7px);
+
   --grid-line: rgb(23 21 31 / 0.9);
   --grid-opacity: 0.05;
   --vignette: rgb(250 249 246 / 0.9);
@@ -158,6 +168,14 @@
   --aurora-wash-1: rgb(255 201 60 / 0.16);
   --aurora-wash-2: rgb(169 123 255 / 0.13);
   --aurora-wash-3: rgb(69 227 255 / 0.1);
+  /* On near-black the photographs are already the bright element, so normal
+     compositing at low opacity is enough — screen would blow them out. */
+  /* On black the photographs are the bright element, so this needs pulling
+     back hard or the grid competes with the copy. */
+  --mosaic-opacity: 0.085;
+  --mosaic-blend: normal;
+  --mosaic-filter: saturate(0.35) blur(0.7px);
+
   --grid-line: rgb(255 255 255 / 0.9);
   --grid-opacity: 0.055;
   --vignette: rgb(6 5 10 / 0.85);

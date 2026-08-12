@@ -37,8 +37,8 @@ type Quality = {
 }
 
 export const QUALITY: Record<'high' | 'low', Quality> = {
-  high: { steps: 78, ambient: 6, trail: 8 },
-  low: { steps: 40, ambient: 4, trail: 5 },
+  high: { steps: 78, ambient: 10, trail: 8 },
+  low: { steps: 40, ambient: 6, trail: 5 },
 }
 
 export function buildFragmentShader(q: Quality): string {
@@ -62,6 +62,12 @@ uniform float uIntensity;
 uniform float uLight;
 uniform vec2  uTrail[TRAIL];
 
+/* Per-cube tumble, packed as (cosA, sinA, cosB, sinB) and computed on the CPU
+   once per frame. Doing the trig in here instead would mean four sin/cos per
+   cube per raymarch step — roughly 4000 transcendental ops per pixel. */
+uniform vec4 uAmbRot[AMBIENT];
+uniform vec4 uTrailRot;
+
 /* -- SDF primitives ------------------------------------------------------ */
 
 // Polynomial smooth minimum. k controls how far apart two surfaces start to
@@ -69,6 +75,24 @@ uniform vec2  uTrail[TRAIL];
 float smin(float a, float b, float k) {
   float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
   return mix(b, a, h) - k * h * (1.0 - h);
+}
+
+// Rounded box. The rounding is what keeps these reading as liquid cubes
+// rather than dice: sharp enough to show six faces and twelve edges, soft
+// enough that the smooth-minimum can still fuse them like droplets.
+// NB: the parameter is not called "half" — that is a reserved word in GLSL ES
+// and would fail to compile at runtime, long after the TypeScript build passes.
+float sdRoundBox(vec3 p, float extent, float r) {
+  vec3 q = abs(p) - vec3(extent - r);
+  return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0) - r;
+}
+
+// Two chained 2D rotations from precomputed sin/cos. Cheaper than building a
+// mat3, and it runs inside the raymarch loop for every cube.
+vec3 tumble(vec3 q, vec4 rot) {
+  q.xz = vec2(q.x * rot.x - q.z * rot.y, q.x * rot.y + q.z * rot.x);
+  q.xy = vec2(q.x * rot.z - q.y * rot.w, q.x * rot.w + q.y * rot.z);
+  return q;
 }
 
 /* -- Value noise, for surface texture ------------------------------------ */
@@ -120,8 +144,11 @@ float map(vec3 p) {
       cos(t * 0.87 + fi * 1.7) * 1.05 * zoom + uScroll * 1.1,
       sin(t * 0.61 + fi * 2.3) * 0.45
     );
-    float r = 0.155 + 0.045 * sin(uTime * 0.4 + fi * 1.9);
-    d = smin(d, length(p - c) - r, 0.26);
+    float r = 0.135 + 0.04 * sin(uTime * 0.4 + fi * 1.9);
+    // Tight rounding and a small blend radius keep the faces flat and the
+    // edges crisp. Raise either and the cubes start fusing into blobs and
+    // stop reading as cubes at all.
+    d = smin(d, sdRoundBox(tumble(p - c, uAmbRot[i]), r, r * 0.14), 0.13);
   }
 
   // Pointer trail: head is fat, tail tapers to a bead.
@@ -131,7 +158,12 @@ float map(vec3 p) {
     // away from the actual cursor position.
     vec3 c = vec3(uTrail[i].x * uAspect * 1.5 * zoom, uTrail[i].y * 1.5 * zoom, 0.0);
     float r = mix(0.20, 0.035, fi / float(TRAIL));
-    d = smin(d, length(p - c) - r, 0.26);
+    // Every bead shares ONE orientation. Give them individual rotations and
+    // the cursor reads as a sphere: when the pointer is still the beads all
+    // converge on the same point, and the union of eight differently-turned
+    // cubes is a ball. Sharing the rotation makes converged beads collapse
+    // into a single clean cube instead.
+    d = smin(d, sdRoundBox(tumble(p - c, uTrailRot), r, r * 0.16), 0.16);
   }
 
   return d;

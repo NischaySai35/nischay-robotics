@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { GLSL3, Vector2 } from 'three'
+import { GLSL3, Vector2, Vector4 } from 'three'
 import type { ShaderMaterial } from 'three'
 import { QUALITY, buildFragmentShader, vertexShader } from './dropletShader'
 import { usePointerNDC } from '@/hooks/useEnvironment'
@@ -31,8 +31,14 @@ function Scene({ tier, isDark }: SceneProps) {
       uTrail: {
         value: Array.from({ length: quality.trail }, () => new Vector2(0, 0)),
       },
+      // Per-cube tumble, packed (cosA, sinA, cosB, sinB). Updated on the CPU
+      // each frame so the shader never runs trig inside the raymarch loop.
+      uAmbRot: {
+        value: Array.from({ length: quality.ambient }, () => new Vector4(1, 0, 1, 0)),
+      },
+      uTrailRot: { value: new Vector4(1, 0, 1, 0) },
     }),
-    [quality.trail],
+    [quality.trail, quality.ambient],
   )
 
   useEffect(() => {
@@ -69,6 +75,25 @@ function Scene({ tier, isDark }: SceneProps) {
       const t = u.uTime.value
       target.current.set(Math.sin(t * 0.27) * 0.55, Math.cos(t * 0.19) * 0.42)
     }
+
+    // Cube orientations. Each cube tumbles on two axes at its own rate, so the
+    // field never falls into a synchronised grid.
+    const time = u.uTime.value
+    const ambRot = u.uAmbRot.value as Vector4[]
+    for (let i = 0; i < ambRot.length; i++) {
+      const a = time * (0.22 + i * 0.035) + i * 1.7
+      const b = time * (0.17 + i * 0.028) + i * 2.6
+      ambRot[i].set(Math.cos(a), Math.sin(a), Math.cos(b), Math.sin(b))
+    }
+    // Two axes so the cursor cube tumbles rather than spinning flat.
+    const ta = time * 0.5
+    const tb = time * 0.31
+    ;(u.uTrailRot.value as Vector4).set(
+      Math.cos(ta),
+      Math.sin(ta),
+      Math.cos(tb),
+      Math.sin(tb),
+    )
 
     // Trail: head chases the target, every other bead chases the one ahead.
     const trail = u.uTrail.value as Vector2[]

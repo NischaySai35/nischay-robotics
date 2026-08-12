@@ -6,8 +6,9 @@ import { useVideoPlayer } from '@/lib/videoContext'
 
 const EASE = [0.16, 1, 0.3, 1] as const
 
-/** Decorative droplet cluster — three circles that the gooey filter fuses into
- *  one blob of liquid as they orbit. Pure ornament, marked aria-hidden. */
+/** Decorative cluster — three rounded cubes that the gooey filter fuses into
+ *  one body as they orbit and turn. Squares rather than circles so the ornament
+ *  matches the cube droplets in the background. aria-hidden; pure ornament. */
 function GooCluster() {
   return (
     <svg
@@ -17,25 +18,34 @@ function GooCluster() {
       fill="none"
     >
       <g fill="#FFC93C">
-        <motion.circle
-          cx="30"
-          cy="30"
-          r="11"
-          animate={{ cx: [30, 44, 30], cy: [30, 24, 30] }}
+        <motion.rect
+          width="21"
+          height="21"
+          rx="5"
+          x="19.5"
+          y="19.5"
+          animate={{ x: [19.5, 33.5, 19.5], y: [19.5, 13.5, 19.5], rotate: [0, 45, 0] }}
+          style={{ originX: '30px', originY: '30px' }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.circle
-          cx="60"
-          cy="30"
-          r="14"
-          animate={{ cy: [30, 34, 30] }}
+        <motion.rect
+          width="27"
+          height="27"
+          rx="6.5"
+          x="46.5"
+          y="16.5"
+          animate={{ y: [16.5, 20.5, 16.5], rotate: [0, -30, 0] }}
+          style={{ originX: '60px', originY: '30px' }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.circle
-          cx="90"
-          cy="30"
-          r="9"
-          animate={{ cx: [90, 76, 90], cy: [30, 37, 30] }}
+        <motion.rect
+          width="17"
+          height="17"
+          rx="4"
+          x="81.5"
+          y="21.5"
+          animate={{ x: [81.5, 67.5, 81.5], y: [21.5, 28.5, 21.5], rotate: [0, 60, 0] }}
+          style={{ originX: '90px', originY: '30px' }}
           transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
         />
       </g>

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Aurora } from '@/components/background/Aurora'
+import { PhotoMosaic } from '@/components/background/PhotoMosaic'
 import { Filters } from '@/components/svg/Filters'
 import { VideoProvider } from '@/components/VideoPlayer'
 import { WaitlistProvider } from '@/components/WaitlistModal'
@@ -59,6 +60,9 @@ export default function App() {
     <>
       <Filters />
       <Aurora />
+      {/* Sits above the aurora, below the droplets. Skipped on the admin view,
+          which has no need of decoration. */}
+      {!isAdmin && <PhotoMosaic />}
 
       {tier !== 'none' && !isAdmin && (
         <Suspense fallback={null}>
