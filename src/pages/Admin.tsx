@@ -117,16 +117,32 @@ export default function Admin() {
 
   const signIn = useCallback(async () => {
     setError(null)
-    const [{ getFirebaseAuth }, { GoogleAuthProvider, signInWithPopup }] = await Promise.all([
-      import('@/lib/firebase'),
-      import('firebase/auth'),
-    ])
+    const [{ getFirebaseAuth }, { GoogleAuthProvider, signInWithPopup, signInWithRedirect }] =
+      await Promise.all([import('@/lib/firebase'), import('firebase/auth')])
     const auth = getFirebaseAuth()
     if (!auth) return
+    const provider = new GoogleAuthProvider()
+    provider.setCustomParameters({ prompt: 'select_account', login_hint: ADMIN_EMAIL })
     try {
-      await signInWithPopup(auth, new GoogleAuthProvider())
+      await signInWithPopup(auth, provider)
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Sign-in failed')
+      const code = (e as { code?: string }).code ?? ''
+      // Mobile browsers and in-app browsers often block popups outright. A full
+      // redirect always works; onAuthStateChanged picks the result up on return.
+      if (code === 'auth/popup-blocked' || code === 'auth/operation-not-supported-in-this-environment') {
+        await signInWithRedirect(auth, provider)
+        return
+      }
+      if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return
+      setError(
+        code === 'auth/unauthorized-domain'
+          ? `This domain (${window.location.hostname}) isn't authorised. Add it in Firebase → Authentication → Settings → Authorized domains.`
+          : code === 'auth/operation-not-allowed'
+            ? 'Google sign-in is not enabled. Turn it on in Firebase → Authentication → Sign-in method.'
+            : e instanceof Error
+              ? e.message
+              : 'Sign-in failed',
+      )
     }
   }, [])
 
@@ -162,7 +178,13 @@ export default function Admin() {
             if (cancelled) return
             setEntries(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Entry, 'id'>) })))
           },
-          (e) => !cancelled && setError(e.message),
+          (e) =>
+            !cancelled &&
+            setError(
+              e.code === 'permission-denied'
+                ? 'Firestore refused the read. Deploy the rules (firebase deploy --only firestore:rules) and check the admin email in firestore.rules matches this account.'
+                : e.message,
+            ),
         )
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Could not load the list')

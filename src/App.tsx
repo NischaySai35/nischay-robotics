@@ -15,6 +15,7 @@ import { Products } from '@/sections/Products'
 import { Tetrobot } from '@/sections/Tetrobot'
 import { Prototypes } from '@/sections/Prototypes'
 import { Founder } from '@/sections/Founder'
+import { Community } from '@/sections/Community'
 import { Footer } from '@/sections/Footer'
 
 // Three.js is ~40% of the bundle. Nothing above the fold depends on it, so it
@@ -87,6 +88,7 @@ export default function App() {
               <Tetrobot />
               <Prototypes />
               <Founder />
+              <Community />
             </main>
 
             <Footer />

@@ -36,6 +36,7 @@ are the placeholders waiting on you:
 | ~~Social preview image~~ | — | ✅ Done — `public/og-image.jpg`, generated from the logo. |
 | **Domain** | `index.html` + `seo.url` | Currently `nischayrobotics.com`. Update the canonical, `og:url` and JSON-LD if it differs. |
 | **Company email** | `contact.email` | Personal address for now; swap if you register a company one. |
+| **Discord invite** | `links.discord` | `null` shows "Discord opening soon". Paste a never-expiring invite and the Community band, footer link and waitlist-success prompt all go live. |
 
 ---
 
@@ -89,11 +90,67 @@ To change the admin address, edit it in **both** `firestore.rules` and
 `src/lib/firebase.config.ts`, then redeploy the rules. The rules file is the one
 that actually enforces it.
 
-### How you find out about a signup
+### Signup emails (EmailJS — free, no card)
 
-There is **no signup email** — that was a deliberate choice, so nothing depends
-on the Blaze plan or an SMTP account. `/#/admin` is the notification channel,
-and it is built to actually work as one:
+Each signup sends **two emails**: one to you with every field (hit *Reply* and
+you're answering the subscriber), and a confirmation to the subscriber. They go
+out through [EmailJS](https://www.emailjs.com), sending from your own Gmail.
+The free plan is 200 emails a month, which is 100 signups, with no card needed.
+Firebase's own email extension needs the Blaze plan.
+
+Order of operations: save to Firestore first, then email. If the Firestore
+write is rejected, **no** confirmation goes out for a signup that was never
+saved. If Firebase isn't set up at all, the admin email *is* the record.
+
+1. Sign up at emailjs.com → **Email Services → Add New Service → Gmail** →
+   connect `nischaysai35@gmail.com`. Copy the **Service ID**.
+2. **Email Templates → Create New Template** — the **admin** one:
+   - *To Email:* `nischaysai35@gmail.com`  ·  *Reply To:* `{{email}}`
+   - *Subject:* `New waitlist signup — {{product}}`
+   - *Content:*
+     ```
+     {{name}} <{{email}}> joined the waitlist.
+
+     Product:      {{product}}
+     Quantity:     {{quantity}}
+     Organisation: {{organisation}}
+     Country:      {{country}}
+
+     {{message}}
+
+     All signups: {{admin_url}}
+     ```
+   Save, copy its **Template ID**.
+3. Create the second template, the **confirmation**:
+   - *To Email:* `{{email}}`  ·  *From Name:* `Nischay Robotics`  ·  *Reply To:* `nischaysai35@gmail.com`
+   - *Subject:* `You're on the Nischay Robotics waitlist`
+   - *Content:*
+     ```
+     Hi {{name}},
+
+     Thanks for joining the waitlist for the {{product}}. You'll hear from me
+     directly the moment it's ready to ship, and nothing before that.
+
+     If you left a note, I'll reply to it personally. You can also just reply
+     to this email.
+
+     — Nischay
+     Nischay Robotics, Bengaluru
+     ```
+   Save, copy its **Template ID**.
+4. **Account → General** → copy the **Public Key**.
+5. Put all four in `.env` (`VITE_EMAILJS_*`, see `.env.example`), and in your
+   host's environment variables if it builds for you.
+6. **Account → Security**: turn on whatever origin/domain restriction and rate
+   limit your plan offers, so the key only works from your site.
+
+Variables available in both templates: `name`, `email`, `product`, `quantity`,
+`organisation`, `country`, `message`, `admin_url`.
+
+### The admin page
+
+`/#/admin` is where the full list lives, and it is built to work as a
+notification channel as well:
 
 - **Live.** It subscribes with `onSnapshot`, so a signup appears while you're
   looking at it. No refresh.
@@ -105,10 +162,8 @@ and it is built to actually work as one:
 - Table on desktop, cards on a phone — because that's where you'll actually
   check it.
 
-If signups ever get frequent enough that you want mail too, the Firebase
-**"Trigger Email from Firestore"** extension watches the collection and sends
-via your SMTP (a Gmail app password works). It needs the **Blaze** plan — a card
-on file, though the free allowance covers a waitlist many times over.
+If you outgrow EmailJS's 200/month, the Firebase **"Trigger Email from
+Firestore"** extension is the next step. It needs the **Blaze** plan.
 
 ### Where the pieces live
 
@@ -116,7 +171,8 @@ on file, though the free allowance covers a waitlist many times over.
 |---|---|
 | `src/lib/firebase.config.ts` | env values + `isFirebaseConfigured`. **No SDK code** — importing it costs nothing. |
 | `src/lib/firebase.ts` | SDK init. **Dynamic-import only** — a static import anywhere puts ~200KB of Firebase in the initial bundle. |
-| `src/lib/waitlist.ts` | Submit, with the email fallback. |
+| `src/lib/waitlist.ts` | Submit: Firestore → emails → mailto fallback. `LIMITS` mirrors the rules. |
+| `src/lib/email.ts` | EmailJS REST client (no SDK). Best-effort; never fails a signup. |
 | `src/components/WaitlistModal.tsx` | The form. |
 | `src/pages/Admin.tsx` | `/#/admin` — sign in, read, export CSV. |
 | `firestore.rules` | The only thing actually protecting the data. |
@@ -212,7 +268,7 @@ src/
 ├─ App.tsx                  ← page composition
 ├─ sections/                ← one file per band of the page
 │  ├─ Nav · Hero · Pillars · Configurations · Products
-│  └─ Tetrobot · Prototypes · Founder · Footer
+│  └─ Tetrobot · Prototypes · Founder · Community · Footer
 ├─ components/
 │  ├─ GraphVsTree.tsx       ← the interactive graph-vs-tree diagram
 │  ├─ ConfigGallery.tsx     ← auto-cycling shape gallery + lightbox

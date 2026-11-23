@@ -63,6 +63,7 @@ export function Footer() {
                 </h4>
                 <ul className="mt-4 space-y-2.5">
                   {[
+                    ...(links.discord ? [{ label: 'Discord', href: links.discord }] : []),
                     { label: 'GitHub', href: links.github },
                     { label: 'LinkedIn', href: links.linkedin },
                     { label: 'YouTube', href: links.youtube },

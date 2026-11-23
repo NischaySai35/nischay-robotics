@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { products, waitlist as copy } from '@/content/site'
+import { community, links, products, waitlist as copy } from '@/content/site'
 import { isFirebaseConfigured } from '@/lib/firebase.config'
-import { submitWaitlist } from '@/lib/waitlist'
+import { isEmailConfigured } from '@/lib/email'
+import { LIMITS, submitWaitlist } from '@/lib/waitlist'
 import type { SubmitResult } from '@/lib/waitlist'
 import { pauseScroll, resumeScroll } from '@/lib/scroll'
 import { WaitlistContext } from '@/lib/waitlistContext'
@@ -28,6 +29,9 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
   const [slug, setSlug] = useState<string>(products[0].slug)
   const [phase, setPhase] = useState<Phase>('form')
   const [mailto, setMailto] = useState('')
+  const [failReason, setFailReason] = useState<'offline' | 'error'>('offline')
+  const [confirmationSent, setConfirmationSent] = useState(false)
+  const [nameError, setNameError] = useState(false)
 
   const returnFocus = useRef<HTMLElement | null>(null)
   const firstFieldRef = useRef<HTMLInputElement>(null)
@@ -37,6 +41,8 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
     if (productSlug) setSlug(productSlug)
     setPhase('form')
     setMailto('')
+    setConfirmationSent(false)
+    setNameError(false)
     setOpen(true)
   }, [])
 
@@ -65,8 +71,23 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (phase === 'sending') return // double-click guard
     const data = new FormData(e.currentTarget)
     const product = products.find((p) => p.slug === data.get('product')) ?? products[0]
+
+    // Honeypot: invisible to people, irresistible to form-filling bots. Pretend
+    // it worked so the bot learns nothing.
+    if (String(data.get('website') ?? '')) {
+      setPhase('done')
+      return
+    }
+
+    // `required` lets a name made of only spaces through; the rules don't.
+    if (!String(data.get('name') ?? '').trim()) {
+      setNameError(true)
+      firstFieldRef.current?.focus()
+      return
+    }
 
     setPhase('sending')
 
@@ -82,9 +103,11 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
     })
 
     if (result.status === 'stored') {
+      setConfirmationSent(result.confirmationSent)
       setPhase('done')
-    } else if (result.status === 'fallback') {
+    } else {
       setMailto(result.mailto)
+      setFailReason(result.reason)
       setPhase('fallback')
     }
   }
@@ -142,6 +165,31 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                     <p className="text-chalk/60 mx-auto mt-3 max-w-sm text-sm leading-relaxed">
                       {copy.successBlurb}
                     </p>
+                    {confirmationSent && (
+                      <p className="text-chalk/45 mx-auto mt-2 max-w-sm text-[13px] leading-relaxed">
+                        {copy.confirmationNote}
+                      </p>
+                    )}
+
+                    {links.discord && (
+                      <div className="glass-soft mx-auto mt-6 max-w-sm px-5 py-4 text-left">
+                        <p className="relative z-10 text-[13px] leading-relaxed">
+                          <span className="text-chalk font-semibold">While you wait</span>
+                          <span className="text-chalk/55">
+                            {' '}— come build with us on Discord. Early looks land there first.
+                          </span>
+                        </p>
+                        <a
+                          href={links.discord}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="text-accent hover:text-sun relative z-10 mt-2 inline-block text-[13px] font-semibold"
+                        >
+                          {community.cta} ↗
+                        </a>
+                      </div>
+                    )}
+
                     <button
                       type="button"
                       onClick={close}
@@ -154,9 +202,9 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                   <div className="py-4 text-center">
                     <h3 className="text-xl">One more tap</h3>
                     <p className="text-chalk/60 mx-auto mt-3 max-w-sm text-sm leading-relaxed">
-                      The signup list isn't connected yet, so this opens a prefilled email
-                      instead — everything you typed is already in it. Send it and you're on
-                      the list.
+                      {failReason === 'error'
+                        ? 'Something went wrong saving your signup — possibly the connection. This opens a prefilled email instead, with everything you typed already in it. Send it and you’re on the list.'
+                        : 'The signup list isn’t connected yet, so this opens a prefilled email instead — everything you typed is already in it. Send it and you’re on the list.'}
                     </p>
                     <a
                       href={mailto}
@@ -190,28 +238,49 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                       <div className="grid gap-4 sm:grid-cols-2">
                         <label className="block">
                           <Label>Name</Label>
-                          <input ref={firstFieldRef} name="name" required className={field} placeholder="Your name" />
+                          <input
+                            ref={firstFieldRef}
+                            name="name"
+                            required
+                            maxLength={LIMITS.name}
+                            autoComplete="name"
+                            aria-invalid={nameError || undefined}
+                            onChange={() => nameError && setNameError(false)}
+                            className={field}
+                            placeholder="Your name"
+                          />
+                          {nameError && (
+                            <span className="mt-1.5 block text-[12px] text-[#E5484D]">Please enter your name.</span>
+                          )}
                         </label>
                         <label className="block">
                           <Label>Email</Label>
-                          <input name="email" type="email" required className={field} placeholder="you@example.com" />
+                          <input
+                            name="email"
+                            type="email"
+                            required
+                            maxLength={LIMITS.email}
+                            autoComplete="email"
+                            className={field}
+                            placeholder="you@example.com"
+                          />
                         </label>
                       </div>
 
                       <div className="grid gap-4 sm:grid-cols-2">
                         <label className="block">
                           <Label hint="optional">Country</Label>
-                          <input name="country" className={field} placeholder="India" />
+                          <input name="country" maxLength={LIMITS.country} autoComplete="country-name" className={field} placeholder="India" />
                         </label>
                         <label className="block">
                           <Label hint="optional">How many?</Label>
-                          <input name="quantity" className={field} placeholder="1" inputMode="numeric" />
+                          <input name="quantity" maxLength={LIMITS.quantity} className={field} placeholder="1" inputMode="numeric" />
                         </label>
                       </div>
 
                       <label className="block">
                         <Label hint="optional">Organisation</Label>
-                        <input name="organisation" className={field} placeholder="Lab, university or company" />
+                        <input name="organisation" maxLength={LIMITS.organisation} autoComplete="organization" className={field} placeholder="Lab, university or company" />
                       </label>
 
                       <label className="block">
@@ -219,11 +288,22 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                         <textarea
                           name="message"
                           rows={3}
+                          maxLength={LIMITS.message}
                           className={`${field} resize-none`}
                           placeholder="Tells me which tool tip to build first."
                         />
                       </label>
                     </div>
+
+                    {/* Honeypot — hidden from people and screen readers. */}
+                    <input
+                      type="text"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                      className="sr-only"
+                    />
 
                     <button
                       type="submit"
@@ -233,7 +313,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                       {phase === 'sending' ? 'Adding you…' : 'Join the waitlist'}
                     </button>
 
-                    {!isFirebaseConfigured && (
+                    {!isFirebaseConfigured && !isEmailConfigured && (
                       <p className="text-chalk/30 mt-3 text-center text-[11px]">
                         Signups currently arrive by email.
                       </p>

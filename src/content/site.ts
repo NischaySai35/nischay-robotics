@@ -8,6 +8,7 @@
    │   2. links.youtube     — your channel URL                              │
    │   3. videos[1..]       — YouTube IDs for the other prototype clips     │
    │   4. contact.email     — swap to a company address if you register one │
+   │   5. links.discord     — your Discord server invite link               │
    │  The logo mark lives in src/components/ui/Logo.tsx (one file, one SVG).│
    └────────────────────────────────────────────────────────────────────────┘
    ========================================================================= */
@@ -29,6 +30,10 @@ export const links = {
   // TODO: point at real docs once they exist. `null` renders the button as
   // "Docs — coming soon" and disables it, rather than shipping a dead link.
   docs: null as string | null,
+  // TODO: paste your Discord invite (Server Settings → Invites, or right-click
+  // the server → Invite People → Edit invite link → Expire: Never). While it is
+  // `null`, every "Join the community" button renders as "opening soon".
+  discord: null as string | null,
 } as const
 
 export const contact = {
@@ -431,6 +436,22 @@ export const waitlist = {
   success: "You're on the list.",
   successBlurb:
     "You'll hear from me directly when the modules are ready to ship. If you added a note, I'll answer that too.",
+  confirmationNote: 'A confirmation is on its way to your inbox — check spam if it hides.',
+}
+
+/* -- Community ------------------------------------------------------------- */
+
+export const community = {
+  kicker: 'Community',
+  headline: 'Build alongside us.',
+  body: 'The Discord is where builds get shared, configurations get argued about, and early hardware news lands first. Ask the person who designed the modules anything, see work-in-progress before it ships, and help decide what gets built next.',
+  points: [
+    'Early looks at modules, kits and Tetrobot releases',
+    'Share what you build — or what you wish you could',
+    'Direct line to the founder, not a support queue',
+  ],
+  cta: 'Join the Discord',
+  pending: 'Discord opening soon',
 }
 
 /* -- Navigation ------------------------------------------------------------ */
