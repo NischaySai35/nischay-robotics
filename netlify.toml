@@ -6,6 +6,12 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  # Every VITE_ value is compiled into the public bundle by design — Firebase
+  # web config and the EmailJS public key are identifiers, not secrets (access
+  # is enforced by firestore.rules). The project ID also equals the repo name,
+  # so the scanner false-positives on package.json. Never put a real secret in
+  # a VITE_ variable.
+  SECRETS_SCAN_OMIT_KEYS = "VITE_FIREBASE_API_KEY,VITE_FIREBASE_AUTH_DOMAIN,VITE_FIREBASE_PROJECT_ID,VITE_FIREBASE_STORAGE_BUCKET,VITE_FIREBASE_MESSAGING_SENDER_ID,VITE_FIREBASE_APP_ID,VITE_EMAILJS_SERVICE_ID,VITE_EMAILJS_PUBLIC_KEY,VITE_EMAILJS_TEMPLATE_ADMIN,VITE_EMAILJS_TEMPLATE_CONFIRM"
 
 # Single-page app: hash routes need no rewrite, but this keeps deep links safe.
 [[redirects]]
