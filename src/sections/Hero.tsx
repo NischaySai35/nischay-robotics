@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { HeroDownloadButton } from '@/components/DownloadPanel'
 import { Button, ArrowIcon } from '@/components/ui/primitives'
 import { company, featuredVideo, hero, links } from '@/content/site'
 import { navigate } from '@/lib/router'
@@ -120,8 +121,10 @@ export function Hero() {
           className="mt-10 flex flex-wrap items-center gap-3"
         >
           <Button onClick={() => navigate('/modules')}>
-            See the modules <ArrowIcon />
+            Buy modules <ArrowIcon />
           </Button>
+          {/* Always the latest release, for the visitor's own OS. */}
+          <HeroDownloadButton />
           {featuredVideo.id && (
             <Button variant="glass" onClick={() => play(featuredVideo.id!, featuredVideo.title)}>
               <PlayGlyph /> Watch the demo
@@ -159,7 +162,8 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1.3 }}
-        className="pointer-events-none absolute inset-x-0 bottom-7 flex flex-col items-center gap-2"
+        // Hidden on short screens, where it landed on top of the stat cards.
+        className="pointer-events-none absolute inset-x-0 bottom-7 flex flex-col items-center gap-2 [@media(max-height:940px)]:hidden"
       >
         <span className="text-chalk/35 text-[10px] font-medium tracking-[0.3em] uppercase">
           {company.location.split(',')[0]}

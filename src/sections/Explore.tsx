@@ -16,10 +16,10 @@ export function Explore() {
         kicker="Explore"
         title={
           <>
-            Go deeper — <span className="text-gold-grad">pick a page</span>.
+            Explore our <span className="text-gold-grad">products & services</span>.
           </>
         }
-        lead="Pricing, the full photo set, the software, the build videos and the people behind them each have a page of their own."
+        lead="Modules and pricing, the Tetrobot software, every shape the hardware makes, build videos, the company and the community — all in one place."
       />
 
       <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

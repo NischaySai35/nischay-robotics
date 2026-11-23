@@ -170,6 +170,41 @@ export function DownloadPanel() {
   )
 }
 
+/* -- Hero button ----------------------------------------------------------- */
+
+/**
+ * One glass button for the hero. Desktop visitors get their installer
+ * directly (latest release); phones and unknown systems go to the full list.
+ */
+export function HeroDownloadButton() {
+  const state = useLatestRelease()
+  const detected = usePlatform()
+  const mine = PLATFORMS.find((p) => p.id === detected) ?? null
+
+  const cls =
+    'glass-soft text-chalk group relative inline-flex items-center justify-center gap-2 !rounded-full px-6 py-3 text-sm font-semibold tracking-tight transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:bg-chalk/[0.06]'
+
+  const label = (
+    <span className="relative z-10 inline-flex items-center gap-2">
+      {mine ? <OsIcon os={mine.os} size={15} /> : <DownloadGlyph />}
+      Download{mine ? ` for ${mine.os === 'mac' ? 'Mac' : mine.label.split(' ')[0]}` : ' Tetrobot'}
+    </span>
+  )
+
+  if (!mine) {
+    return (
+      <a href="/download" className={cls}>
+        {label}
+      </a>
+    )
+  }
+  return (
+    <a href={hrefFor(state, mine.id)} rel="noreferrer noopener" className={cls} title={`${software.name} — latest release`}>
+      {label}
+    </a>
+  )
+}
+
 /* -- Compact: home page ---------------------------------------------------- */
 
 export function DownloadCompact() {

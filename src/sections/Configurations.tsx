@@ -173,12 +173,15 @@ export function ShapesPage() {
         <AsideCard title="Want a set of your own?" body="These are the same modules going on sale.">
           <Link
             to="/modules"
-            className="from-sun via-gold to-ember text-onbrand flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-br py-2.5 text-[13px] font-semibold"
+            className="from-sun via-gold to-ember text-onbrand flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-br px-4 py-2.5 text-center text-[13px] font-semibold"
           >
             See modules & pricing
           </Link>
-          <Link to="/tetrobot" className="glass-soft text-chalk flex w-full items-center justify-center !rounded-full py-2.5 text-[13px] font-semibold">
-            How the software sees them
+          <Link
+            to="/tetrobot"
+            className="glass-soft text-chalk flex w-full items-center justify-center !rounded-full px-4 py-2.5 text-center text-[13px] font-semibold"
+          >
+            <span className="relative z-10">Explore the software</span>
           </Link>
         </AsideCard>
       }
