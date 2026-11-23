@@ -1,0 +1,14 @@
+# Netlify build settings. Kept in the repo so the dashboard can't drift.
+# Vite 8 / Rolldown need Node ^20.19 or >=22.12 — older defaults fail the build.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Single-page app: hash routes need no rewrite, but this keeps deep links safe.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
