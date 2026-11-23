@@ -33,7 +33,7 @@ export const links = {
   // TODO: paste your Discord invite (Server Settings → Invites, or right-click
   // the server → Invite People → Edit invite link → Expire: Never). While it is
   // `null`, every "Join the community" button renders as "opening soon".
-  discord: null as string | null,
+  discord: 'https://discord.gg/XuX7EaHkw2' as string | null,
 } as const
 
 export const contact = {
