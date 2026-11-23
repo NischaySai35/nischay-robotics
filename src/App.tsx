@@ -13,6 +13,7 @@ import { jumpToTop, useSmoothScroll } from '@/lib/scroll'
 import { useTheme } from '@/lib/theme'
 import { Nav } from '@/sections/Nav'
 import { Hero } from '@/sections/Hero'
+import { GetStarted } from '@/sections/GetStarted'
 import { Pillars } from '@/sections/Pillars'
 import { Explore } from '@/sections/Explore'
 import { CommunityBand, CommunityPage } from '@/sections/Community'
@@ -43,6 +44,7 @@ function Home() {
   return (
     <main className="grain relative">
       <Hero />
+      <GetStarted />
       <Pillars />
       <Explore />
       <CommunityBand />
@@ -82,6 +84,7 @@ const ROUTES: Record<string, () => ReactNode> = {
   '/prototypes': () => <PrototypesPage />,
   '/company': () => <CompanyPage />,
   '/community': () => <CommunityPage />,
+  // /download is an alias, resolved in lib/router.ts before render.
 }
 
 export default function App() {

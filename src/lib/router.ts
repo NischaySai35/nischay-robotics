@@ -17,6 +17,23 @@ import { useSyncExternalStore } from 'react'
 
 const EVENT = 'nr:navigate'
 
+/**
+ * Short, shareable aliases. Resolved before anything renders — on first load
+ * here at module time, and inside navigate() for in-app links — so the target
+ * page mounts exactly once and its deep-link scroll lands correctly.
+ */
+const REDIRECTS: Record<string, string> = {
+  '/download': '/tetrobot#download',
+  '/downloads': '/tetrobot#download',
+}
+
+const resolveAlias = (to: string) => REDIRECTS[to.split('#')[0].replace(/\/+$/, '') || '/'] ?? to
+
+if (typeof window !== 'undefined') {
+  const target = resolveAlias(window.location.pathname)
+  if (target !== window.location.pathname) window.history.replaceState({}, '', target)
+}
+
 function subscribe(cb: () => void) {
   window.addEventListener('popstate', cb)
   window.addEventListener('hashchange', cb)
@@ -41,8 +58,10 @@ export function useLocation(): { path: string; hash: string } {
 }
 
 /** Client-side navigation. External or same-tab-modified clicks are left alone by <Link>. */
-export function navigate(to: string) {
+export function navigate(target: string, { replace = false }: { replace?: boolean } = {}) {
+  const to = resolveAlias(target)
   const current = window.location.pathname + window.location.hash
-  if (to !== current) window.history.pushState({}, '', to)
+  if (replace) window.history.replaceState({}, '', to)
+  else if (to !== current) window.history.pushState({}, '', to)
   window.dispatchEvent(new Event(EVENT))
 }

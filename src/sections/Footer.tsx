@@ -42,6 +42,11 @@ export function Footer() {
                     </li>
                   ))}
                   <li>
+                    <Link to="/download" className="text-accent hover:text-sun text-sm font-semibold transition-colors">
+                      Download Tetrobot
+                    </Link>
+                  </li>
+                  <li>
                     <button
                       type="button"
                       onClick={() => join()}

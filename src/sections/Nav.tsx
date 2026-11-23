@@ -76,8 +76,8 @@ export function Nav() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:pt-5">
       <nav
-        className={`glass-strong refract-soft flex w-full max-w-5xl items-center justify-between !rounded-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          scrolled ? 'px-3 py-2 sm:px-4' : 'px-4 py-2.5 sm:px-5 sm:py-3'
+        className={`glass-strong flex w-full max-w-5xl items-center justify-between !rounded-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          scrolled ? 'nav-scrolled px-3 py-2 sm:px-4' : 'refract-soft px-4 py-2.5 sm:px-5 sm:py-3'
         }`}
       >
         <Link

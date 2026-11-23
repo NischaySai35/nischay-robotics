@@ -1,4 +1,6 @@
+import { DownloadPanel } from '@/components/DownloadPanel'
 import { GraphVsTree } from '@/components/GraphVsTree'
+import { scrollToId } from '@/lib/scroll'
 import { AsideCard, Block, PageShell } from '@/components/PageShell'
 import { Link } from '@/components/ui/Link'
 import { ArrowIcon, Button, Reveal } from '@/components/ui/primitives'
@@ -23,6 +25,7 @@ function CheckIcon() {
 }
 
 const SECTIONS = [
+  { id: 'download', label: 'Download' },
   { id: 'graph-vs-tree', label: 'Graph vs tree' },
   { id: 'proof', label: 'Hardware proof' },
   { id: 'assumptions', label: 'Assumption vs reality' },
@@ -42,8 +45,15 @@ export function TetrobotPage() {
       lead={tetrobot.intro}
       sections={SECTIONS}
       aside={
-        <AsideCard title={tetrobot.name} body={`The ${tetrobot.nameNote}. Early, and already public on GitHub.`}>
-          <Button href={links.githubTetrobot} external className="w-full !py-2.5 !text-[13px]">
+        <AsideCard title={tetrobot.name} body={`The ${tetrobot.nameNote}. Free desktop demo for Windows, macOS and Linux.`}>
+          <Link
+            to="/tetrobot#download"
+            onClick={() => scrollToId('download', window.innerWidth >= 1024 ? 112 : 150)}
+            className="from-sun via-gold to-ember text-onbrand flex w-full items-center justify-center rounded-full bg-gradient-to-br py-2.5 text-[13px] font-semibold"
+          >
+            Download
+          </Link>
+          <Button variant="glass" href={links.githubTetrobot} external className="w-full !py-2.5 !text-[13px]">
             Source on GitHub
           </Button>
           <Button
@@ -58,6 +68,13 @@ export function TetrobotPage() {
         </AsideCard>
       }
     >
+      {/* Always the latest GitHub release — see lib/releases.ts */}
+      <Block id="download" title="Download the desktop demo">
+        <Reveal>
+          <DownloadPanel />
+        </Reveal>
+      </Block>
+
       {/* The diagram */}
       <Block id="graph-vs-tree" title="Graph vs tree">
         <Reveal>
@@ -172,6 +189,14 @@ export function TetrobotPage() {
                   <span className="text-accent text-[11px] font-semibold tracking-[0.2em] uppercase">Status</span>
                 </div>
                 <p className="text-chalk/65 text-sm leading-relaxed">{tetrobot.status}</p>
+                <a
+                  href={links.githubArmInterface}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-chalk/50 hover:text-accent mt-3 inline-block text-[13px] font-medium transition-colors"
+                >
+                  Earlier: modular arm control interface ↗
+                </a>
               </div>
 
               <div className="flex shrink-0 flex-wrap gap-3">

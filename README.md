@@ -259,6 +259,32 @@ points at `icon-96.png` with `srcSet` for denser displays.
 
 ---
 
+## Software downloads (always the latest release)
+
+The Download buttons (home page, `/tetrobot#download`, and the short link
+`/download`) are **never hard-coded**. On each visit the site asks GitHub's
+public API for the latest release of `NischaySai35/robo4` and picks each
+platform's installer by filename:
+
+| Platform | Matches |
+|---|---|
+| Windows | `…Setup…exe` |
+| macOS Apple Silicon | `…arm64.dmg` |
+| macOS Intel | `…x64.dmg` |
+| Linux AppImage | `….AppImage` |
+| Linux Debian/Ubuntu | `…amd64.deb` |
+
+**To ship a new version: publish a GitHub release. That's all** — no code
+change, no deploy. Keep the same naming (electron-builder's defaults) and every
+button picks it up on the next page view. The visitor's OS is detected and
+highlighted. If GitHub is unreachable or rate-limited, every button falls back
+to the release page, so nothing ever breaks.
+
+Repo and copy live in `software` in `src/content/site.ts`; the logic is in
+`src/lib/releases.ts`.
+
+---
+
 ## Pages
 
 | URL | What's on it | File |

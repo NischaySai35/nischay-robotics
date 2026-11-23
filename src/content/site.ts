@@ -22,7 +22,10 @@ export const company = {
 
 export const links = {
   github: 'https://github.com/NischaySai35',
-  githubTetrobot: 'https://github.com/NischaySai35/Tetrobot_robotic_arm',
+  // The Tetrobot software itself — source and desktop releases.
+  githubTetrobot: 'https://github.com/NischaySai35/robo4',
+  // Earlier work: the wireless web interface for the modular arm.
+  githubArmInterface: 'https://github.com/NischaySai35/Tetrobot_robotic_arm',
   linkedin: 'https://www.linkedin.com/in/nischaysai35',
   youtube: 'https://www.youtube.com/channel/UCAeIffBz9DDeHo-DKEr1x7g',
   instagram: 'https://www.instagram.com/nischay_sai_35',
@@ -125,7 +128,23 @@ export const tetrobot = {
     },
   ],
   status:
-    'Early and in active development. Earlier working versions — including the wireless control interface for the modular arm — are already public on GitHub.',
+    'Early and in active development. The desktop demo is downloadable for Windows, macOS and Linux, and earlier work — including the wireless control interface for the modular arm — is public on GitHub too.',
+} as const
+
+/* -- Software downloads ----------------------------------------------------
+   The desktop app ships as GitHub releases. The site always asks GitHub for
+   the LATEST release and picks each platform's installer by filename (see
+   lib/releases.ts) — publish a new release and the buttons update by
+   themselves. Change `repo` only if the releases move to another repository. */
+
+export const software = {
+  name: 'Tetrobot Demo',
+  repo: 'NischaySai35/robo4',
+  releasesUrl: 'https://github.com/NischaySai35/robo4/releases/latest',
+  blurb:
+    'The Tetrobot desktop demo — the graph-native runtime and its interface, packaged for every desktop. Free to download.',
+  firstLaunch:
+    'If Windows SmartScreen or macOS says the app is from an unidentified developer, choose "More info → Run anyway" on Windows, or right-click the app and choose "Open" on a Mac.',
 } as const
 
 /* -- Prototype videos ------------------------------------------------------
