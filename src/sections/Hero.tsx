@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { Button, ArrowIcon } from '@/components/ui/primitives'
 import { company, featuredVideo, hero, links } from '@/content/site'
-import { scrollToId } from '@/lib/scroll'
+import { navigate } from '@/lib/router'
 import { useVideoPlayer } from '@/lib/videoContext'
 
 const EASE = [0.16, 1, 0.3, 1] as const
@@ -119,7 +119,7 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.62, ease: EASE }}
           className="mt-10 flex flex-wrap items-center gap-3"
         >
-          <Button onClick={() => scrollToId('products')}>
+          <Button onClick={() => navigate('/modules')}>
             See the modules <ArrowIcon />
           </Button>
           {featuredVideo.id && (

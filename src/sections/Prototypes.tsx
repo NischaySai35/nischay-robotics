@@ -1,8 +1,9 @@
-import { ArrowIcon, Button, Reveal, Section, SectionHeading } from '@/components/ui/primitives'
+import { AsideCard, Block, PageShell } from '@/components/PageShell'
+import { Button, Reveal } from '@/components/ui/primitives'
 import { PlayBadge } from '@/components/VideoPlayer'
 import { useVideoPlayer } from '@/lib/videoContext'
 import { YouTubeThumb } from '@/components/YouTubeThumb'
-import { links, videos } from '@/content/site'
+import { links, pageAt, videos } from '@/content/site'
 import type { Video } from '@/content/site'
 
 /** An empty slot, for videos not yet uploaded. */
@@ -71,42 +72,50 @@ function VideoTile({ video, featured = false }: { video: Video; featured?: boole
   )
 }
 
-export function Prototypes() {
+export function PrototypesPage() {
   const featured = videos.find((v) => v.featured)
   const rest = videos.filter((v) => !v.featured)
 
-  return (
-    <Section id="prototypes">
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <SectionHeading
-          kicker="Prototypes"
-          title={
-            <>
-              It only counts when it <span className="text-gold-grad">moves</span>.
-            </>
-          }
-          lead="Build logs from the desk. More going up as the next revisions come off the printer."
-        />
-        <Reveal delay={0.12}>
-          <Button variant="glass" href={links.youtube} external>
-            YouTube channel <ArrowIcon />
-          </Button>
-        </Reveal>
-      </div>
+  const sections = [
+    ...(featured ? [{ id: 'main-demo', label: 'Main demo' }] : []),
+    { id: 'builds', label: 'More builds' },
+  ]
 
+  return (
+    <PageShell
+      page={pageAt('/prototypes')}
+      title={
+        <>
+          It only counts when it <span className="text-gold-grad">moves</span>.
+        </>
+      }
+      lead="Build logs from the desk. More going up as the next revisions come off the printer."
+      sections={sections}
+      aside={
+        <AsideCard title="New uploads first" body="Subscribe for every new revision as it comes off the printer.">
+          <Button href={links.youtube} external className="w-full !py-2.5 !text-[13px]">
+            YouTube channel
+          </Button>
+        </AsideCard>
+      }
+    >
       {featured && (
-        <Reveal className="mt-14">
-          <VideoTile video={featured} featured />
-        </Reveal>
+        <Block id="main-demo" title="Main demo">
+          <Reveal>
+            <VideoTile video={featured} featured />
+          </Reveal>
+        </Block>
       )}
 
-      <div className={`grid gap-5 sm:grid-cols-2 ${featured ? 'mt-5' : 'mt-14'}`}>
-        {rest.map((v, i) => (
-          <Reveal key={v.id ?? `slot-${i}`} delay={(i % 2) * 0.08}>
-            <VideoTile video={v} />
-          </Reveal>
-        ))}
-      </div>
-    </Section>
+      <Block id="builds" title="More builds">
+        <div className="grid gap-5 sm:grid-cols-2">
+          {rest.map((v, i) => (
+            <Reveal key={v.id ?? `slot-${i}`} delay={(i % 2) * 0.08}>
+              <VideoTile video={v} />
+            </Reveal>
+          ))}
+        </div>
+      </Block>
+    </PageShell>
   )
 }

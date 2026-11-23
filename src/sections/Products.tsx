@@ -1,5 +1,6 @@
-import { Reveal, Section, SectionHeading } from '@/components/ui/primitives'
-import { currency, productSection, products } from '@/content/site'
+import { AsideCard, Block, PageShell } from '@/components/PageShell'
+import { Button, Reveal } from '@/components/ui/primitives'
+import { currency, links, pageAt, productSection, products } from '@/content/site'
 import type { Product } from '@/content/site'
 import { useWaitlist } from '@/lib/waitlistContext'
 
@@ -134,33 +135,92 @@ function PriceCard({ product }: { product: Product }) {
   )
 }
 
-export function Products() {
+const SECTIONS = [
+  { id: 'pricing', label: 'Pricing' },
+  { id: 'waitlist', label: 'How the waitlist works' },
+  { id: 'shipping', label: 'Shipping & currency' },
+] as const
+
+export function ModulesPage() {
+  const join = useWaitlist()
+
   return (
-    <Section id="products">
-      <SectionHeading
-        kicker={productSection.kicker}
-        title={
-          <>
-            Buy the parts. <span className="text-gold-grad">Build any body.</span>
-          </>
-        }
-        lead={productSection.lead}
-      />
+    <PageShell
+      page={pageAt('/modules')}
+      title={
+        <>
+          Buy the parts. <span className="text-gold-grad">Build any body.</span>
+        </>
+      }
+      lead={productSection.lead}
+      sections={SECTIONS}
+      aside={
+        <AsideCard title="Be first in line" body="One email when the modules ship. Nothing else.">
+          <Button onClick={() => join()} className="w-full !py-2.5 !text-[13px]">
+            Join the waitlist
+          </Button>
+          <Button variant="glass" href={links.discord ?? undefined} external disabled={!links.discord} className="w-full !py-2.5 !text-[13px]">
+            Ask on Discord
+          </Button>
+        </AsideCard>
+      }
+    >
+      <Block id="pricing" title="Pricing">
+        <div className="grid items-stretch gap-5 xl:grid-cols-3">
+          {products.map((p, i) => (
+            <Reveal key={p.slug} delay={i * 0.08} className="h-full">
+              <PriceCard product={p} />
+            </Reveal>
+          ))}
+        </div>
+      </Block>
 
-      <div className="mt-14 grid items-stretch gap-5 lg:grid-cols-3">
-        {products.map((p, i) => (
-          <Reveal key={p.slug} delay={i * 0.08} className="h-full">
-            <PriceCard product={p} />
-          </Reveal>
-        ))}
-      </div>
+      <Block id="waitlist" title="How the waitlist works">
+        <ol className="grid gap-4 md:grid-cols-3">
+          {WAITLIST_STEPS.map((s, i) => (
+            <Reveal key={s.title} delay={i * 0.07} className="h-full">
+              <li className="glass h-full list-none p-6">
+                <div className="relative z-10">
+                  <span className="bg-gold/12 text-accent flex h-9 w-9 items-center justify-center rounded-xl text-[13px] font-bold">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <h3 className="mt-4 text-base font-semibold">{s.title}</h3>
+                  <p className="text-chalk/58 mt-2 text-sm leading-relaxed">{s.body}</p>
+                </div>
+              </li>
+            </Reveal>
+          ))}
+        </ol>
+      </Block>
 
-      <Reveal delay={0.1}>
-        <p className="text-chalk/40 mx-auto mt-8 max-w-2xl text-center text-[13px] leading-relaxed">
-          {productSection.shippingNote}{' '}
-          <span className="text-chalk/25">{currency.note}</span>
-        </p>
-      </Reveal>
-    </Section>
+      <Block id="shipping" title="Shipping & currency">
+        <Reveal>
+          <div className="glass p-6 sm:p-7">
+            <div className="relative z-10 space-y-3">
+              <p className="text-chalk/70 text-sm leading-relaxed sm:text-[15px]">{productSection.shippingNote}</p>
+              <p className="text-chalk/45 text-[13px] leading-relaxed">
+                {currency.note} Converted at about ₹{currency.inrPerUsd} per US dollar.
+              </p>
+            </div>
+          </div>
+        </Reveal>
+      </Block>
+    </PageShell>
   )
 }
+
+/** Only what is actually true of the waitlist today — no promised dates. */
+const WAITLIST_STEPS = [
+  {
+    title: 'Join — it’s free',
+    body: 'Pick a product and leave your email. Joining costs nothing and doesn’t commit you to buying.',
+  },
+  {
+    title: 'Get one email',
+    body: 'When modules are ready to ship, you hear first — directly from the person who built them. No newsletter in between.',
+  },
+  {
+    title: 'Shape what ships',
+    body: 'Tell us what you’d build. Notes on the form decide which tool tip gets designed first.',
+  },
+]

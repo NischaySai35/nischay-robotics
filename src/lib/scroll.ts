@@ -11,16 +11,23 @@ import { useReducedMotion } from '@/hooks/useEnvironment'
  */
 let lenis: Lenis | null = null
 
-export function scrollToId(id: string) {
+/** `offset` = space to leave above the target (the fixed nav, plus any sticky bar). */
+export function scrollToId(id: string, offset = 80, immediate = false) {
   const el = document.getElementById(id)
   if (!el) return
 
-  if (lenis) {
-    lenis.scrollTo(el, { offset: -80, duration: 1.15 })
-  } else {
-    const top = el.getBoundingClientRect().top + window.scrollY - 80
-    window.scrollTo({ top, behavior: 'smooth' })
-  }
+  // An absolute pixel target, not the element: Lenis adds the element's CSS
+  // scroll-margin on top of `offset` when given an element, double-counting
+  // the gap on anything that sets `scroll-mt-*`.
+  const top = el.getBoundingClientRect().top + window.scrollY - offset
+  if (lenis) lenis.scrollTo(top, { duration: 1.15, immediate })
+  else window.scrollTo({ top, behavior: immediate ? 'auto' : 'smooth' })
+}
+
+/** Instant jump to the top — for page changes, where a smooth scroll would read as lag. */
+export function jumpToTop() {
+  if (lenis) lenis.scrollTo(0, { immediate: true, force: true })
+  window.scrollTo(0, 0)
 }
 
 /**

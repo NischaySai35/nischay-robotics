@@ -259,25 +259,50 @@ points at `icon-96.png` with `srcSet` for denser displays.
 
 ---
 
+## Pages
+
+| URL | What's on it | File |
+|---|---|---|
+| `/` | Hero, the three pillars, a card per page, Discord strip | `App.tsx` (`Home`) |
+| `/modules` | Pricing, how the waitlist works, shipping | `sections/Products.tsx` |
+| `/shapes` | Numbers, rolling clip, all configurations | `sections/Configurations.tsx` |
+| `/tetrobot` | Graph vs tree, hardware proof, capabilities, status | `sections/Tetrobot.tsx` |
+| `/prototypes` | Main demo and build videos | `sections/Prototypes.tsx` |
+| `/company` | Founder, background, partnerships | `sections/Founder.tsx` |
+| `/community` | Discord, every other channel | `sections/Community.tsx` |
+| `/#/admin` | Waitlist admin (also `/admin`) | `pages/Admin.tsx` |
+
+Every inner page uses `components/PageShell.tsx`: breadcrumb and title, a
+sticky **side menu** of the page's sections (chips on phones), a call-to-action
+card, and previous/next links. To add a section, add a `<Block id="…">` and an
+entry in that page's `SECTIONS`. To add a page, add it to `pages` in
+`site.ts` (nav, footer, home cards and next/previous all follow) and to
+`ROUTES` in `App.tsx`.
+
+Routing is hand-rolled in `lib/router.ts` — real paths, no library. Both hosts
+send unknown paths to `index.html` (`firebase.json` rewrites,
+`netlify.toml` redirect), so a refresh or a shared link always works. Deep
+links to a section work too: `/tetrobot#capabilities`.
+
 ## What's where
 
 ```
 src/
-├─ content/site.ts          ← ALL copy, links, products, videos. Start here.
+├─ content/site.ts          ← ALL copy, links, pages, products. Start here.
 ├─ index.css                ← design tokens + the glass material
-├─ App.tsx                  ← page composition
-├─ sections/                ← one file per band of the page
-│  ├─ Nav · Hero · Pillars · Configurations · Products
-│  └─ Tetrobot · Prototypes · Founder · Community · Footer
+├─ App.tsx                  ← routes, Home, 404
+├─ sections/                ← one file per page (plus Nav · Hero · Pillars ·
+│                              Explore · Footer)
 ├─ components/
+│  ├─ PageShell.tsx         ← shared inner-page frame + side menu
 │  ├─ GraphVsTree.tsx       ← the interactive graph-vs-tree diagram
 │  ├─ ConfigGallery.tsx     ← auto-cycling shape gallery + lightbox
 │  ├─ VideoPlayer.tsx       ← the shared lightbox player (useVideoPlayer)
 │  ├─ background/           ← WebGL droplet field (shader + R3F canvas)
 │  ├─ svg/Filters.tsx       ← refraction + gooey SVG filters
-│  └─ ui/                   ← Logo, buttons, glass cards, scroll reveal
+│  └─ ui/                   ← Logo, Link, SocialIcons, buttons, glass, reveal
 ├─ hooks/useEnvironment.ts  ← reduced-motion, WebGL probe, render tier
-└─ lib/scroll.ts            ← Lenis smooth scroll + jump-to-section
+└─ lib/                     ← router, scroll (Lenis), waitlist, email, firebase
 ```
 
 ---

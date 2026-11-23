@@ -1,11 +1,10 @@
+import { Link } from '@/components/ui/Link'
 import { LogoMark } from '@/components/ui/Logo'
 import { DiscordIcon } from '@/components/ui/SocialIcons'
 import { channels, company, links, navItems } from '@/content/site'
-import { scrollToId } from '@/lib/scroll'
 import { useWaitlist } from '@/lib/waitlistContext'
 
 export function Footer() {
-  const go = (id: string) => scrollToId(id)
   const join = useWaitlist()
 
   return (
@@ -36,14 +35,10 @@ export function Footer() {
                 </h4>
                 <ul className="mt-4 space-y-2.5">
                   {navItems.map((n) => (
-                    <li key={n.id}>
-                      <button
-                        type="button"
-                        onClick={() => go(n.id)}
-                        className="text-chalk/60 hover:text-accent text-sm transition-colors"
-                      >
+                    <li key={n.path}>
+                      <Link to={n.path} className="text-chalk/60 hover:text-accent text-sm transition-colors">
                         {n.label}
-                      </button>
+                      </Link>
                     </li>
                   ))}
                   <li>

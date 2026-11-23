@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useInView } from 'motion/react'
 import { ConfigGallery } from '@/components/ConfigGallery'
 import { PlayBadge } from '@/components/VideoPlayer'
-import { Reveal, Section, SectionHeading } from '@/components/ui/primitives'
-import { configSection, configurations, shapeShiftClip } from '@/content/site'
+import { AsideCard, Block, PageShell } from '@/components/PageShell'
+import { Link } from '@/components/ui/Link'
+import { Reveal } from '@/components/ui/primitives'
+import { configSection, configurations, pageAt, shapeShiftClip } from '@/content/site'
 import { isMeteredConnection, useReducedMotion } from '@/hooks/useEnvironment'
 
 /**
@@ -147,55 +149,78 @@ function ShapeShiftClip() {
   )
 }
 
-export function Configurations() {
+const SECTIONS = [
+  { id: 'numbers', label: 'By the numbers' },
+  { id: 'rolling', label: 'Watch them roll' },
+  { id: 'gallery', label: 'All configurations' },
+  { id: 'why', label: 'Why it matters' },
+] as const
+
+export function ShapesPage() {
   const loops = configurations.filter((c) => c.family === 'loop').length
 
   return (
-    <Section id="configurations">
-      <SectionHeading
-        kicker={configSection.kicker}
-        title={
-          <>
-            Two modules. <span className="text-gold-grad">Every one of these.</span>
-          </>
-        }
-        lead={configSection.lead}
-      />
-
+    <PageShell
+      page={pageAt('/shapes')}
+      title={
+        <>
+          Two modules. <span className="text-gold-grad">Every one of these.</span>
+        </>
+      }
+      lead={configSection.lead}
+      sections={SECTIONS}
+      aside={
+        <AsideCard title="Want a set of your own?" body="These are the same modules going on sale.">
+          <Link
+            to="/modules"
+            className="from-sun via-gold to-ember text-onbrand flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-br py-2.5 text-[13px] font-semibold"
+          >
+            See modules & pricing
+          </Link>
+          <Link to="/tetrobot" className="glass-soft text-chalk flex w-full items-center justify-center !rounded-full py-2.5 text-[13px] font-semibold">
+            How the software sees them
+          </Link>
+        </AsideCard>
+      }
+    >
       {/* The counting argument, stated plainly */}
-      <Reveal delay={0.1}>
-        <dl className="mt-10 grid max-w-3xl grid-cols-3 gap-3 sm:gap-5">
-          {[
-            { v: '2', l: 'module chains — the entire hardware set' },
-            { v: String(configurations.length), l: 'documented configurations' },
-            { v: String(loops), l: 'closed loops a tree model rejects' },
-          ].map((s) => (
-            <div key={s.l} className="glass px-4 py-4 sm:px-5 sm:py-5">
-              <dt className="text-gold-grad font-display relative z-10 text-2xl font-bold sm:text-3xl">
-                {s.v}
-              </dt>
-              <dd className="text-chalk/55 relative z-10 mt-1.5 text-[11px] leading-snug sm:text-xs">
-                {s.l}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </Reveal>
+      <Block id="numbers" title="By the numbers">
+        <Reveal>
+          <dl className="grid max-w-3xl grid-cols-3 gap-3 sm:gap-5">
+            {[
+              { v: '2', l: 'module chains — the entire hardware set' },
+              { v: String(configurations.length), l: 'documented configurations' },
+              { v: String(loops), l: 'closed loops a tree model rejects' },
+            ].map((s) => (
+              <div key={s.l} className="glass px-4 py-4 sm:px-5 sm:py-5">
+                <dt className="text-gold-grad font-display relative z-10 text-2xl font-bold sm:text-3xl">{s.v}</dt>
+                <dd className="text-chalk/55 relative z-10 mt-1.5 text-[11px] leading-snug sm:text-xs">{s.l}</dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
+      </Block>
 
-      <Reveal delay={0.06} className="mt-12">
-        <ShapeShiftClip />
-      </Reveal>
+      <Block id="rolling" title="Watch them roll">
+        <Reveal>
+          <ShapeShiftClip />
+        </Reveal>
+      </Block>
 
-      <Reveal delay={0.06} className="mt-5">
-        <ConfigGallery />
-      </Reveal>
+      <Block id="gallery" title={`All ${configurations.length} configurations`}>
+        <Reveal>
+          <ConfigGallery />
+        </Reveal>
+      </Block>
 
       {/* The ask, in the founder's voice */}
-      <Reveal delay={0.1}>
-        <p className="text-chalk/70 mx-auto mt-14 max-w-2xl text-center text-lg leading-relaxed text-balance sm:text-xl">
-          {configSection.ask}
-        </p>
-      </Reveal>
-    </Section>
+      <Block id="why" title="Why it matters">
+        <Reveal>
+          <div className="glass-strong p-7 sm:p-9">
+            <p className="text-chalk/75 relative z-10 text-lg leading-relaxed text-balance sm:text-xl">{configSection.ask}</p>
+          </div>
+        </Reveal>
+      </Block>
+    </PageShell>
   )
 }

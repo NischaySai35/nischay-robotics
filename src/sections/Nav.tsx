@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Wordmark } from '@/components/ui/Logo'
 import { Button } from '@/components/ui/primitives'
+import { Link } from '@/components/ui/Link'
 import { navItems } from '@/content/site'
-import { scrollToId, scrollToTop } from '@/lib/scroll'
+import { useLocation } from '@/lib/router'
+import { scrollToTop } from '@/lib/scroll'
 import { useWaitlist } from '@/lib/waitlistContext'
 import { useTheme } from '@/lib/theme'
 
@@ -51,14 +53,14 @@ function ThemeToggle() {
  * Two behaviours worth noting:
  *  - It condenses after the first scroll (tighter padding, stronger glass), so
  *    it stops competing with the hero.
- *  - The active section is tracked with IntersectionObserver rather than scroll
- *    maths, and the indicator pill slides between links with a shared layout
- *    transition.
+ *  - Links are real page links (see lib/router.ts); the gold pill marks the
+ *    current page. Desktop links appear from 1024px — below that, seven links
+ *    push "Join waitlist" off the bar, so the menu button takes over.
  */
 export function Nav() {
   const [scrolled, setScrolled] = useState(false)
-  const [active, setActive] = useState<string>('')
   const [menuOpen, setMenuOpen] = useState(false)
+  const { path } = useLocation()
   const join = useWaitlist()
 
   useEffect(() => {
@@ -68,29 +70,8 @@ export function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    const sections = navItems
-      .map((n) => document.getElementById(n.id))
-      .filter((el): el is HTMLElement => el !== null)
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-        if (visible) setActive(visible.target.id)
-      },
-      { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.25, 0.5, 1] },
-    )
-
-    sections.forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
-
-  const go = (id: string) => {
-    setMenuOpen(false)
-    scrollToId(id)
-  }
+  // Close the phone menu whenever the page changes.
+  useEffect(() => setMenuOpen(false), [path])
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 sm:pt-5">
@@ -99,35 +80,34 @@ export function Nav() {
           scrolled ? 'px-3 py-2 sm:px-4' : 'px-4 py-2.5 sm:px-5 sm:py-3'
         }`}
       >
-        <a
-          href="#top"
-          onClick={(e) => {
-            e.preventDefault()
-            scrollToTop()
-          }}
+        <Link
+          to="/"
+          onClick={() => path === '/' && scrollToTop()}
+          aria-label="Nischay Robotics — home"
           className="relative z-10 shrink-0"
         >
           <Wordmark />
-        </a>
+        </Link>
 
         {/* Desktop links */}
-        <ul className="relative z-10 hidden items-center gap-1 lg:flex">
-          {navItems.map((item) => (
-            <li key={item.id}>
-              <button
-                type="button"
-                onClick={() => go(item.id)}
-                className={`relative rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors duration-300 ${
-                  active === item.id ? 'text-onbrand' : 'text-chalk/65 hover:text-chalk'
-                }`}
-              >
-                {active === item.id && (
-                  <span className="from-sun to-gold absolute inset-0 -z-10 rounded-full bg-gradient-to-br" />
-                )}
-                {item.label}
-              </button>
-            </li>
-          ))}
+        <ul className="relative z-10 hidden items-center gap-0.5 lg:flex xl:gap-1">
+          {navItems.map((item) => {
+            const on = path === item.path
+            return (
+              <li key={item.path}>
+                <Link
+                  to={item.path}
+                  aria-current={on ? 'page' : undefined}
+                  className={`relative block rounded-full px-3 py-2 text-[13px] font-medium transition-colors duration-300 xl:px-3.5 ${
+                    on ? 'text-onbrand' : 'text-chalk/65 hover:text-chalk'
+                  }`}
+                >
+                  {on && <span className="from-sun to-gold absolute inset-0 -z-10 rounded-full bg-gradient-to-br" />}
+                  {item.label}
+                </Link>
+              </li>
+            )
+          })}
         </ul>
 
         <div className="relative z-10 flex items-center gap-2">
@@ -168,17 +148,23 @@ export function Nav() {
       {menuOpen && (
         <div className="glass-strong absolute inset-x-4 top-[calc(100%+0.5rem)] p-2 lg:hidden">
           <ul className="relative z-10 flex flex-col">
-            {navItems.map((item) => (
-              <li key={item.id}>
-                <button
-                  type="button"
-                  onClick={() => go(item.id)}
-                  className="text-chalk/80 hover:text-accent w-full rounded-2xl px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-white/5"
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
+            {navItems.map((item) => {
+              const on = path === item.path
+              return (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    aria-current={on ? 'page' : undefined}
+                    className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-white/5 ${
+                      on ? 'text-accent' : 'text-chalk/80 hover:text-accent'
+                    }`}
+                  >
+                    {item.label}
+                    {on && <span className="bg-gold h-1.5 w-1.5 rounded-full" />}
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </div>
       )}

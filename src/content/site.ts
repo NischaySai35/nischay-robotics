@@ -475,14 +475,63 @@ export type ChannelIcon = (typeof channels)[number]['icon']
 
 /* -- Navigation ------------------------------------------------------------ */
 
-export const navItems = [
-  { id: 'products', label: 'Modules' },
-  { id: 'configurations', label: 'Shapes' },
-  { id: 'tetrobot', label: 'Tetrobot' },
-  { id: 'prototypes', label: 'Prototypes' },
-  { id: 'founder', label: 'Company' },
-  { id: 'community', label: 'Community' },
+/**
+ * Every page except Home, in nav order. Drives the top bar, the footer, the
+ * cards on the home page and the next/previous links at the bottom of each
+ * page. `image` is the home-page card cover (null = Discord tile).
+ */
+export const pages = [
+  {
+    path: '/modules',
+    label: 'Modules',
+    kicker: 'Modules & pricing',
+    blurb: 'Single modules, the four-module Developer Kit and the tool tips in development: prices, what ships in the box, and how the waitlist works.',
+    image: '/visuals/cfg-09-thumb.jpg',
+  },
+  {
+    path: '/shapes',
+    label: 'Shapes',
+    kicker: 'Evidence',
+    blurb: `${configurations.length} bodies rebuilt from the same two module chains, plus the clip of them rolling on four, three and two wheels.`,
+    image: '/visuals/cfg-05-thumb.jpg',
+  },
+  {
+    path: '/tetrobot',
+    label: 'Tetrobot',
+    kicker: 'The software',
+    blurb: "Why a kinematic tree can't describe a robot that rebuilds itself, and the graph-native runtime built to do it instead.",
+    image: '/visuals/cfg-18-thumb.jpg',
+  },
+  {
+    path: '/prototypes',
+    label: 'Prototypes',
+    kicker: 'Build videos',
+    blurb: 'The main shape-changing demo, the award-winning modular arm and the prototype where the latch began.',
+    image: '/visuals/shape-shift-poster.jpg',
+  },
+  {
+    path: '/company',
+    label: 'Company',
+    kicker: 'Company',
+    blurb: 'Who builds this and how it started, plus the partnerships (incubation, lab access, funding) that would help it scale.',
+    image: '/visuals/cfg-14-thumb.jpg',
+  },
+  {
+    path: '/community',
+    label: 'Community',
+    kicker: 'Community & contact',
+    blurb: 'Join the Discord, the main place to talk to us, or reach us by email, WhatsApp, LinkedIn and the rest.',
+    image: null,
+  },
 ] as const
+
+export type PageInfo = (typeof pages)[number]
+
+/** Look a page up by its path — immune to reordering `pages`. */
+export const pageAt = (path: PageInfo['path']): PageInfo => pages.find((p) => p.path === path)!
+
+/** Top bar: Home plus every page. */
+export const navItems = [{ path: '/', label: 'Home' }, ...pages.map(({ path, label }) => ({ path, label }))] as const
 
 export const seo = {
   title: 'Nischay Robotics — Robots that change their own shape',
