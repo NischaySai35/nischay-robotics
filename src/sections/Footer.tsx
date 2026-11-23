@@ -1,5 +1,6 @@
 import { LogoMark } from '@/components/ui/Logo'
-import { company, contact, links, navItems } from '@/content/site'
+import { DiscordIcon } from '@/components/ui/SocialIcons'
+import { channels, company, links, navItems } from '@/content/site'
 import { scrollToId } from '@/lib/scroll'
 import { useWaitlist } from '@/lib/waitlistContext'
 
@@ -62,13 +63,19 @@ export function Footer() {
                   Elsewhere
                 </h4>
                 <ul className="mt-4 space-y-2.5">
-                  {[
-                    ...(links.discord ? [{ label: 'Discord', href: links.discord }] : []),
-                    { label: 'GitHub', href: links.github },
-                    { label: 'LinkedIn', href: links.linkedin },
-                    { label: 'YouTube', href: links.youtube },
-                    { label: 'Email', href: `mailto:${contact.email}` },
-                  ].map((l) => (
+                  {links.discord && (
+                    <li>
+                      <a
+                        href={links.discord}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="text-accent hover:text-sun inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+                      >
+                        <DiscordIcon size={15} /> Discord ↗
+                      </a>
+                    </li>
+                  )}
+                  {channels.map((l) => (
                     <li key={l.label}>
                       <a
                         href={l.href}

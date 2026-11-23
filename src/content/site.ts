@@ -5,10 +5,8 @@
    ┌────────────────────────────────────────────────────────────────────────┐
    │  PLACEHOLDERS TO SWAP LATER — search for "TODO:" in this file.         │
    │   1. links.docs        — Tetrobot docs, once written                   │
-   │   2. links.youtube     — your channel URL                              │
-   │   3. videos[1..]       — YouTube IDs for the other prototype clips     │
-   │   4. contact.email     — swap to a company address if you register one │
-   │   5. links.discord     — your Discord server invite link               │
+   │   2. videos[1..]       — YouTube IDs for the other prototype clips     │
+   │   3. contact.email     — swap to a company address if you register one │
    │  The logo mark lives in src/components/ui/Logo.tsx (one file, one SVG).│
    └────────────────────────────────────────────────────────────────────────┘
    ========================================================================= */
@@ -26,13 +24,16 @@ export const links = {
   github: 'https://github.com/NischaySai35',
   githubTetrobot: 'https://github.com/NischaySai35/Tetrobot_robotic_arm',
   linkedin: 'https://www.linkedin.com/in/nischaysai35',
-  youtube: 'https://www.youtube.com/@nischaysai35',
+  youtube: 'https://www.youtube.com/channel/UCAeIffBz9DDeHo-DKEr1x7g',
+  instagram: 'https://www.instagram.com/nischay_sai_35',
+  x: 'https://x.com/sai_nischay',
+  // wa.me needs the full international number with no "+", spaces or leading 0.
+  whatsapp: 'https://wa.me/918147447343',
   // TODO: point at real docs once they exist. `null` renders the button as
   // "Docs — coming soon" and disables it, rather than shipping a dead link.
   docs: null as string | null,
-  // TODO: paste your Discord invite (Server Settings → Invites, or right-click
-  // the server → Invite People → Edit invite link → Expire: Never). While it is
-  // `null`, every "Join the community" button renders as "opening soon".
+  // Permanent invite (never expires) into #welcome. Set to `null` and every
+  // "Join the Discord" button renders as "opening soon" instead.
   discord: 'https://discord.gg/XuX7EaHkw2' as string | null,
 } as const
 
@@ -442,8 +443,9 @@ export const waitlist = {
 /* -- Community ------------------------------------------------------------- */
 
 export const community = {
-  kicker: 'Community',
+  kicker: 'Community & contact',
   headline: 'Build alongside us.',
+  lead: 'The Discord is the front door — that is where questions get answered fastest and where everything lands first. Every other way to reach us is right beside it.',
   body: 'The Discord is where builds get shared, configurations get argued about, and early hardware news lands first. Ask the person who designed the modules anything, see work-in-progress before it ships, and help decide what gets built next.',
   points: [
     'Early looks at modules, kits and Tetrobot releases',
@@ -452,7 +454,24 @@ export const community = {
   ],
   cta: 'Join the Discord',
   pending: 'Discord opening soon',
+  othersTitle: 'Other ways to reach us',
 }
+
+/**
+ * Every channel besides Discord, in the order they're listed. `icon` keys map
+ * to components/ui/SocialIcons.tsx. Reorder or delete freely.
+ */
+export const channels = [
+  { icon: 'mail', label: 'Email', handle: contact.email, href: `mailto:${contact.email}`, note: 'Orders, partnerships, press' },
+  { icon: 'whatsapp', label: 'WhatsApp', handle: contact.phone, href: links.whatsapp, note: 'Quick questions' },
+  { icon: 'linkedin', label: 'LinkedIn', handle: 'in/nischaysai35', href: links.linkedin, note: 'Company updates' },
+  { icon: 'instagram', label: 'Instagram', handle: '@nischay_sai_35', href: links.instagram, note: 'Behind the build' },
+  { icon: 'x', label: 'X', handle: '@sai_nischay', href: links.x, note: 'Short updates' },
+  { icon: 'youtube', label: 'YouTube', handle: 'Demos & prototypes', href: links.youtube, note: 'Watch them move' },
+  { icon: 'github', label: 'GitHub', handle: 'NischaySai35', href: links.github, note: 'Tetrobot code' },
+] as const
+
+export type ChannelIcon = (typeof channels)[number]['icon']
 
 /* -- Navigation ------------------------------------------------------------ */
 
@@ -462,6 +481,7 @@ export const navItems = [
   { id: 'tetrobot', label: 'Tetrobot' },
   { id: 'prototypes', label: 'Prototypes' },
   { id: 'founder', label: 'Company' },
+  { id: 'community', label: 'Community' },
 ] as const
 
 export const seo = {

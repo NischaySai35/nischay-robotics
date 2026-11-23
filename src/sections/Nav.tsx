@@ -111,7 +111,7 @@ export function Nav() {
         </a>
 
         {/* Desktop links */}
-        <ul className="relative z-10 hidden items-center gap-1 md:flex">
+        <ul className="relative z-10 hidden items-center gap-1 lg:flex">
           {navItems.map((item) => (
             <li key={item.id}>
               <button
@@ -150,7 +150,7 @@ export function Nav() {
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
-            className="glass-soft text-chalk flex h-9 w-9 items-center justify-center !rounded-full md:hidden"
+            className="glass-soft text-chalk flex h-9 w-9 items-center justify-center !rounded-full lg:hidden"
           >
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
               <path
@@ -166,7 +166,7 @@ export function Nav() {
 
       {/* Mobile sheet */}
       {menuOpen && (
-        <div className="glass-strong absolute inset-x-4 top-[calc(100%+0.5rem)] p-2 md:hidden">
+        <div className="glass-strong absolute inset-x-4 top-[calc(100%+0.5rem)] p-2 lg:hidden">
           <ul className="relative z-10 flex flex-col">
             {navItems.map((item) => (
               <li key={item.id}>
