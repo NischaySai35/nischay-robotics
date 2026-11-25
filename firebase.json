@@ -1,7 +1,12 @@
 {
   "hosting": {
     "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
     "rewrites": [
       {
         "source": "**",
@@ -12,17 +17,32 @@
       {
         "//": "Fingerprinted build assets never change under the same name.",
         "source": "/assets/**",
-        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
       },
       {
         "//": "Photos and video are stable but not fingerprinted, so a shorter cache with revalidation.",
         "source": "/visuals/**",
-        "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800, must-revalidate" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800, must-revalidate"
+          }
+        ]
       },
       {
         "//": "index.html must always be revalidated or deploys go unnoticed.",
         "source": "/index.html",
-        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
       }
     ]
   },

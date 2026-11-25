@@ -12,6 +12,8 @@ import {
   products,
   videos,
 } from '@/content/site'
+import { availabilityLabel, categories, inr, listed, productPath } from '@/content/catalog'
+import { policies } from '@/content/policies'
 import { navigate } from '@/lib/router'
 import { pauseScroll, resumeScroll } from '@/lib/scroll'
 import { useWaitlist } from '@/lib/waitlistContext'
@@ -27,7 +29,6 @@ type Entry = {
   waitlist?: string
 }
 
-const inr = (n: number) => '₹' + n.toLocaleString('en-IN')
 
 /**
  * Everything worth finding, built from site content — so a new product,
@@ -43,20 +44,24 @@ function buildIndex(): Entry[] {
     }
   }
 
-  for (const p of products) {
-    const price = p.inr ? inr(p.inr) : p.statusLabel
+  for (const p of listed) {
     out.push({
-      title: `${p.name} — ${price}`,
-      group: 'Product',
-      keywords: `buy price cost order ${p.tagline} ${p.summary}`,
-      to: '/modules#pricing',
+      title: `${p.name} — ${p.price ? inr(p.price) : availabilityLabel[p.availability]}`,
+      group: categories[p.category].label,
+      keywords: `buy price cost order shop ${p.brand} ${p.short} ${p.sku}`,
+      to: productPath(p),
     })
+  }
+  for (const p of products) {
     out.push({
       title: `${p.inr ? 'Join waitlist' : 'Get notified'}: ${p.name}`,
       group: 'Action',
       keywords: 'buy order preorder notify',
       waitlist: p.slug,
     })
+  }
+  for (const p of policies) {
+    out.push({ title: p.title, group: 'Policy', keywords: `${p.summary} delivery refund return`, to: `/policies/${p.id}` })
   }
 
   out.push(
@@ -98,6 +103,7 @@ function buildIndex(): Entry[] {
 
 /** Shown before anything is typed — the things most people come for. */
 const QUICK = [
+  'Shop',
   'Modules',
   'Download Tetrobot — free',
   'Join the waitlist',

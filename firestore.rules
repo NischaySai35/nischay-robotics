@@ -57,6 +57,33 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // Product reviews. Limits mirror REVIEW_LIMITS in src/lib/reviews.ts.
+    function isValidReview(d) {
+      return d.keys().hasOnly(['product', 'name', 'rating', 'text', 'approved', 'createdAt'])
+          && d.keys().hasAll(['product', 'name', 'rating', 'text', 'approved', 'createdAt'])
+          && d.product is string && d.product.size() > 0 && d.product.size() <= 80
+          && d.name is string    && d.name.size() > 0    && d.name.size() <= 60
+          && d.rating is int     && d.rating >= 1        && d.rating <= 5
+          && d.text is string    && d.text.size() >= 10  && d.text.size() <= 1500
+          // Every review starts hidden. Only the admin can publish it.
+          && d.approved == false
+          && d.createdAt == request.time;
+    }
+
+    match /reviews/{id} {
+      allow create: if isValidReview(request.resource.data);
+
+      // The public sees approved reviews only. Queries must filter on
+      // approved == true or Firestore refuses them outright.
+      allow read: if resource.data.approved == true || isAdmin();
+
+      // Publishing = flipping `approved` and nothing else.
+      allow update: if isAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['approved'])
+          && request.resource.data.approved is bool;
+      allow delete: if isAdmin();
+    }
+
     // Anything not matched above is denied.
     match /{document=**} {
       allow read, write: if false;

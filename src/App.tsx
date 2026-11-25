@@ -24,6 +24,11 @@ import { TetrobotPage } from '@/sections/Tetrobot'
 import { PrototypesPage } from '@/sections/Prototypes'
 import { CompanyPage } from '@/sections/Founder'
 import { Footer } from '@/sections/Footer'
+import { ShopPage } from '@/pages/Shop'
+import { ProductPage } from '@/pages/Product'
+import { PolicyPage } from '@/pages/Policy'
+import { findProduct } from '@/content/catalog'
+import { findPolicy } from '@/content/policies'
 
 // Three.js is ~40% of the bundle. Nothing above the fold depends on it, so it
 // loads after the page is already interactive — and never at all on devices
@@ -76,6 +81,7 @@ function NotFound() {
 
 const ROUTES: Record<string, () => ReactNode> = {
   '/': () => <Home />,
+  '/shop': () => <ShopPage />,
   '/modules': () => <ModulesPage />,
   '/shapes': () => <ShapesPage />,
   '/tetrobot': () => <TetrobotPage />,
@@ -83,6 +89,20 @@ const ROUTES: Record<string, () => ReactNode> = {
   '/company': () => <CompanyPage />,
   '/community': () => <CommunityPage />,
   // /download is an alias, resolved in lib/router.ts before render.
+}
+
+/** /shop/<slug> and /policies/<id>. Unknown slugs fall through to the 404. */
+function dynamicRoute(path: string): (() => ReactNode) | null {
+  const [, section, id] = path.split('/')
+  if (section === 'shop' && id) {
+    const item = findProduct(id)
+    return item ? () => <ProductPage item={item} /> : null
+  }
+  if (section === 'policies' && id) {
+    const policy = findPolicy(id)
+    return policy ? () => <PolicyPage policy={policy} /> : null
+  }
+  return null
 }
 
 export default function App() {
@@ -100,7 +120,7 @@ export default function App() {
     jumpToTop()
   }, [path])
 
-  const page = ROUTES[path] ?? (() => <NotFound />)
+  const page = ROUTES[path] ?? dynamicRoute(path) ?? (() => <NotFound />)
 
   return (
     <>

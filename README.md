@@ -34,7 +34,7 @@ are the placeholders waiting on you:
 | **YouTube channel URL** | `links.youtube` | Currently a guess — replace with your real channel URL. |
 | **Tetrobot docs** | `links.docs` | `null` renders a disabled "Docs — coming soon" button instead of a dead link. Set a URL and the button activates itself. |
 | ~~Social preview image~~ | — | ✅ Done — `public/og-image.jpg`, generated from the logo. |
-| **Domain** | `seo.url`, `index.html`, `public/robots.txt`, `public/sitemap.xml` | Currently `nischayrobotics.in`. Change all four together if the domain differs. |
+| **Domain** | `seo.url`, `index.html`, `public/robots.txt` | Currently `nischayrobotics.in`. Change all three together if the domain differs; the sitemap is generated from `seo.url`. |
 | **Company email** | `contact.email` | Personal address for now; swap if you register a company one. |
 | **Discord invite** | `links.discord` | `null` shows "Discord opening soon". Paste a never-expiring invite and the Community band, footer link and waitlist-success prompt all go live. |
 
@@ -284,6 +284,30 @@ Repo and copy live in `software` in `src/content/site.ts`; the logic is in
 `src/lib/releases.ts`.
 
 ---
+
+## Shop
+
+Products live in [`src/content/catalog.ts`](src/content/catalog.ts). To add one, copy the
+commented EXAMPLE block there, put its photos in `public/products/<slug>/`, and push.
+Each build then generates, from that one file:
+
+- `/shop` (grid with categories, search, sort) and `/shop/<slug>` (product page)
+- `dist/shop/<slug>.html` with its own title, description, social image and Google
+  product data (price, stock, shipping, returns, rating) — see `scripts/prerender.ts`
+- `dist/sitemap.xml` and `dist/merchant-feed.xml` (Google Merchant Center feed)
+
+**Checkout:** each product's `checkout` is `link` (a Razorpay Payment Page or similar),
+`whatsapp` (prefilled order message) or `waitlist`. Only `link` + `in_stock` products go
+into the Merchant feed — Google won't list a page that can't take payment.
+
+**Policies:** shipping fee, free-shipping threshold, delivery days and return window are
+`store` in `catalog.ts`; the policy pages are `src/content/policies.ts`. Fill in
+`seller.address` before selling.
+
+**Reviews** are the only shop data in Firestore (`reviews` collection). Visitors submit;
+nothing shows until you approve it on `/admin`. Approved ratings show on the page
+immediately and reach Google's data on the next deploy (Netlify → Deploys → Trigger
+deploy). After changing `firestore.rules`: `firebase deploy --only firestore:rules`.
 
 ## Pages
 

@@ -501,6 +501,13 @@ export type ChannelIcon = (typeof channels)[number]['icon']
  */
 export const pages = [
   {
+    path: '/shop',
+    label: 'Shop',
+    kicker: 'Shop',
+    blurb: 'Every product in one place: modules, kits and the parts we build with, with prices, stock, reviews and delivery details.',
+    image: '/visuals/cfg-15-thumb.jpg',
+  },
+  {
     path: '/modules',
     label: 'Modules',
     kicker: 'Modules & pricing',
@@ -553,8 +560,9 @@ export const seo = {
   title: 'Nischay Robotics — Robots that change their own shape',
   description:
     'An independent robotics lab in Bengaluru building modular, self-reconfiguring machines and Tetrobot, a graph-native robotics runtime for robots whose body changes at runtime.',
-  /** The live domain. Change it here AND in index.html, public/robots.txt and
-   *  public/sitemap.xml (those are static files the build copies as-is). */
+  /** The live domain. Change it here AND in index.html and public/robots.txt
+   *  (static files the build copies as-is). The sitemap, product pages and
+   *  Merchant feed are generated from this value. */
   url: 'https://nischayrobotics.in',
 } as const
 
@@ -573,6 +581,8 @@ export const announcement = {
  * this, and the site search indexes it — one list, so the two never drift.
  */
 export const pageSections = {
+  // The shop has a category list rather than sections; search indexes its products directly.
+  '/shop': [],
   '/modules': [
     { id: 'pricing', label: 'Pricing' },
     { id: 'waitlist', label: 'How the waitlist works' },

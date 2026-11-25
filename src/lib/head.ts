@@ -26,11 +26,14 @@ export function usePageMeta({
   description,
   path,
   noindex = false,
+  image,
 }: {
   title: string
   description: string
   path: string
   noindex?: boolean
+  /** Site-relative social-card image. Defaults to the site's og-image.jpg. */
+  image?: string
 }) {
   useEffect(() => {
     const url = seo.url + (path === '/' ? '/' : path)
@@ -40,6 +43,7 @@ export function usePageMeta({
     setMeta('property', 'og:description', description)
     setMeta('property', 'og:url', url)
     setMeta('name', 'robots', noindex ? 'noindex' : 'index, follow')
+    setMeta('property', 'og:image', seo.url + (image ?? '/og-image.jpg'))
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
     if (!canonical) {
@@ -48,5 +52,29 @@ export function usePageMeta({
       document.head.appendChild(canonical)
     }
     canonical.href = url
-  }, [title, description, path, noindex])
+  }, [title, description, path, noindex, image])
+}
+
+/**
+ * Structured data for the current page, in a <script type="application/ld+json">
+ * with this id. Replaces a block of the same id baked in by the build (see
+ * scripts/prerender.ts) and removes it again when the page unmounts.
+ */
+export function useJsonLd(id: string, data: object | null) {
+  const json = data ? JSON.stringify(data) : null
+  useEffect(() => {
+    let el = document.getElementById(id) as HTMLScriptElement | null
+    if (!json) {
+      el?.remove()
+      return
+    }
+    if (!el) {
+      el = document.createElement('script')
+      el.type = 'application/ld+json'
+      el.id = id
+      document.head.appendChild(el)
+    }
+    el.textContent = json
+    return () => el?.remove()
+  }, [id, json])
 }

@@ -4,7 +4,8 @@ import { Wordmark } from '@/components/ui/Logo'
 import { Button } from '@/components/ui/primitives'
 import { Link } from '@/components/ui/Link'
 import { ChannelIconView, DiscordIcon } from '@/components/ui/SocialIcons'
-import { announcement, channels, contact, links, pageAt, products } from '@/content/site'
+import { inr, listed, productPath } from '@/content/catalog'
+import { announcement, channels, contact, links, pageAt } from '@/content/site'
 import { useLocation } from '@/lib/router'
 import { scrollToTop } from '@/lib/scroll'
 import { useWaitlist } from '@/lib/waitlistContext'
@@ -176,8 +177,9 @@ function TopBar({ hidden }: { hidden: boolean }) {
 
 /* -- Products dropdown ------------------------------------------------------ */
 
-const inr = (n: number) => '₹' + n.toLocaleString('en-IN')
-const PRODUCT_PATHS = ['/modules', '/tetrobot']
+const isShopPath = (path: string) => ['/shop', '/modules', '/tetrobot'].includes(path) || path.startsWith('/shop/')
+/** Our own hardware leads the menu; everything else is one click away in the shop. */
+const OWN = listed.filter((p) => p.brand === 'Nischay Robotics').slice(0, 4)
 
 /** Everything you can get, in one panel: hardware with prices, then software. */
 function ProductsMenu({ onPick }: { onPick: () => void }) {
@@ -188,26 +190,19 @@ function ProductsMenu({ onPick }: { onPick: () => void }) {
         <div>
           <p className="text-chalk/35 px-3 pt-2 pb-1 text-[10px] font-semibold tracking-[0.2em] uppercase">Hardware</p>
           <ul>
-            {products.map((p) => (
+            {OWN.map((p) => (
               <li key={p.slug}>
                 <Link
-                  to="/modules#pricing"
+                  to={productPath(p)}
                   onClick={onPick}
                   className="hover:bg-chalk/[0.05] flex items-center justify-between gap-3 rounded-xl px-3 py-2.5"
                 >
                   <span className="min-w-0">
-                    <span className="flex items-center gap-2 text-[14px] font-semibold">
-                      {p.name}
-                      {p.featured && (
-                        <span className="bg-gold text-onbrand rounded-full px-1.5 py-px text-[9px] font-bold tracking-[0.12em] uppercase">
-                          Best value
-                        </span>
-                      )}
-                    </span>
-                    <span className="text-chalk/50 mt-0.5 block truncate text-[12px]">{p.tagline}</span>
+                    <span className="block text-[14px] font-semibold">{p.name}</span>
+                    <span className="text-chalk/50 mt-0.5 block truncate text-[12px]">{p.short}</span>
                   </span>
-                  <span className={`shrink-0 text-[13px] ${p.inr ? 'text-accent font-bold' : 'text-chalk/40 font-medium'}`}>
-                    {p.inr ? inr(p.inr) : 'Soon'}
+                  <span className={`shrink-0 text-[13px] ${p.price ? 'text-accent font-bold' : 'text-chalk/40 font-medium'}`}>
+                    {p.price ? inr(p.price) : 'Soon'}
                   </span>
                 </Link>
               </li>
@@ -235,16 +230,21 @@ function ProductsMenu({ onPick }: { onPick: () => void }) {
       </div>
 
       <div className="border-chalk/10 relative z-10 mt-2 flex flex-wrap items-center justify-between gap-2 border-t px-3 pt-3 pb-1 text-[12px]">
-        <Link to="/modules" onClick={onPick} className="text-chalk/65 hover:text-accent font-semibold">
-          Compare all &amp; what&apos;s in the box →
-        </Link>
+        <span className="flex flex-wrap gap-x-4 gap-y-1">
+          <Link to="/shop" onClick={onPick} className="text-accent font-semibold hover:underline">
+            Browse all products →
+          </Link>
+          <Link to="/modules" onClick={onPick} className="text-chalk/60 hover:text-accent font-semibold">
+            Compare modules
+          </Link>
+        </span>
         <button
           type="button"
           onClick={() => {
             onPick()
             join()
           }}
-          className="text-accent font-semibold hover:underline"
+          className="text-chalk/60 hover:text-accent font-semibold"
         >
           Join the waitlist
         </button>
@@ -254,9 +254,10 @@ function ProductsMenu({ onPick }: { onPick: () => void }) {
 }
 
 /**
- * Hover opens it (with a short grace period so crossing the gap doesn't close
- * it), click toggles it for touch and keyboard, Escape or a click elsewhere
- * closes it.
+ * "Shop" itself is a link to /shop. Hover or keyboard focus opens the panel
+ * (with a short grace period so crossing the gap doesn't close it); Escape or
+ * a click elsewhere closes it. Touch goes straight to the shop, which lists
+ * everything the panel does.
  */
 function ProductsDropdown({ active }: { active: boolean }) {
   const [open, setOpen] = useState(false)
@@ -291,18 +292,16 @@ function ProductsDropdown({ active }: { active: boolean }) {
   }
 
   return (
-    <li ref={wrap} className="relative" onMouseEnter={enter} onMouseLeave={leave}>
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-haspopup="true"
-        onClick={() => setOpen((v) => !v)}
+    <li ref={wrap} className="relative" onMouseEnter={enter} onMouseLeave={leave} onFocus={enter}>
+      <Link
+        to="/shop"
+        aria-current={active ? 'page' : undefined}
         className={`relative flex items-center gap-1 rounded-full px-3 py-2 text-[13px] font-medium transition-colors duration-300 xl:px-3.5 ${
           active ? 'text-onbrand' : 'text-chalk/65 hover:text-chalk'
         }`}
       >
         {active && <span className="from-sun to-gold absolute inset-0 -z-10 rounded-full bg-gradient-to-br" />}
-        Products
+        Shop
         <svg
           width="10"
           height="10"
@@ -312,7 +311,7 @@ function ProductsDropdown({ active }: { active: boolean }) {
         >
           <path d="M2 3.5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
         </svg>
-      </button>
+      </Link>
       {open && (
         <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3">
           <ProductsMenu onPick={() => setOpen(false)} />
@@ -324,8 +323,8 @@ function ProductsDropdown({ active }: { active: boolean }) {
 
 /* -- Nav --------------------------------------------------------------------- */
 
-/** Top-level links after "Products". Modules and Tetrobot live in the dropdown. */
-const AFTER_PRODUCTS = (['/shapes', '/prototypes', '/company', '/community'] as const).map((p) => ({
+/** Top-level links after "Shop". Modules and Tetrobot live in its panel. */
+const AFTER_SHOP = (['/shapes', '/prototypes', '/company', '/community'] as const).map((p) => ({
   path: p,
   label: pageAt(p).label,
 }))
@@ -333,8 +332,9 @@ const AFTER_PRODUCTS = (['/shapes', '/prototypes', '/company', '/community'] as 
 /** Phone menu, grouped the way the desktop bar is. */
 const MOBILE_GROUPS = [
   {
-    title: 'Products',
+    title: 'Shop',
     items: [
+      { path: '/shop', label: 'All products' },
       { path: '/modules', label: 'Modules & pricing' },
       { path: '/tetrobot', label: 'Tetrobot software' },
       { path: '/download', label: 'Download — free' },
@@ -379,8 +379,8 @@ function NavLink({ path, label, on }: { path: string; label: string; on: boolean
  *
  *  - It condenses after the first scroll (tighter padding, stronger glass, the
  *    strip folds away), so it stops competing with the page.
- *  - "Products" opens one panel with every product and its price, so the bar
- *    itself stays short: Home · Products · four pages.
+ *  - "Shop" opens one panel with our products and prices, so the bar itself
+ *    stays short: Home · Shop · four pages.
  *  - Search (button, Ctrl/⌘+K or "/") finds any page, section, product,
  *    shape, video or contact channel.
  */
@@ -439,8 +439,8 @@ export function Nav() {
           {/* Desktop links */}
           <ul className="relative z-10 hidden items-center gap-0.5 lg:flex xl:gap-1">
             <NavLink path="/" label="Home" on={path === '/'} />
-            <ProductsDropdown active={PRODUCT_PATHS.includes(path)} />
-            {AFTER_PRODUCTS.map((item) => (
+            <ProductsDropdown active={isShopPath(path)} />
+            {AFTER_SHOP.map((item) => (
               <NavLink key={item.path} {...item} on={path === item.path} />
             ))}
           </ul>

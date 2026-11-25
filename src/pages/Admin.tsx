@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Wordmark } from '@/components/ui/Logo'
 import { ADMIN_EMAIL, isFirebaseConfigured } from '@/lib/firebase.config'
+import { ReviewModeration } from '@/pages/ReviewModeration'
 
 /* ============================================================================
    Waitlist admin — the thing that replaces the notebook.
@@ -494,6 +495,8 @@ export default function Admin() {
             )}
           </>
         )}
+
+        {email === ADMIN_EMAIL && <ReviewModeration />}
       </div>
     </div>
   )

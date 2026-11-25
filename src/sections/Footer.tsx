@@ -2,10 +2,11 @@ import type { ReactNode } from 'react'
 import { Link } from '@/components/ui/Link'
 import { LogoMark } from '@/components/ui/Logo'
 import { ChannelIconView, DiscordIcon } from '@/components/ui/SocialIcons'
-import { channels, company, contact, links, products } from '@/content/site'
+import { inr, listed, productPath } from '@/content/catalog'
+import { policies } from '@/content/policies'
+import { channels, company, contact, links } from '@/content/site'
 import { useWaitlist } from '@/lib/waitlistContext'
 
-const inr = (n: number) => '₹' + n.toLocaleString('en-IN')
 const SOCIALS = channels.filter((c) => !['mail', 'whatsapp'].includes(c.icon))
 const WHATSAPP = channels.find((c) => c.icon === 'whatsapp')
 
@@ -75,12 +76,17 @@ export function Footer() {
               </div>
             </div>
 
-            <Column title="Products">
-              {products.map((p) => (
+            <Column title="Shop">
+              <li>
+                <Link to="/shop" className={`${linkCls} font-semibold`}>
+                  All products
+                </Link>
+              </li>
+              {listed.slice(0, 4).map((p) => (
                 <li key={p.slug}>
-                  <Link to="/modules#pricing" className={linkCls}>
+                  <Link to={productPath(p)} className={linkCls}>
                     {p.name}
-                    <span className="text-chalk/35"> · {p.inr ? inr(p.inr) : 'soon'}</span>
+                    <span className="text-chalk/35"> · {p.price ? inr(p.price) : 'soon'}</span>
                   </Link>
                 </li>
               ))}
@@ -135,11 +141,13 @@ export function Footer() {
                   How the waitlist works
                 </Link>
               </li>
-              <li>
-                <Link to="/modules#shipping" className={linkCls}>
-                  Shipping &amp; currency
-                </Link>
-              </li>
+              {policies.map((p) => (
+                <li key={p.id}>
+                  <Link to={`/policies/${p.id}`} className={linkCls}>
+                    {p.title}
+                  </Link>
+                </li>
+              ))}
               <li>
                 <a href={`mailto:${contact.email}`} className={`${linkCls} break-all`}>
                   {contact.email}
