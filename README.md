@@ -34,7 +34,7 @@ are the placeholders waiting on you:
 | **YouTube channel URL** | `links.youtube` | Currently a guess — replace with your real channel URL. |
 | **Tetrobot docs** | `links.docs` | `null` renders a disabled "Docs — coming soon" button instead of a dead link. Set a URL and the button activates itself. |
 | ~~Social preview image~~ | — | ✅ Done — `public/og-image.jpg`, generated from the logo. |
-| **Domain** | `index.html` + `seo.url` | Currently `nischayrobotics.com`. Update the canonical, `og:url` and JSON-LD if it differs. |
+| **Domain** | `seo.url`, `index.html`, `public/robots.txt`, `public/sitemap.xml` | Currently `nischayrobotics.in`. Change all four together if the domain differs. |
 | **Company email** | `contact.email` | Personal address for now; swap if you register a company one. |
 | **Discord invite** | `links.discord` | `null` shows "Discord opening soon". Paste a never-expiring invite and the Community band, footer link and waitlist-success prompt all go live. |
 

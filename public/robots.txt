@@ -1,0 +1,6 @@
+# Everything is public except the admin view.
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://nischayrobotics.in/sitemap.xml

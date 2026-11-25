@@ -4,7 +4,7 @@ import { AsideCard, Block, PageShell } from '@/components/PageShell'
 import { Link } from '@/components/ui/Link'
 import { ArrowIcon, Button, Reveal, Section } from '@/components/ui/primitives'
 import { ChannelIconView, DiscordIcon } from '@/components/ui/SocialIcons'
-import { channels, community, contact, links, pageAt } from '@/content/site'
+import { channels, community, contact, links, pageAt, pageSections } from '@/content/site'
 
 /** Discord's own blurple — used only on the Discord tile, so it reads as Discord. */
 const BLURPLE = '#5865F2'
@@ -113,10 +113,7 @@ function ChannelList() {
   )
 }
 
-const SECTIONS = [
-  { id: 'discord', label: 'Discord' },
-  { id: 'channels', label: community.othersTitle },
-] as const
+const SECTIONS = pageSections['/community']
 
 export function CommunityPage() {
   const words = community.headline.split(' ')

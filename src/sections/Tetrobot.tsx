@@ -4,7 +4,7 @@ import { scrollToId } from '@/lib/scroll'
 import { AsideCard, Block, PageShell } from '@/components/PageShell'
 import { Link } from '@/components/ui/Link'
 import { ArrowIcon, Button, Reveal } from '@/components/ui/primitives'
-import { configurations, keystoneConfig, links, pageAt, tetrobot } from '@/content/site'
+import { configurations, keystoneConfig, links, pageAt, tetrobot, pageSections } from '@/content/site'
 
 function CrossIcon() {
   return (
@@ -24,14 +24,7 @@ function CheckIcon() {
   )
 }
 
-const SECTIONS = [
-  { id: 'download', label: 'Download' },
-  { id: 'graph-vs-tree', label: 'Graph vs tree' },
-  { id: 'proof', label: 'Hardware proof' },
-  { id: 'assumptions', label: 'Assumption vs reality' },
-  { id: 'capabilities', label: 'Capabilities' },
-  { id: 'status', label: 'Status & source' },
-] as const
+const SECTIONS = pageSections['/tetrobot']
 
 export function TetrobotPage() {
   return (

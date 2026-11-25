@@ -3,7 +3,7 @@ import { Button, Reveal } from '@/components/ui/primitives'
 import { PlayBadge } from '@/components/VideoPlayer'
 import { useVideoPlayer } from '@/lib/videoContext'
 import { YouTubeThumb } from '@/components/YouTubeThumb'
-import { links, pageAt, videos } from '@/content/site'
+import { links, pageAt, videos, pageSections } from '@/content/site'
 import type { Video } from '@/content/site'
 
 /** An empty slot, for videos not yet uploaded. */
@@ -76,10 +76,7 @@ export function PrototypesPage() {
   const featured = videos.find((v) => v.featured)
   const rest = videos.filter((v) => !v.featured)
 
-  const sections = [
-    ...(featured ? [{ id: 'main-demo', label: 'Main demo' }] : []),
-    { id: 'builds', label: 'More builds' },
-  ]
+  const sections = pageSections['/prototypes'].filter((s) => featured || s.id !== 'main-demo')
 
   return (
     <PageShell

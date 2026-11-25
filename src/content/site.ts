@@ -6,7 +6,7 @@
    │  PLACEHOLDERS TO SWAP LATER — search for "TODO:" in this file.         │
    │   1. links.docs        — Tetrobot docs, once written                   │
    │   2. videos[1..]       — YouTube IDs for the other prototype clips     │
-   │   3. contact.email     — swap to a company address if you register one │
+   │   3. contact.email     — swap to hello@<domain> once mail is set up    │
    │  The logo mark lives in src/components/ui/Logo.tsx (one file, one SVG).│
    └────────────────────────────────────────────────────────────────────────┘
    ========================================================================= */
@@ -495,9 +495,9 @@ export type ChannelIcon = (typeof channels)[number]['icon']
 /* -- Navigation ------------------------------------------------------------ */
 
 /**
- * Every page except Home, in nav order. Drives the top bar, the footer, the
- * cards on the home page and the next/previous links at the bottom of each
- * page. `image` is the home-page card cover (null = Discord tile).
+ * Every page except Home. Drives the home-page cards, the next/previous links
+ * at the bottom of each page and the site search. `image` is the home-page
+ * card cover (null = Discord tile).
  */
 export const pages = [
   {
@@ -549,12 +549,60 @@ export type PageInfo = (typeof pages)[number]
 /** Look a page up by its path — immune to reordering `pages`. */
 export const pageAt = (path: PageInfo['path']): PageInfo => pages.find((p) => p.path === path)!
 
-/** Top bar: Home plus every page. */
-export const navItems = [{ path: '/', label: 'Home' }, ...pages.map(({ path, label }) => ({ path, label }))] as const
-
 export const seo = {
   title: 'Nischay Robotics — Robots that change their own shape',
   description:
     'An independent robotics lab in Bengaluru building modular, self-reconfiguring machines and Tetrobot, a graph-native robotics runtime for robots whose body changes at runtime.',
-  url: 'https://nischayrobotics.com',
+  /** The live domain. Change it here AND in index.html, public/robots.txt and
+   *  public/sitemap.xml (those are static files the build copies as-is). */
+  url: 'https://nischayrobotics.in',
 } as const
+
+/* -- Announcement strip ----------------------------------------------------
+   The thin bar above the nav. Set `text` to null to hide it everywhere. Bump
+   `id` when the message changes so people who closed the old one see it. */
+
+export const announcement = {
+  id: 'modules-2026-11',
+  text: 'Modules from ₹29,999 · Developer Kit ₹1,10,000 — releasing soon' as string | null,
+  cta: 'Join the waitlist',
+}
+
+/**
+ * The jump-to sections on each inner page. Pages render their side menu from
+ * this, and the site search indexes it — one list, so the two never drift.
+ */
+export const pageSections = {
+  '/modules': [
+    { id: 'pricing', label: 'Pricing' },
+    { id: 'waitlist', label: 'How the waitlist works' },
+    { id: 'shipping', label: 'Shipping & currency' },
+  ],
+  '/shapes': [
+    { id: 'numbers', label: 'By the numbers' },
+    { id: 'rolling', label: 'Watch them roll' },
+    { id: 'gallery', label: 'All configurations' },
+    { id: 'why', label: 'Why it matters' },
+  ],
+  '/tetrobot': [
+    { id: 'download', label: 'Download' },
+    { id: 'graph-vs-tree', label: 'Graph vs tree' },
+    { id: 'proof', label: 'Hardware proof' },
+    { id: 'assumptions', label: 'Assumption vs reality' },
+    { id: 'capabilities', label: 'Capabilities' },
+    { id: 'status', label: 'Status & source' },
+  ],
+  '/prototypes': [
+    { id: 'main-demo', label: 'Main demo' },
+    { id: 'builds', label: 'More builds' },
+  ],
+  '/company': [
+    { id: 'founder', label: 'Founder' },
+    { id: 'background', label: 'Background' },
+    { id: 'partnerships', label: 'Partnerships' },
+  ],
+  '/community': [
+    { id: 'discord', label: 'Discord' },
+    { id: 'channels', label: community.othersTitle },
+  ],
+} as const satisfies Record<PageInfo['path'], readonly { id: string; label: string }[]>

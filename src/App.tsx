@@ -8,6 +8,7 @@ import { VideoProvider } from '@/components/VideoPlayer'
 import { WaitlistProvider } from '@/components/WaitlistModal'
 import { seo } from '@/content/site'
 import { useRenderTier } from '@/hooks/useEnvironment'
+import { usePageMeta } from '@/lib/head'
 import { useLocation } from '@/lib/router'
 import { jumpToTop, useSmoothScroll } from '@/lib/scroll'
 import { useTheme } from '@/lib/theme'
@@ -37,9 +38,7 @@ const Admin = lazy(() => import('@/pages/Admin'))
 
 /** The home page: the original hero and statements, then a card per page. */
 function Home() {
-  useEffect(() => {
-    document.title = seo.title
-  }, [])
+  usePageMeta({ title: seo.title, description: seo.description, path: '/' })
 
   return (
     <main className="grain relative">
@@ -53,9 +52,8 @@ function Home() {
 }
 
 function NotFound() {
-  useEffect(() => {
-    document.title = 'Page not found — Nischay Robotics'
-  }, [])
+  const { path } = useLocation()
+  usePageMeta({ title: 'Page not found — Nischay Robotics', description: seo.description, path, noindex: true })
 
   return (
     <main className="relative z-10 flex min-h-[80vh] items-center justify-center px-5 pt-28">

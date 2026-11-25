@@ -1,6 +1,6 @@
 import { AsideCard, Block, PageShell } from '@/components/PageShell'
 import { Button, Reveal } from '@/components/ui/primitives'
-import { currency, links, pageAt, productSection, products } from '@/content/site'
+import { currency, links, pageAt, productSection, products, pageSections } from '@/content/site'
 import type { Product } from '@/content/site'
 import { useWaitlist } from '@/lib/waitlistContext'
 
@@ -135,11 +135,7 @@ function PriceCard({ product }: { product: Product }) {
   )
 }
 
-const SECTIONS = [
-  { id: 'pricing', label: 'Pricing' },
-  { id: 'waitlist', label: 'How the waitlist works' },
-  { id: 'shipping', label: 'Shipping & currency' },
-] as const
+const SECTIONS = pageSections['/modules']
 
 export function ModulesPage() {
   const join = useWaitlist()

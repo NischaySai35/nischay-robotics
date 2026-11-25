@@ -6,6 +6,8 @@ import { ArrowIcon, Reveal } from '@/components/ui/primitives'
 import { Link } from '@/components/ui/Link'
 import { pages } from '@/content/site'
 import type { PageInfo } from '@/content/site'
+import { usePageMeta } from '@/lib/head'
+import { useLocation } from '@/lib/router'
 import { scrollToId } from '@/lib/scroll'
 
 export type PageSection = { id: string; label: string }
@@ -118,29 +120,35 @@ export function PageShell({
 }) {
   const [active, setActive] = useActiveSection(sections.map((s) => s.id))
 
-  useEffect(() => {
-    document.title = `${page.label} — Nischay Robotics`
-  }, [page.label])
+  usePageMeta({ title: `${page.label} — Nischay Robotics`, description: page.blurb, path: page.path })
 
-  // Deep link (/tetrobot#capabilities): wait for layout, then jump. Once only —
-  // on arrival — so re-renders never yank the reader back.
-  const arrived = useRef(false)
+  // Deep link (/tetrobot#capabilities) — on arrival, and again whenever a
+  // link elsewhere (top menu, search) changes the hash while this page is
+  // already open. `handled` holds the hash this page set itself, so the side
+  // menu's own URL updates never trigger a second scroll.
+  const { hash } = useLocation()
+  const handled = useRef<string | null>(null)
+  // A string, not the array: a page that builds `sections` inline would
+  // otherwise re-run this effect every render and cancel the pending jump.
+  const ids = sections.map((s) => s.id).join('|')
   useEffect(() => {
-    if (arrived.current) return
-    arrived.current = true
-    const id = window.location.hash.slice(1)
-    if (!id || !sections.some((s) => s.id === id)) return
+    if (hash === handled.current) return
+    const first = handled.current === null
+    handled.current = hash
+    const id = hash.slice(1)
+    if (!id || !ids.split('|').includes(id)) return
     const t = window.setTimeout(() => {
-      scrollToId(id, offset(), true)
+      scrollToId(id, offset(), first)
       setActive(id)
-    }, 120)
+    }, first ? 120 : 0)
     return () => window.clearTimeout(t)
-  }, [sections, setActive])
+  }, [hash, ids, setActive])
 
   const go = (id: string) => {
     setActive(id)
     scrollToId(id, offset())
     // Keep the URL shareable without triggering a route change.
+    handled.current = `#${id}`
     window.history.replaceState({}, '', `${page.path}#${id}`)
   }
 

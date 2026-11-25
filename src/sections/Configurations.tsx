@@ -5,7 +5,7 @@ import { PlayBadge } from '@/components/VideoPlayer'
 import { AsideCard, Block, PageShell } from '@/components/PageShell'
 import { Link } from '@/components/ui/Link'
 import { Reveal } from '@/components/ui/primitives'
-import { configSection, configurations, pageAt, shapeShiftClip } from '@/content/site'
+import { configSection, configurations, pageAt, shapeShiftClip, pageSections } from '@/content/site'
 import { isMeteredConnection, useReducedMotion } from '@/hooks/useEnvironment'
 
 /**
@@ -149,12 +149,7 @@ function ShapeShiftClip() {
   )
 }
 
-const SECTIONS = [
-  { id: 'numbers', label: 'By the numbers' },
-  { id: 'rolling', label: 'Watch them roll' },
-  { id: 'gallery', label: 'All configurations' },
-  { id: 'why', label: 'Why it matters' },
-] as const
+const SECTIONS = pageSections['/shapes']
 
 export function ShapesPage() {
   const loops = configurations.filter((c) => c.family === 'loop').length
