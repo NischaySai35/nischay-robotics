@@ -43,7 +43,7 @@ are the placeholders waiting on you:
 ## Waitlist backend
 
 **It already works with zero setup.** Until Firebase is connected, the form
-collects everything and opens a prefilled email to `nischaysai35@gmail.com`.
+collects everything and opens a prefilled email to `hello@nischayrobotics.in`.
 Nothing is lost — you can ship today and wire the database up later.
 
 With Firebase connected, signups are written to Firestore instead, and you read

@@ -6,7 +6,7 @@
    │  PLACEHOLDERS TO SWAP LATER — search for "TODO:" in this file.         │
    │   1. links.docs        — Tetrobot docs, once written                   │
    │   2. videos[1..]       — YouTube IDs for the other prototype clips     │
-   │   3. contact.email     — swap to hello@<domain> once mail is set up    │
+   │   3. contact.email     — hello@nischayrobotics.in (Zoho Mail)          │
    │  The logo mark lives in src/components/ui/Logo.tsx (one file, one SVG).│
    └────────────────────────────────────────────────────────────────────────┘
    ========================================================================= */
@@ -41,7 +41,7 @@ export const links = {
 } as const
 
 export const contact = {
-  email: 'nischaysai35@gmail.com',
+  email: 'hello@nischayrobotics.in',
   phone: '+91 8147447343',
 } as const
 
