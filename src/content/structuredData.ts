@@ -26,6 +26,7 @@ const AVAILABILITY: Record<Availability, string> = {
   in_stock: 'https://schema.org/InStock',
   out_of_stock: 'https://schema.org/OutOfStock',
   preorder: 'https://schema.org/PreOrder',
+  made_to_order: 'https://schema.org/MadeToOrder',
 }
 
 export const shippingFeeFor = (price: number) => (price >= store.shipping.freeAbove ? 0 : store.shipping.fee)

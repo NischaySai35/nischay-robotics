@@ -22,10 +22,16 @@ import { scrollToId } from '@/lib/scroll'
 import { REVIEW_LIMITS, submitReview, summarise, useApprovedReviews } from '@/lib/reviews'
 import { useWaitlist } from '@/lib/waitlistContext'
 
-const whatsappOrder = (p: CatalogItem) =>
-  `${links.whatsapp}?text=${encodeURIComponent(
-    `Hi, I'd like to order: ${p.name} (${p.sku})${p.price ? ` — ${inr(p.price)}` : ''}\n${seo.url}/shop/${p.slug}`,
-  )}`
+/** Prefilled WhatsApp message with everything needed to quote or dispatch. */
+const whatsappOrder = (p: CatalogItem) => {
+  const lines =
+    p.availability === 'made_to_order'
+      ? [`Hi, I'd like a quote for: ${p.name}`, 'What it should hold / do: ', 'Robot it fits: ']
+      : [`Hi, I'd like to order: ${p.name} (${p.sku})${p.price ? ` — ${inr(p.price)}` : ''}`, 'Quantity: 1']
+  if (p.anyColour) lines.push('Colour: ')
+  lines.push('Delivery pin code: ', `${seo.url}/shop/${p.slug}`)
+  return `${links.whatsapp}?text=${encodeURIComponent(lines.join('\n'))}`
+}
 
 /* -- Gallery --------------------------------------------------------------- */
 
@@ -34,7 +40,7 @@ function Gallery({ item }: { item: CatalogItem }) {
   const src = item.images[i] ?? item.images[0]
   return (
     <div>
-      <div className="glass bg-ink aspect-square overflow-hidden">
+      <div className="glass bg-ink aspect-[4/3] overflow-hidden">
         {src && <img src={src} alt={item.name} className="relative z-0 h-full w-full object-cover" />}
       </div>
       {item.images.length > 1 && (
@@ -97,7 +103,7 @@ function BuyActions({ item }: { item: CatalogItem }) {
       )}
       {c.type === 'whatsapp' && (
         <Button href={whatsappOrder(item)} external className="w-full sm:w-auto">
-          Order on WhatsApp
+          {item.availability === 'made_to_order' ? 'Get a quote on WhatsApp' : 'Order on WhatsApp'}
         </Button>
       )}
       {c.type === 'whatsapp' ? (
@@ -338,6 +344,11 @@ export function ProductPage({ item }: { item: CatalogItem }) {
               <div className="border-chalk/10 mt-6 border-y py-5">
                 <Price item={item} large />
                 {item.price !== null && <p className="text-chalk/45 mt-1 text-[12px]">{store.priceNote}</p>}
+                {item.anyColour && (
+                  <p className="text-chalk/70 mt-3 text-[13px]">
+                    <span className="font-semibold">Any colour</span> — tell us yours when you order.
+                  </p>
+                )}
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <StockBadge item={item} />
                   <span className="text-chalk/40 text-[12px]">SKU {item.sku}</span>

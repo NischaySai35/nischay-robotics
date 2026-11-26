@@ -25,6 +25,9 @@ const EVENT = 'nr:navigate'
 const REDIRECTS: Record<string, string> = {
   '/download': '/tetrobot#download',
   '/downloads': '/tetrobot#download',
+  // Renamed product pages (Netlify also 301s these — see netlify.toml).
+  '/shop/tetrobot-developer-kit': '/shop/tetrobot-kit',
+  '/shop/tetrobot-tool-tips': '/shop/tetrobot-gripper-tip',
 }
 
 const resolveAlias = (to: string) => REDIRECTS[to.split('#')[0].replace(/\/+$/, '') || '/'] ?? to

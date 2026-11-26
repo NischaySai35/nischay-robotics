@@ -99,8 +99,8 @@ export function ShopPage() {
             Shop <span className="text-gold-grad">robotics</span>
           </h1>
           <p className="text-chalk/60 mt-4 max-w-2xl text-base leading-relaxed">
-            Our shape-changing modules, and the parts we build with. Prices are {store.priceNote.toLowerCase()}, and
-            everything ships from Bengaluru.
+            Robot arms, shape-changing modules and tool tips, built and tested in Bengaluru and delivered anywhere in
+            India. Prices are {store.priceNote.toLowerCase()}.
           </p>
         </Reveal>
 

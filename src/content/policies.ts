@@ -10,7 +10,7 @@
    the pages, product pages and Google data always agree.
 
    ⚠ Read every page before you sell anything and change what isn't true for
-   you. In particular, fill in `seller.address`.
+   you.
    ========================================================================= */
 
 import { store } from './catalog.ts'
@@ -19,9 +19,8 @@ import { contact, founder } from './site.ts'
 export const seller = {
   name: 'Nischay Robotics',
   owner: founder.name,
-  // TODO: the full postal address you'll accept returns at. The e-commerce
-  // rules require a full address; Bengaluru alone is not enough.
-  address: 'Bengaluru, Karnataka, India',
+  // Full postal address — required by the e-commerce rules, and where returns go.
+  address: 'No. 16/4, 2nd Main Road, Marenahalli, Vijayanagar, Bengaluru, Karnataka 560040, India',
   email: contact.email,
   phone: contact.phone,
 }
@@ -45,7 +44,7 @@ export const policies: readonly Policy[] = [
     sections: [
       {
         heading: 'Where we ship',
-        body: ['We currently ship anywhere in India. International orders: message us first and we will quote shipping.'],
+        body: ['We ship to every state and union territory in India. We do not ship outside India.'],
       },
       {
         heading: 'Cost',

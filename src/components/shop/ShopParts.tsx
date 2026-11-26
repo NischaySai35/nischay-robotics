@@ -82,7 +82,11 @@ export function StarInput({ value, onChange }: { value: number; onChange: (n: nu
 
 export function Price({ item, large = false }: { item: CatalogItem; large?: boolean }) {
   if (item.price === null) {
-    return <span className={`text-chalk/50 ${large ? 'text-xl' : 'text-sm'}`}>Price at launch</span>
+    return (
+      <span className={`text-chalk/50 ${large ? 'text-xl' : 'text-sm'}`}>
+        {item.availability === 'made_to_order' ? 'Price on request' : 'Price at launch'}
+      </span>
+    )
   }
   const off = discountPct(item)
   return (
@@ -102,7 +106,7 @@ export function StockBadge({ item }: { item: CatalogItem }) {
   const tone =
     item.availability === 'in_stock'
       ? 'bg-zest/15 text-zest'
-      : item.availability === 'preorder'
+      : item.availability === 'preorder' || item.availability === 'made_to_order'
         ? 'bg-gold/15 text-accent'
         : 'bg-chalk/10 text-chalk/55'
   return (
@@ -121,7 +125,7 @@ export function ProductCard({ item, summary }: { item: CatalogItem; summary?: Re
       to={productPath(item)}
       className="glass group flex h-full flex-col overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1"
     >
-      <span className="bg-ink relative block aspect-square overflow-hidden">
+      <span className="bg-ink relative block aspect-[4/3] overflow-hidden">
         {item.images[0] && (
           <img
             src={item.images[0]}

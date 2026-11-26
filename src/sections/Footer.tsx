@@ -82,7 +82,7 @@ export function Footer() {
                   All products
                 </Link>
               </li>
-              {listed.slice(0, 4).map((p) => (
+              {listed.filter((p) => p.featured).map((p) => (
                 <li key={p.slug}>
                   <Link to={productPath(p)} className={linkCls}>
                     {p.name}
@@ -172,7 +172,7 @@ export function Footer() {
             <p className="text-chalk/30">
               © {new Date().getFullYear()} {company.name}. Built at home in Bengaluru.
             </p>
-            <p className="text-chalk/25">Modules and developer kits releasing soon.</p>
+            <p className="text-chalk/25">SO-101 arms in stock · Tetrobot modules releasing soon · Shipping across India.</p>
           </div>
         </div>
       </div>

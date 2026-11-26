@@ -52,7 +52,7 @@ export const hero = {
   titleLines: ['Robots that', 'change their', 'own shape.'],
   body: 'We build modular robots that rebuild themselves — a walker becomes an arm becomes a rolling vehicle, from the same parts. Modules and developer kits are releasing soon, running on Tetrobot, our graph-native runtime.',
   stats: [
-    { value: '₹29,999', label: 'per module · kits from ₹1,10,000' },
+    { value: '₹29,999', label: 'per module · 3-module kit ₹84,999' },
     { value: '21', label: 'configurations from one hardware set' },
     { value: 'Patent', label: 'pending — shape-changing system' },
   ],
@@ -395,17 +395,17 @@ export const products: readonly Product[] = [
   },
   {
     slug: 'kit',
-    name: 'Developer Kit',
-    tagline: 'Four modules — the point where it stops being a demo.',
-    inr: 110000,
-    usd: 1155,
-    compareInr: 29999 * 4,
+    name: 'Tetrobot Kit',
+    tagline: 'Three modules — the point where it stops being a demo.',
+    inr: 84999,
+    usd: 892,
+    compareInr: 29999 * 3,
     status: 'waitlist',
     statusLabel: 'Releasing soon',
     summary:
-      'Four modules and everything needed to run them together. Two modules already produce walkers, arches, towers, closed rings and a rolling vehicle — every shape documented on this page. Four is where the interesting morphologies begin.',
+      'Three modules and everything needed to run them together. Two modules already produce walkers, arches, towers, closed rings and a rolling vehicle — every shape documented on this site. The third adds reach, legs and bigger loops.',
     includes: [
-      'Four assembled modules, tested and calibrated',
+      'Three assembled modules, tested and calibrated',
       'Controller and power setup for running them as one body',
       'Tetrobot runtime with the documented configuration library',
       'Assembly, latching and reconfiguration documentation',
@@ -422,16 +422,17 @@ export const products: readonly Product[] = [
   {
     slug: 'tool-tips',
     name: 'Tool Tips',
-    tagline: 'End effectors for the chain: grip, sense, carry.',
-    inr: null,
-    usd: null,
-    status: 'development',
-    statusLabel: 'In development',
+    tagline: 'Gripper and wheel tips — ₹3,000 each.',
+    inr: 3000,
+    usd: 32,
+    status: 'waitlist',
+    statusLabel: 'Releasing soon',
     summary:
-      'Interchangeable tips that latch onto the end of a chain and give it a job — gripping, sensing, carrying. Still being designed. Join the list and you will hear first, and you will help decide which tip gets built first.',
+      'Tips that latch onto the end of a chain and give it a job. The gripper tip picks things up; the wheel tip lets a chain drive. Custom tips — longer fingers, prismatic fingers, dual crab-style opening, candy fingers — are made to order.',
     includes: [
+      'Gripper tip or wheel tip, ₹3,000 each',
       'Same latching interface as the modules',
-      'Designed alongside the people who tell us what they need',
+      'Custom tips made to order — ask on WhatsApp',
     ],
     bestFor: [
       'Anyone whose application needs the arm to actually hold something',
@@ -446,7 +447,7 @@ export const productSection = {
   headline: 'Buy the parts. Build any body.',
   lead: 'Every configuration on this page came from the same modules — latched, released and relatched. They are being readied for release now. Join the list and you will be told the moment they ship, before anyone else.',
   shippingNote:
-    'Built and shipped from Bengaluru, India. International shipping at launch — tell us your country when you join and it helps us plan.',
+    'Built and shipped from Bengaluru to anywhere in India. Every order takes 2–4 days to prepare before it ships.',
 }
 
 export const waitlist = {
@@ -511,7 +512,7 @@ export const pages = [
     path: '/modules',
     label: 'Modules',
     kicker: 'Modules & pricing',
-    blurb: 'Single modules, the four-module Developer Kit and the tool tips in development: prices, what ships in the box, and how the waitlist works.',
+    blurb: 'Single modules, the three-module Tetrobot Kit and the tool tips: prices, what ships in the box, and how the waitlist works.',
     image: '/visuals/cfg-09-thumb.jpg',
   },
   {
@@ -571,9 +572,11 @@ export const seo = {
    `id` when the message changes so people who closed the old one see it. */
 
 export const announcement = {
-  id: 'modules-2026-11',
-  text: 'Modules from ₹29,999 · Developer Kit ₹1,10,000 — releasing soon' as string | null,
-  cta: 'Join the waitlist',
+  id: 'so101-2026-11',
+  text: 'SO-101 robot arms in stock from ₹20,999 · Tetrobot modules from ₹29,999' as string | null,
+  cta: 'Shop now',
+  /** Where the button goes. `null` opens the waitlist form instead. */
+  to: '/shop' as string | null,
 }
 
 /**

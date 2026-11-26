@@ -85,6 +85,7 @@ function TopBar({ hidden }: { hidden: boolean }) {
     }
   }
   const tab = hidden ? -1 : undefined
+  const ctaCls = 'bg-gold text-onbrand shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold hover:brightness-105'
 
   return (
     <div
@@ -119,14 +120,15 @@ function TopBar({ hidden }: { hidden: boolean }) {
         {/* Message */}
         <p className="flex min-w-0 flex-1 items-center justify-center gap-3 lg:flex-none">
           <span className="truncate">{announcement.text}</span>
-          <button
-            type="button"
-            onClick={() => join()}
-            tabIndex={tab}
-            className="bg-gold text-onbrand shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold hover:brightness-105"
-          >
-            {announcement.cta}
-          </button>
+          {announcement.to ? (
+            <Link to={announcement.to} className={ctaCls}>
+              {announcement.cta}
+            </Link>
+          ) : (
+            <button type="button" onClick={() => join()} tabIndex={tab} className={ctaCls}>
+              {announcement.cta}
+            </button>
+          )}
         </p>
 
         {/* Socials + close */}
@@ -178,8 +180,8 @@ function TopBar({ hidden }: { hidden: boolean }) {
 /* -- Products dropdown ------------------------------------------------------ */
 
 const isShopPath = (path: string) => ['/shop', '/modules', '/tetrobot'].includes(path) || path.startsWith('/shop/')
-/** Our own hardware leads the menu; everything else is one click away in the shop. */
-const OWN = listed.filter((p) => p.brand === 'Nischay Robotics').slice(0, 4)
+/** Products marked `featured` in catalog.ts lead the menu; everything else is one click away in the shop. */
+const OWN = listed.filter((p) => p.featured)
 
 /** Everything you can get, in one panel: hardware with prices, then software. */
 function ProductsMenu({ onPick }: { onPick: () => void }) {
@@ -188,7 +190,7 @@ function ProductsMenu({ onPick }: { onPick: () => void }) {
     <div className="glass-strong bg-void w-[min(640px,calc(100vw-2rem))] p-3">
       <div className="relative z-10 grid gap-3 md:grid-cols-[1.35fr_1fr]">
         <div>
-          <p className="text-chalk/35 px-3 pt-2 pb-1 text-[10px] font-semibold tracking-[0.2em] uppercase">Hardware</p>
+          <p className="text-chalk/35 px-3 pt-2 pb-1 text-[10px] font-semibold tracking-[0.2em] uppercase">Popular</p>
           <ul>
             {OWN.map((p) => (
               <li key={p.slug}>

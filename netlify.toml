@@ -13,6 +13,17 @@
   # a VITE_ variable.
   SECRETS_SCAN_OMIT_KEYS = "VITE_FIREBASE_API_KEY,VITE_FIREBASE_AUTH_DOMAIN,VITE_FIREBASE_PROJECT_ID,VITE_FIREBASE_STORAGE_BUCKET,VITE_FIREBASE_MESSAGING_SENDER_ID,VITE_FIREBASE_APP_ID,VITE_EMAILJS_SERVICE_ID,VITE_EMAILJS_PUBLIC_KEY,VITE_EMAILJS_TEMPLATE_ADMIN,VITE_EMAILJS_TEMPLATE_CONFIRM"
 
+# Product pages that were renamed. Permanent, so Google moves them over.
+[[redirects]]
+  from = "/shop/tetrobot-developer-kit"
+  to = "/shop/tetrobot-kit"
+  status = 301
+
+[[redirects]]
+  from = "/shop/tetrobot-tool-tips"
+  to = "/shop/tetrobot-gripper-tip"
+  status = 301
+
 # Single-page app: hash routes need no rewrite, but this keeps deep links safe.
 [[redirects]]
   from = "/*"
