@@ -149,8 +149,8 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <a href={`mailto:${contact.email}`} className={`${linkCls} break-all`}>
-                  {contact.email}
+                <a href={`mailto:${contact.support}`} className={`${linkCls} break-all`}>
+                  {contact.support}
                 </a>
               </li>
               {WHATSAPP && (

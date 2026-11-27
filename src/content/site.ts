@@ -6,7 +6,7 @@
    │  PLACEHOLDERS TO SWAP LATER — search for "TODO:" in this file.         │
    │   1. links.docs        — Tetrobot docs, once written                   │
    │   2. videos[1..]       — YouTube IDs for the other prototype clips     │
-   │   3. contact.email     — hello@nischayrobotics.in (Zoho Mail)          │
+   │   3. contact.*         — hello@ / support@ / nischay@ (Zoho Mail)      │
    │  The logo mark lives in src/components/ui/Logo.tsx (one file, one SVG).│
    └────────────────────────────────────────────────────────────────────────┘
    ========================================================================= */
@@ -41,7 +41,12 @@ export const links = {
 } as const
 
 export const contact = {
+  /** General questions. */
   email: 'hello@nischayrobotics.in',
+  /** Orders, delivery, returns, complaints. */
+  support: 'support@nischayrobotics.in',
+  /** The founder directly: partnerships, incubation, press. */
+  founder: 'nischay@nischayrobotics.in',
   phone: '+91 8147447343',
 } as const
 
@@ -482,7 +487,9 @@ export const community = {
  * to components/ui/SocialIcons.tsx. Reorder or delete freely.
  */
 export const channels = [
-  { icon: 'mail', label: 'Email', handle: contact.email, href: `mailto:${contact.email}`, note: 'Orders, partnerships, press' },
+  { icon: 'mail', label: 'Email', handle: contact.email, href: `mailto:${contact.email}`, note: 'General questions' },
+  { icon: 'mail', label: 'Orders & support', handle: contact.support, href: `mailto:${contact.support}`, note: 'Orders, delivery, returns' },
+  { icon: 'mail', label: 'Founder', handle: contact.founder, href: `mailto:${contact.founder}`, note: 'Partnerships, incubation, press' },
   { icon: 'whatsapp', label: 'WhatsApp', handle: contact.phone, href: links.whatsapp, note: 'Quick questions' },
   { icon: 'linkedin', label: 'LinkedIn', handle: 'in/nischaysai35', href: links.linkedin, note: 'Company updates' },
   { icon: 'instagram', label: 'Instagram', handle: '@nischay_sai_35', href: links.instagram, note: 'Behind the build' },

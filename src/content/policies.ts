@@ -21,7 +21,7 @@ export const seller = {
   owner: founder.name,
   // Full postal address — required by the e-commerce rules, and where returns go.
   address: 'No. 16/4, 2nd Main Road, Marenahalli, Vijayanagar, Bengaluru, Karnataka 560040, India',
-  email: contact.email,
+  email: contact.support,
   phone: contact.phone,
 }
 
@@ -139,7 +139,7 @@ export const policies: readonly Policy[] = [
       },
       {
         heading: 'Your choices',
-        body: [`Email ${contact.email} to see, correct or delete anything we hold about you.`],
+        body: [`Email ${contact.support} to see, correct or delete anything we hold about you.`],
       },
     ],
   },

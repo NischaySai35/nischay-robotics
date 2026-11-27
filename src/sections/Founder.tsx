@@ -2,7 +2,7 @@ import { AsideCard, Block, PageShell } from '@/components/PageShell'
 import { ArrowIcon, Button, Reveal, Tag } from '@/components/ui/primitives'
 import { collaborate, contact, founder, links, pageAt, pageSections } from '@/content/site'
 
-const MAILTO = `mailto:${contact.email}?subject=${encodeURIComponent(
+const MAILTO = `mailto:${contact.founder}?subject=${encodeURIComponent(
   'Nischay Robotics — partnership',
 )}&body=${encodeURIComponent(
   "Hi Nischay,\n\nI'd like to talk about\n\n  [ ] incubation\n  [ ] lab / fabrication access\n  [ ] funding\n  [ ] collaborating on the build\n  [ ] research partnership\n  [ ] hardware sponsorship\n\nA bit about me / us:\n\n",

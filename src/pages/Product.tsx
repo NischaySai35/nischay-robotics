@@ -109,7 +109,7 @@ function BuyActions({ item }: { item: CatalogItem }) {
       {c.type === 'whatsapp' ? (
         <Button
           variant="glass"
-          href={`mailto:${contact.email}?subject=${encodeURIComponent(`Order: ${item.name} (${item.sku})`)}`}
+          href={`mailto:${contact.support}?subject=${encodeURIComponent(`Order: ${item.name} (${item.sku})`)}`}
           className="w-full sm:w-auto"
         >
           Order by email

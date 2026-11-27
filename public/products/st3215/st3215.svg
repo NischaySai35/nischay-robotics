@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="ST3215 serial bus servo">
+  <!-- Placeholder illustration until a real product photo is added. -->
+  <rect width="1200" height="900" fill="#f3f1ec"/>
+  <ellipse cx="600" cy="735" rx="330" ry="34" fill="#000" opacity="0.08"/>
+  <!-- mounting tabs -->
+  <rect x="300" y="380" width="600" height="56" rx="10" fill="#26232c"/>
+  <circle cx="335" cy="408" r="12" fill="#f3f1ec"/>
+  <circle cx="865" cy="408" r="12" fill="#f3f1ec"/>
+  <!-- body -->
+  <rect x="380" y="250" width="440" height="470" rx="26" fill="#1b1920"/>
+  <rect x="380" y="250" width="440" height="80" rx="26" fill="#2c2833"/>
+  <!-- output horn -->
+  <circle cx="500" cy="250" r="86" fill="#c9c6cf"/>
+  <circle cx="500" cy="250" r="58" fill="#e7e5ea"/>
+  <circle cx="500" cy="250" r="16" fill="#8b8794"/>
+  <g fill="#8b8794">
+    <circle cx="500" cy="205" r="7"/><circle cx="545" cy="250" r="7"/>
+    <circle cx="500" cy="295" r="7"/><circle cx="455" cy="250" r="7"/>
+  </g>
+  <!-- label -->
+  <rect x="430" y="470" width="340" height="120" rx="10" fill="#2c2833"/>
+  <text x="600" y="525" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="700" fill="#ffc93c">ST3215</text>
+  <text x="600" y="568" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#d8d5dd">12V · 30 kg·cm</text>
+  <!-- bus cable -->
+  <path d="M820 640 C 900 640, 920 700, 1010 690" stroke="#e23b3b" stroke-width="9" fill="none"/>
+  <path d="M820 655 C 900 655, 920 715, 1010 705" stroke="#f4f4f4" stroke-width="9" fill="none"/>
+  <path d="M820 670 C 900 670, 920 730, 1010 720" stroke="#222" stroke-width="9" fill="none"/>
+  <rect x="1000" y="680" width="46" height="50" rx="6" fill="#efe6c8"/>
+</svg>
